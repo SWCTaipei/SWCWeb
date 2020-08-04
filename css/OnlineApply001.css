@@ -1,0 +1,43 @@
+﻿body {
+}
+
+.OA01-T2 table {
+  width: 100%;
+}
+.OA01-T2 th {
+  padding: 10px;
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: 2px;
+  vertical-align: middle;
+  text-align: center;
+}
+.OA01-T2 td {
+  padding: 10px;
+}
+.OA01-T2 .td-padding {
+  padding-left: 30px;
+}
+.OA01-T2 .tr-title td:nth-child(1) {
+    width: 20%;
+    border-right: none;
+}
+.OA01-T2 .tr-title td:nth-child(2) {
+    width: 10%;
+    border-right: none;
+  border-left: none;
+}
+.OA01-T2 .tr-title td:nth-child(3) {
+    width: 10%;
+    border-right: none;
+  border-left: none;
+}
+.OA01-T2 .tr-title td:nth-child(4) {
+    width: 20%;
+    border-right: none;
+  border-left: none;
+}
+.OA01-T2 .tr-title td:nth-child(5) {
+    width: 40%;
+    border-left: none;
+}

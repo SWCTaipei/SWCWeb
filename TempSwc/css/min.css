@@ -1,0 +1,874 @@
+﻿
+body{
+letter-spacing:1px;
+}
+/*violation違規查報取締表格*/
+.ADDGridView{
+	max-width:1200px;
+	width:100%;
+	margin:0 auto;
+}
+.ADDGridView th { /*設定表頭*/
+    background-color:#808080;
+    color:#FFFFFF;
+    text-align:center;
+    border:0;
+}
+.ADDGridView tr:nth-child(2n+3) { /*換行變色*/
+    background-color:#e5e4e6;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.ADDGridView tr:nth-child(2n+2) { /*換行變色*/
+    background-color:#f3f3f2;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.ADDGridView td {
+    padding: 10px;
+    text-align: center;
+    line-height: 1.5;
+}
+.ADDGridView th  {
+    padding:10px;
+}
+.ADDGridView th a {
+    color: #fff;
+    text-decoration: none;
+}
+.ADDGridView .pgr table { /*Page 分頁表格寬度*/
+    width:auto;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+}
+.ADDGridView .pgr td { /*Page 分頁表格顏色*/
+    background-color: #808080;
+    border-width:0px;
+}
+
+.ADDGridView tr:nth-child(2) {
+	width:17%;
+}
+.ADDGridView tr:nth-child(3) {
+    width:8%;
+}
+.ADDGridView th:nth-child(4) {
+    width:8%;
+}
+.ADDGridView tr:nth-child(5) {
+  width:8%;
+}
+.ADDGridView th:nth-child(7) {
+    width:20%;
+}
+.ADDGridView th:nth-child(9) {
+    width:5%;
+}
+
+/*violation違規查報取締表格END*/
+
+/*application違規查報取締表格*/
+.ADDapplication{
+	margin:0 auto;
+	max-width:1200px;
+	width:100%;
+}
+.ADDapplication th { /*設定表頭*/
+    background-color:#808080;
+    color:#FFFFFF;
+    text-align:center;
+    border:0;
+}
+.ADDapplication tr:nth-child(2n+3) { /*換行變色*/
+    background-color:#e5e4e6;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.ADDapplication tr:nth-child(2n+2) { /*換行變色*/
+    background-color:#f3f3f2;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.ADDapplication td {
+    padding: 10px;
+    text-align: center;
+    line-height: 1.5;
+}
+.ADDapplication th  {
+    padding:10px;
+}
+.ADDapplication th a {
+    color: #fff;
+    text-decoration: none;
+}
+.ADDapplication .pgr table { /*Page 分頁表格寬度*/
+    width:auto;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+}
+.ADDapplication .pgr td { /*Page 分頁表格顏色*/
+    background-color:#808080;
+    border-width:0px;
+}
+.ADDapplication th:nth-child(1) {
+	width:17%;
+}
+.ADDapplication th:nth-child(2) {
+	width:7%;
+}
+.ADDapplication th:nth-child(3) {
+    width:12%;
+}
+.ADDapplication th:nth-child(4) {
+    width:9%;
+}
+.ADDapplication th:nth-child(5) {
+  width:19%;
+}
+.ADDapplication th:nth-child(7) {
+    width:9%;
+}
+.ADDapplication th:nth-child(8) {
+    width:11%;
+}
+.ADDapplication th:nth-child(9) {
+    width:4%;
+}
+/*application違規查報取締表格END*/
+
+/*keyword違規查報取締表格*/
+.ADDkeyword{
+	margin:0 auto;
+	max-width:1200px;
+	width:100%;
+}
+.ADDkeyword th { /*設定表頭*/
+    background-color:#808080;
+    color:#FFFFFF;
+    text-align:center;
+    border:0;
+}
+.ADDkeyword tr:nth-child(2n+3) { /*換行變色*/
+    background-color:#e5e4e6;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.ADDkeyword tr:nth-child(2n+2) { /*換行變色*/
+    background-color:#f3f3f2;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.ADDkeyword td {
+    padding: 10px;
+    text-align: center;
+    line-height: 1.5;
+}
+.ADDkeyword th  {
+    padding:10px;
+}
+.ADDkeyword th a {
+    color: #fff;
+    text-decoration: none;
+}
+.ADDkeyword th:nth-child(1) {
+	width:17%;
+}
+.ADDkeyword th:nth-child(11) {
+	width:10%;
+}
+.ADDkeyword .pgr table { /*Page 分頁表格寬度*/
+    width:auto;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+}
+.ADDkeyword .pgr td { /*Page 分頁表格顏色*/
+    background-color:#808080;
+    border-width:0px;
+}
+
+/*keyword違規查報取締表格END*/
+
+.ADDupcoming{
+	margin:0 auto;
+	max-width:1200px;
+	width:100%;
+}
+.ADDupcoming th { /*設定表頭*/
+    background-color:#68a4d9;
+    color:#FFFFFF;
+    text-align:center;
+    border:0;
+	padding:10px;
+}
+.ADDupcoming tr:nth-child(2n+3) { /*換行變色*/
+    background-color:#f8f8ff;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.ADDupcoming tr:nth-child(2n+2) { /*換行變色*/
+    background-color:#e6e6fa;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.ADDupcoming td {
+    padding: 10px;
+    text-align: center;
+    line-height: 1.5;
+}
+.ADDupcoming th a {
+    color: #fff;
+    text-decoration: none;
+}
+
+
+
+
+
+/*link表格*/
+.link{
+	margin:0 auto;
+	max-width:1200px;
+	width:100%;
+	font-family:微軟正黑體;
+	font-weight:bold;
+}
+.link th { /*設定表頭*/
+    background-color:#68a4d9;
+    color:#FFFFFF;
+    text-align:center;
+    border:0;
+	padding:10px;
+	font-size:18px;
+}
+.link tr:nth-child(2n+3) { /*換行變色*/
+    background-color:#f0f6da;
+    color:#000000;
+    line-height:1;
+    text-align:left;
+}
+.link tr:nth-child(2n+2) { /*換行變色*/
+    background-color:#dbebc4;
+    color:#000000;
+    line-height:1;
+    text-align:left;
+}
+
+.link td {
+    padding: 10px;
+    text-align: left;
+    line-height: 1.5;
+}
+.link a {
+    color:#0075c2;
+	
+	text-decoration:none;
+}
+.link td:nth-child(2) {
+   font-size:17px;
+  
+}
+.link a:hover {
+	color:#F90;
+}
+/*link表格END*/
+
+
+/*案件詳情表格*/
+ .detailsGrid h2 {
+  padding: 7px 10px;
+  border: 1px solid #000;
+  text-align: center;
+  line-height: 1.5;
+}
+.detailsGrid h2 img {
+  width: 27px;
+  cursor: pointer;
+  float: right;
+  margin-right: 5px;
+  z-index: 10;
+}
+.detailsGrid table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.detailsGrid table th, .detailsGrid table td {
+  border: 1px solid #000;
+  padding: 10px;
+}
+.detailsGrid table td {
+  line-height: 1.5;
+}
+.detailsGrid table td:first-child {
+  text-align: center;
+  width: 15%;
+  font-weight: bold;
+  width: 18%;
+}
+.detailsGrid table td:first-child span {
+  color: #000;
+}
+.detailsGrid table .detailsGrid_green_innerTable_edit {
+  width: 90%;
+}
+.detailsGrid table .detailsGrid_green_innerTable_edit input[type="button"] {
+  margin-left: 15px;
+}
+.detailsGrid table .detailsGrid_skyblue_innerTable table {
+  border-collapse: collapse;
+  width: auto;
+}
+.detailsGrid textarea {
+  width: 100%;
+  height: 100px;
+}
+.detailsGrid .ajax__calendar th, .detailsGrid .ajax__calendar td {
+  border: none;
+  padding: 0;
+}
+.detailsGrid .ajax__calendar tr:last-child {
+  line-height: 0;
+}
+.detailsGrid .ajax__calendar td:first-child {
+  width: auto;
+  font-weight: normal;
+}
+
+.detailsGrid_wrap_btn {
+  border: 2px dashed #000;
+  padding: 9px 0 9px 12px;
+  display: inline-block;
+  width: 220px;
+  margin: 0 7px 7px 0;
+  cursor: pointer;
+  background: #fff;
+  font-size: 16px;
+  text-align: left;
+  color: blue;
+  text-decoration: underline;
+}
+
+.detailsGrid_skyblue .detailsGrid_skyblue_innerTable tr:first-child, .detailsGrid_skyblue .detailsGrid_skyblue_innerTable_edit tr:first-child, .detailsGrid_green .detailsGrid_green_innerTable tr:first-child, .detailsGrid_yellow .detailsGrid_yellow_innerTable tr:first-child, .detailsGrid_orange .detailsGrid_orange_innerTable tr:first-child {
+	
+  font-weight: bold;
+}
+
+.detailsGrid_skyblue td {
+  height:30px;
+  line-height:1.5px;
+}
+.detailsGrid_skyblue th {
+    background: #afeeee;
+    vertical-align: middle;
+}
+/*.detailsGrid_skyblue tr td:first-child {
+  background:#afeeee;
+  vertical-align: middle;
+}*/
+.detailsGrid_skyblue .innerBR_file tr td:first-child {
+  background: #fff;
+  border: none;
+  text-align: left;
+  padding: 0;
+}
+.detailsGrid_skyblue .detailsGrid_skyblue_innerTable {
+  max-width:980px;
+  width: 100%;
+  margin-top: 7px;
+}
+.detailsGrid_skyblue .detailsGrid_skyblue_innerTable tr td:first-child {/*第一格寬度*/
+  background: #fff;
+  text-align: left;
+  width: 10%;
+}
+.detailsGrid_skyblue .detailsGrid_skyblue_innerTable tr:last-child td table {
+  margin: 0 auto;
+}
+.detailsGrid_skyblue .detailsGrid_skyblue_innerTable tr:last-child table td {/*123數字*/
+  border: none;
+  padding: 0 5px;
+}
+.detailsGrid_skyblue .detailsGrid_skyblue_innerTable_lastCenter tr th:last-child {
+  text-align: center;
+}
+.detailsGrid_skyblue .detailsGrid_skyblue_innerTable_lastCenter tr td:last-child {
+  text-align: center;
+  width: 16%;
+}
+.detailsGrid_skyblue .detailsGrid_skyblue_innerTable_edit tr td:first-child {
+  background: #fff;
+  width: 16%;
+  text-align: left;
+}
+.detailsGrid_skyblue .detailsGrid_skyblue_innerTable_edit tr td:nth-child(2) {
+  width: 15%;
+}
+.detailsGrid_skyblue .detailsGrid_skyblue_innerTable_edit tr td:nth-child(3) {
+  width: 15%;
+}
+.detailsGrid_skyblue .detailsGrid_skyblue_innerTable_edit tr td:last-child {
+  width: 2%;
+  text-align: center;
+}
+
+.detailsGrid_purple tr td:first-child {
+  background: #eeddff;
+}
+
+.detailsGrid_green tr td:first-child {
+  background: #98d98e;
+  vertical-align: middle;
+}
+.detailsGrid_green .detailsGrid_green_innerTable tr td:first-child {
+  background: #fff;
+  width: 16%;
+  vertical-align: top;
+ margin-left:20px;
+}
+
+.detailsGrid_green .detailsGrid_green_innerTable tr td:nth-child(2) {
+  width: 15%;
+}
+.detailsGrid_green .detailsGrid_green_innerTable tr td:nth-child(3) {
+  width: 15%;
+}
+.detailsGrid_green  .detailsGrid_green_innerTable tr td:nth-child(5), .detailsGrid_green .detailsGrid_green_innerTable tr td:nth-child(6) {
+  text-align: center;
+  width: 10%;
+}
+.detailsGrid_green .detailsGrid_green_innerTable input[type="text"] {
+  width: 50%;
+}
+.detailsGrid_green .ajax__calendar tr td:first-child {
+  background: #fff;
+}
+
+.detailsGrid_yellow tr td:first-child {
+  background: #f8e58c;
+  vertical-align: middle;
+}
+.detailsGrid_yellow .detailsGrid_yellow_innerTable tr td:first-child {
+  background: #fff;
+  vertical-align: top;
+  width: 16%;
+  text-align: left;
+}
+.detailsGrid_yellow .detailsGrid_yellow_innerTable tr td:nth-child(2) {
+  width: 15%;
+}
+.detailsGrid_yellow .detailsGrid_yellow_innerTable tr td:nth-child(3) {
+  width: 15%;
+}
+.detailsGrid_yellow .detailsGrid_yellow_innerTable tr td:nth-child(5), .detailsGrid_yellow .detailsGrid_yellow_innerTable tr td:nth-child(6) {
+  text-align: center;
+  width: 10%;
+}
+.detailsGrid_yellow .ajax__calendar tr td:first-child {
+  background: #fff;
+}
+
+.detailsGrid_orange tr td:first-child {
+  background: #ffeee5;
+  vertical-align: middle;
+}
+.detailsGrid_orange .detailsGrid_orange_innerTable tr td:first-child {
+  background: #fff;
+  vertical-align: top;
+  width: 16%;
+  text-align: left;
+}
+.detailsGrid_orange .detailsGrid_orange_innerTable tr td:nth-child(2) {
+  width: 15%;
+}
+.detailsGrid_orange .detailsGrid_orange_innerTable input[type="text"] {
+  width: 50%;
+}
+.detailsGrid_orange .detailsGrid_orange_innerTable2 tr td:nth-child(4), .detailsGrid_orange .detailsGrid_orange_innerTable2 tr td:nth-child(5) {
+  text-align: center;
+  width: 10%;
+}
+
+.detailsGrid_gray {
+  background: #d9d9d9;
+}
+
+.detailsGrid_skyblue_innerTable th {
+  background: #ddf1ff;
+}
+
+.detailsGrid_green_innerTable th {
+  background: #e6ffdd;
+}
+.detailsGrid_green_innerTable td {
+  vertical-align: top;
+  text-align:left;
+
+}
+
+.detailsGrid_yellow_innerTable th {
+  background: #f3e7ff;
+}
+.detailsGrid_yellow_innerTable td {
+  vertical-align: top;
+}
+
+.detailsGrid_orange_innerTable th {
+  background: #ffeee5;
+}
+.detailsGrid_orange_innerTable td {
+  vertical-align: top;
+}
+.detailsGrid_red tr td:first-child {
+  background: #f6bfbc;
+  vertical-align: middle;
+}
+.detailsGrid_brown tr td:first-child {
+  background: #d8a373;
+  vertical-align: middle;
+}
+.detailsGrid_brown tr td:first-child {
+  background: #d8a373;
+  vertical-align: middle;
+}
+.detailsBar_title_basic, .detailsBar_title_accept, .detailsBar_title_review, .detailsBar_title_construction, .detailsBar_title_finish, .detailsBar_title_accepted, .detailsBar_title_remarks, .detailsBar_title_map{
+  text-align: center;
+  font-weight: bold;
+  font-size: 19px;
+  cursor: pointer;
+}
+.detailsBar_title_basic {
+  background: #87ceeb;
+  margin-bottom:0px;
+}
+
+.detailsBar_title_accept {
+  background: #cccdff;
+  margin-bottom:0px;
+  margin-top:0px;
+}
+
+.detailsBar_title_review {
+  background: #66cdaa;
+  margin-bottom:0px;
+  margin-top:0px;
+}
+
+.detailsBar_title_construction {
+  background: #fef263;
+  margin-bottom:0px;
+  margin-top:0px;
+}
+
+.detailsBar_title_finish {
+  background: #f1ab6a;
+  margin-bottom:0px;
+  margin-top:0px;
+}
+
+.detailsBar_title_accepted {
+  background: #f0908d;
+  margin-bottom:0px;
+  margin-top:0px;
+}
+.detailsBar_title_remarks {
+  background: #b98c46;
+  margin-bottom:0px;
+  margin-top:0px;
+}
+.detailsBar_title_map {
+  background: #00D3CD;
+  margin-bottom:0px;
+  margin-top:0px;
+}
+/*案件詳情表格END*/
+
+/*坡地管理藍色子表格*/
+.skyblue{
+    text-align:center;
+    border:2;
+    margin-right:10px;
+}
+.skyblue th { /*設定表頭*/
+    background-color: #87ceeb;
+    text-align: center;
+    font-weight: bold;
+}
+.skyblue  tr td:first-child {/*選取表格第一格為白色*/
+   background: #fff;
+   width: 20%;
+}
+.skyblue  tr td:nth-child(2) {
+  width:20%;
+}
+.skyblue  tr td:nth-child(3) {
+  width:23%;
+}
+/*坡地管理藍色表格設定結束*/
+
+/*坡地管理綠色子表格*/
+.green{
+    text-align:center;
+    border:2;
+    margin:10px;
+}
+.green th { /*設定表頭*/
+    background-color: #BAFF75;
+    text-align: center;
+}
+.green  tr td:first-child {/*選取表格第一格為白色*/
+   background: #fff;
+   width: 15%;
+}
+.green  tr td:nth-child(2) {
+  width:15%;
+}
+.green  tr td:nth-child(3) {
+  width:15%;
+}
+.green  tr td:nth-child(4) {
+  width:30%;
+}
+
+/*坡地管理綠色表格設定結束*/
+
+/*坡地管理黃色子表格*/
+.yellow{
+    text-align:center;
+    border:2;
+    margin-right:10px;
+}
+.yellow th { /*設定表頭*/
+    background-color: #fef263;
+    text-align: center;
+}
+.yellow  tr td:first-child {/*選取表格第一格為白色*/
+   background: #fff;
+   width: 18%;
+}
+.yellow  tr td:nth-child(2) {
+  width:18%;
+}
+.yellow  tr td:nth-child(3) {
+  width:18%;
+}
+.yellow  tr td:nth-child(4) {
+  width:26%;
+}
+/*坡地管理黃色表格設定結束*/
+
+.ETUserDetail_title_basic {
+  background: #68a4d9;
+  margin-bottom:0px;
+}
+.ETUserDetail td{
+	line-height:1.5;
+}
+.ilgformountant_title_basic {
+  background: #f6b894;
+  margin-bottom:0px;
+}
+.ilgformountant table td:first-child {
+  text-align: center;
+  font-weight: bold;
+  width: 19%;
+}
+.retirement{
+	max-width:1200px;
+	width:100%;
+	color:White;
+	font-weight:bold;
+	}
+.retirement th { /*設定表頭*/
+    background-color:#ee827c;
+    color:#FFFFFF;
+    text-align:center;
+    border:0;
+	
+}
+.retirement tr:nth-child(2n+3) { /*換行變色*/
+    background-color:#f6bfbc;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.retirement tr:nth-child(2n+2) { /*換行變色*/
+    background-color:#fdeff2;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.annex{
+	max-width:1000px;
+	width:80%;
+	margin:0 auto;
+}
+.annex th { /*設定表頭*/
+    background-color:#f5deb3;
+	height:5px;
+    text-align:center;
+    border:0;
+	
+}
+
+.urgent{
+	float:left;
+	max-width:920px;
+	width:100%;
+	margin-bottom:2em;
+}
+.conservation{
+	max-width:1200px;
+	width:100%;
+	margin-bottom:2em;
+	border:1px #000000 solid;
+}
+.conservation td{
+	height:40px;
+}
+.urgent tr td:first-child {
+  background:#afeeee;
+  vertical-align: middle;
+}
+
+.course-v{
+	border:#a3a3a2 1px solid;
+	margin-left:10px;
+	width:22%;
+	float:left;
+	margin-top:-1.9em;
+}
+.conservation-v{
+	border:#a3a3a2 1px solid;
+	margin-left:10px;
+	width:22%;
+	float:left;
+	margin-top:-3.2em;
+}
+.course{
+	border:none;
+}
+@media (max-width: 1280px) {
+  .urgent{
+	float:left;
+	max-width:1200px;
+	width:100%;
+}
+ .conservation{
+	float:left;
+	max-width:1200px;
+	width:100%;
+}
+  .course-v{
+    margin-left:0px;
+	float:left;
+	margin-top:3em;
+	width:100%;
+}
+ .conservation-v{
+    margin-left:0px;
+	float:left;
+	margin-top:3em;
+	width:100%;
+}
+	}
+.wordtbcenter {
+	font-family: Arial, "標楷體", "微軟正黑體", "新細明體";
+	font-size: 14px;
+	line-height: 18px;
+	text-align: center;
+}
+.counseling{
+	width:100%;
+	border:#000 1px solid;
+	margin-top:2em;
+	
+}
+.counseling th{
+	text-align:center;
+	background-color:#bbdbf3;
+	height:30px;
+}
+.counseling td{
+	text-align:center;
+	height:40px;
+}
+.course{
+	background:#deb887;
+	font-size:20px;
+	padding:10px;
+	text-align: center;
+   font-weight: bold;
+}
+
+.course-s{
+	max-width:1200px;
+	width:100%;
+	margin:0 auto;
+}
+.course-s td {
+    padding: 10px;
+    text-align: center;
+    line-height: 1.5;
+	background:#fdede4;
+}
+
+
+.base{
+	max-width:1200px;
+	width:100%;
+	margin-top:1em;
+	margin-bottom:2em;
+}
+.base  th{
+	font-size:20px;
+	padding:10px;
+	background:#a0d8ef;
+	text-align: center;
+   font-weight: bold;
+   }
+.base td{
+	background:#f0ffff;
+	padding:10px;
+}
+.base td:first-child{
+	text-align:center;
+	width:15%;
+}
+
+.base-s{
+	max-width:1200px;
+	width:100%;
+	margin-bottom:2em;
+}
+.base-s th{
+	font-size:20px;
+	padding:10px;
+	background:#48d1cc;
+	text-align: center;
+   font-weight: bold;
+   }
+.base-s td{
+	background:#f0fff0;
+	padding:10px;
+}
+.base-s td:first-child{
+	text-align:center;
+	width:15%;
+}
+.land{
+	margin-top:1em;
+}
+.within{
+	max-width:700px;
+	width:100%;
+}

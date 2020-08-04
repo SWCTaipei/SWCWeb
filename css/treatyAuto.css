@@ -1,0 +1,15 @@
+.treatyAuto {
+  margin: 100px auto 0;
+  width: 1200px;
+}
+.treatyAuto p {
+  border: 1px solid #dddddd;
+  padding: 10px;
+}
+.treatyAuto span {
+  text-align: center;
+  display: block;
+  font-size: 20px;
+  color: red;
+  font-weight: bold;
+}

@@ -1,0 +1,552 @@
+﻿@charset "utf-8";
+/* CSS Document */
+
+/*自主檢查表查詢框*/
+.inquireForm_iris {
+    max-width: 1200px;
+    margin: 50px auto 20px;
+    border: 1px solid gray; 
+    padding: 15px;
+    line-height: 2.5;
+}
+
+
+.inquireForm_iris .ajax__calendar{ /*自主檢查表查詢框的日期選單*/
+    line-height: 1;
+}
+
+
+.input{
+    margin-right:0px;
+}
+.upimg{
+    border: 1px solid #a9a9a9;
+    width:65%;
+    height:190px;
+    margin-left:105px;
+}
+
+.upimg_in {
+    border: 1px solid #a9a9a9;
+    width: 65%;
+    height:190px;
+    margin-left:105px;
+    display: block;
+}
+.imgUpload_in img {
+    width: 65%;
+    margin-left:105px;
+    height:190px;
+}
+
+/*新增子表單(OnlineApply)地籍Grid設定開始*/
+
+.ADDCadastral th { /*設定表頭*/
+	background-color:#B76C21;
+    color:#FFFFFF;
+    text-align:center;
+    border:0;
+}
+/*.ADDCadastral td {
+    text-align: center;
+}*/
+.ADDCadastral tr:nth-child(2n+3) { /*換行變色*/
+	background-color:#FFFFFF;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+
+.ADDCadastral tr:nth-child(2n+2) { /*換行變色*/
+	background-color:#FFFCBD;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+
+.ADDCadastral .pgr table { /*Page 分頁表格寬度*/
+    width: 30px;
+    margin-left:auto;
+    margin-right:auto;
+}
+.ADDCadastral .pgr td {  /*Page 分頁表格顏色*/
+    background-color:#CCFFFF;
+    border-width: 0px;
+    padding:3px 3px 3px 3px;    
+}
+
+
+/*新增子表單(OnlineApply)地籍Grid設定結束*/
+
+
+
+/*申請表單-完工申報表格設定*/
+.Apply009 tr td:nth-child(1) {
+	width:15%
+}
+.Apply009 tr td:nth-child(2) {
+	width:20%;
+}
+.Apply009 .ajax__calendar table td { /*針對日期*/
+    width:auto;
+}
+
+/*子表單表格內大標題-共用*/
+.text_tabletitle{
+    text-align:center;
+    font-weight:bold;
+    vertical-align:middle;
+}
+.AutoNewLine{/*表格不被裡面文字撐開*/
+    word-break:break-all;
+}
+
+
+/*暫停審查綠色子表格*/
+.greenPause{
+    text-align:center;
+    border:0;
+}
+.greenPause th { /*設定表頭*/
+    background-color: #e6ffdd;
+    text-align: center;
+    border: 0;
+    }
+.greenPause td { 
+    text-align:center;
+    border:0;
+}
+.greenPause  tr td:first-child {/*選取綠色表格第一格為白色*/
+   background: #fff;
+   width: 16%;
+   vertical-align: top;
+   margin-left:20px;
+}
+/*暫停審查綠色子表格設定結束*/
+
+/*startskyblue*/
+.startskyblue th { /*設定表頭*/
+    background-color: #ddf1ff;
+    text-align: center;
+    border: 0;
+    }
+.startskyblue{
+   text-align:center;
+   border:0;
+}
+.startskyblue td { 
+    text-align:center;
+    border:0;
+}
+.startskyblue  tr td:first-child {/*選取綠色表格第一格為白色*/
+   background: #fff;
+   width:10%;
+   vertical-align: top;
+   margin-left:20px;
+}
+.startskyblue .pgr table { /*Page 分頁表格寬度*/
+    width: 30px;
+    margin-left:auto;
+    margin-right:auto;
+}
+.startskyblue .pgr td { 
+    border-width: 0px;
+    padding:3px 3px 3px 3px;    
+}
+/*startskyblue表格設定結束*/
+
+/*constructionPurple*/
+.constructionPurple th { /*設定表頭*/
+    background-color: #f3e7ff;
+    text-align: center;
+    border: 0;
+    }
+.constructionPurple{
+   text-align:center;
+   border:0;
+}
+.constructionPurple td { 
+    text-align:center;
+    border:0;
+}
+.constructionPurple  tr td:first-child {/*選取綠色表格第一格為白色*/
+   background: #fff;
+   width: 14%;
+   vertical-align: top;
+   margin-left:20px;
+}
+/*.constructionPurple  tr td:nth-child(2){選取綠色表格第一格為白色
+   background: red;
+   width: 14%;
+   vertical-align: top;
+   margin-left:20px;
+}*/
+/*constructionPurple表格設定結束*/
+
+/*SWC003完工橘色表格*/
+.Completedorange th { /*設定表頭*/
+    background-color: #ffeee5;
+    text-align: center;
+    border: 0;
+    }
+.Completedorange{
+   text-align:center;
+   border:0;
+}
+.Completedorange td { 
+    text-align:center;
+    border:0;
+}
+.Completedorange  tr td:first-child {/*選取綠色表格第一格為白色*/
+   background: #fff;
+   width: 14%;
+   vertical-align: top;
+   margin-left:20px;
+}
+/*SEC003完工橘色表格設定結束*/
+
+/*SWC001GridView*/
+.ADDGridView{
+    margin:0 auto;
+    width:1200px;
+}
+.ADDGridView th { /*設定表頭*/
+    background-color:#7baac5;
+    color:#FFFFFF;
+    text-align:center;
+    border:0;
+}
+.ADDGridView tr:nth-child(2n+3) { /*換行變色*/
+    background-color:#FFFFFF;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.ADDGridView tr:nth-child(2n+2) { /*換行變色*/
+    background-color:#b6d9e5;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.ADDGridView td {
+    padding: 10px;
+    text-align: center;
+    line-height: 1.5;
+    
+}
+.ADDGridView th  {
+    padding:10px;
+}
+.ADDGridView th a {
+    color: #fff;
+    text-decoration: none;
+}
+.ADDGridView .pgr table { /*Page 分頁表格寬度*/
+    width:auto;
+    margin-left:auto;
+    margin-right:auto;
+}
+.ADDGridView .pgr td { /*Page 分頁表格顏色*/
+    background-color: #7baac5;
+    border-width:0px;
+}
+.ADDGridView td:nth-child(5) {
+    text-align:left;
+}
+.date .ajax__calendar{ /*查詢SWC001框的日期選單*/
+    line-height: 1;
+}
+.AutoNewLine{
+   word-break:break-all;
+}
+
+/*SWC001GridView結束*/
+
+.changerequest th { /*設定表頭*/
+    background-color:#47885e;
+    color:#FFFFFF;
+    text-align:center;
+    border:0;
+}
+.changerequest tr:nth-child(2n+3) { /*換行變色*/
+    background-color:#d6e9ca;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.changerequest tr:nth-child(2n+2) { /*換行變色*/
+    background-color:#cee4ae;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.changerequest td {
+    padding: 10px;
+    text-align: center;
+    line-height: 1.5;
+    
+}
+.changerequest th  {
+    padding:10px;
+}
+.changerequest th a {
+    color: #fff;
+    text-decoration: none;
+}
+.changerequest .pgr table { /*Page 分頁表格寬度*/
+    width:auto;
+    margin-left:auto;
+    margin-right:auto;
+}
+.changerequest .pgr td { /*Page 分頁表格顏色*/
+    background-color: #7baac5;
+    border-width:0px;
+}
+.changerequest td:nth-child(5) {
+    text-align:left;
+}
+
+
+
+/*自主檢查表GridView*/
+.ApplyL {
+    width: 100%;
+}
+.ApplyL tr:nth-child(even) {
+    background: #b6d9e5;
+}
+.ApplyL .ApplyL-last {
+    background: #7baac5;
+}
+.ApplyL .ApplyL-last td table {
+    margin: 0 auto;
+}
+.ApplyL .ApplyL-last td table td {
+    padding: 3px;
+    text-align: center;
+    color: #fff;
+}
+.ApplyL .ApplyL-last td table td a {
+    color: #fff;
+}
+.ApplyL .ApplyL-last td table td:nth-child(2) {
+    width: auto;
+}
+.ApplyL .ApplyL-last td table td:nth-child(3) {
+    width: auto;
+}
+.ApplyL .ApplyL-last td table td:nth-child(4) {
+    text-align: center;
+}
+.ApplyL .ApplyL-last td table td:nth-child(5) {
+    width: auto;
+}
+.ApplyL th {
+    background: #7baac5;
+    padding: 15px;
+    color: #fff;
+    text-align: center;
+}
+
+.ApplyL th a {
+    color: #fff;
+    text-decoration: none;
+}
+.ApplyL td {
+    padding: 10px;
+    text-align: center;
+    line-height: 1.5;
+    width:2%;
+}
+.ApplyL td:nth-child(2) {
+    text-align:center;
+    width: 12%;
+}
+.ApplyL td:nth-child(3) {
+    text-align:left;
+    width:35%;
+}
+.ApplyL td:nth-child(4) {
+    text-align: center;
+    width:10%;
+}
+.ApplyL td:nth-child(5) {
+    width: 10%;
+}
+
+.ApplyL .ajax__calendar th, .supervision .ajax__calendar td {
+    border: none;
+}
+.ApplyL .ajax__calendar td {
+    padding: 0;
+}
+.ApplyL .ajax__calendar td:first-child {
+    width: auto;
+}
+.AAA table{/*頁數置中*/
+    width:30px;
+    margin-left:auto;
+    margin-right:auto;
+}
+/*自主檢查表GridView設定結束*/
+
+
+/*SWC004*/
+.changerequest{
+    width:1200px;
+}
+.changerequest th { /*設定表頭*/
+    background-color:#47885e;
+    color:#FFFFFF;
+    text-align:center;
+    border:0;
+}
+.changerequest tr:nth-child(2n+3) { /*換行變色*/
+    background-color:#d6e9ca;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.changerequest tr:nth-child(2n+2) { /*換行變色*/
+    background-color:#cee4ae;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.changerequest td {
+    padding: 10px;
+    text-align: center;
+    line-height: 1.5;
+    
+}
+.changerequest th  {
+    padding:10px;
+}
+.changerequest th a {
+    color: #fff;
+    text-decoration: none;
+}
+.changerequest .pgr table { /*Page 分頁表格寬度*/
+    width:auto;
+    margin-left:auto;
+    margin-right:auto;
+}
+.changerequest .pgr td { /*Page 分頁表格顏色*/
+    background-color: #7baac5;
+    border-width:0px;
+}
+.changerequest td:nth-child(5) {
+    text-align:left;
+}
+
+
+.detailsBar_title_basicCR, .detailsBar_title_accept, .detailsBar_title_review, .detailsBar_title_construction, .detailsBar_title_finish {
+  text-align: center;
+  font-weight: bold;
+  font-size: 19px;
+  cursor: pointer;
+}
+
+
+
+.detailsBar_title_basicCR {
+  background: #68be8d;
+}
+
+.detailsBar_title_accept {
+  background: #cccdff;
+}
+
+.detailsBar_title_review {
+  background: #baff75;
+}
+
+.detailsBar_title_construction {
+  background: #e6cdff;
+}
+
+.detailsBar_title_finish {
+  background: #f1ab6a;
+}
+.detailsGrid_skyblue .detailsGrid_skyblue_innerTable tr:first-child, .detailsGrid_skyblue .detailsGrid_skyblue_innerTable_edit tr:first-child, .detailsGrid_green .detailsGrid_green_innerTable tr:first-child, .detailsGrid_purple2 .detailsGrid_purple2_innerTable tr:first-child, .detailsGrid_orange .detailsGrid_orange_innerTable tr:first-child {
+  font-weight: bold;
+}
+
+.detailsGrid_greenCR tr td:first-child {
+  background:#ccffcc;
+  vertical-align: middle;
+}
+.detailsGrid_greenCR .innerBR_file tr td:first-child {
+  background: #fff;
+  border: none;
+  text-align: left;
+  padding: 0;
+}
+.detailsGrid_greenCR .detailsGrid_greenCR_innerTable {
+  width: 724px;
+  margin-top: 7px;
+}
+.detailsGrid_greenCR .detailsGrid_skyblue_innerTable tr td:first-child {/*第一格寬度*/
+  background: #fff;
+  text-align: left;
+  width: 10%;
+}
+.detailsGrid_greenCR .detailsGrid_skyblue_innerTable tr:last-child td table {
+  margin: 0 auto;
+}
+.detailsGrid_greenCR .detailsGrid_skyblue_innerTable tr:last-child table td {/*123數字*/
+  border: none;
+  padding: 0 5px;
+}
+.detailsGrid_greenCR .detailsGrid_skyblue_innerTable_lastCenter tr th:last-child {
+  text-align: center;
+}
+.detailsGrid_greenCR .detailsGrid_skyblue_innerTable_lastCenter tr td:last-child {
+  text-align: center;
+  width: 16%;
+}
+.detailsGrid_greenCR .detailsGrid_skyblue_innerTable_edit tr td:first-child {
+  background: #fff;
+  width: 16%;
+  text-align: left;
+}
+.detailsGrid_greenCR .detailsGrid_skyblue_innerTable_edit tr td:nth-child(2) {
+  width: 15%;
+}
+.detailsGrid_greenCR .detailsGrid_skyblue_innerTable_edit tr td:nth-child(3) {
+  width: 15%;
+}
+.detailsGrid_greenCR .detailsGrid_skyblue_innerTable_edit tr td:last-child {
+  width: 2%;
+  text-align: center;
+}
+/*greenCR*/
+.greenCR th { /*設定表頭*/
+    background-color: #68be8d;
+    text-align: center;
+    border: 0;
+    }
+.greenCR{
+   text-align:center;
+   border:0;
+}
+.greenCR td { 
+    text-align:center;
+    border:0;
+}
+.greenCR  tr td:first-child {/*選取綠色表格第一格為白色*/
+   background: #fff;
+   width:10%;
+   vertical-align: top;
+   margin-left:20px;
+}
+.greenCR .pgr table { /*Page 分頁表格寬度*/
+    width: 30px;
+    margin-left:auto;
+    margin-right:auto;
+}
+.greenCR .pgr td { 
+    border-width: 0px;
+    padding:3px 3px 3px 3px;    
+}
+/*greenCR表格設定結束*/

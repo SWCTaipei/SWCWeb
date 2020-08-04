@@ -1,0 +1,470 @@
+@charset "UTF-8";
+.clearfix {
+  zoom: 1;
+}
+.clearfix:before {
+  content: "";
+  display: table;
+}
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.form-dateID {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.form {
+  margin: 25px auto 80px;
+}
+.form h1 {
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.form-date {
+  font-size: 16px;
+  text-align: center;
+  margin: 20px auto;
+}
+
+.form-dateID {
+  justify-content: space-around;
+  width: 70%;
+  float: right;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.textarea-span {
+  line-height: 2;
+}
+
+.imgUpload {
+  border: 1px solid #a9a9a9;
+  width: 350px;
+  height: 180px;
+  margin: 15px auto 0;
+  display: block;
+}
+.imgUpload img {
+  width: 350px;
+  height: 180px;
+}
+
+.checkRecord-out tr td:first-child {
+  width: 26%;
+  vertical-align: middle;
+}
+.checkRecord-out .ajax__calendar tr td:first-child {
+  width: auto;
+}
+
+.checkRecord table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.checkRecord table th, .checkRecord table td {
+  border: 1px solid #000;
+}
+.checkRecord table td {
+  padding: 10px;
+}
+.checkRecord table .td-padding {
+  padding-left: 30px;
+}
+.checkRecord table .ajax__calendar th, .checkRecord table .ajax__calendar td {
+  border: none;
+}
+.checkRecord table .ajax__calendar td {
+  padding: 0;
+}
+.checkRecord textarea {
+  font-size: 17px;
+}
+.checkRecord select, .checkRecord input[type="text"] {
+  font-size: 16px;
+}
+.checkRecord .checkRecord-imgUpload tr:first-child td {
+  border-top: none;
+  border-bottom: none;
+}
+.checkRecord .checkRecord-imgUpload tr:first-child td:first-child {
+  border-right: none;
+  width: 60%;
+  vertical-align: top;
+}
+.checkRecord .checkRecord-imgUpload tr:first-child td:last-child {
+  border-left: none;
+  width: 40%;
+  vertical-align: middle;
+  padding-left: 20px;
+}
+.checkRecord .checkRecord-imgUpload tr:nth-child(2) td {
+  border-top: none;
+}
+
+.leftCheck {
+  float: right;
+  line-height: 15px;
+}
+
+.checkRecord-verticalText tr:nth-child(1) td, .checkRecord-verticalText tr:nth-child(6) td, .checkRecord-verticalText tr:nth-child(9) td {
+  vertical-align: middle;
+}
+.checkRecord-verticalText tr:nth-child(1) td:first-child, .checkRecord-verticalText tr:nth-child(6) td:first-child, .checkRecord-verticalText tr:nth-child(9) td:first-child {
+  width: 4%;
+  line-height: 20px;
+  text-align: center;
+}
+.checkRecord-verticalText tr td:nth-child(1) {
+  vertical-align: middle;
+}
+.checkRecord-verticalText tr td:nth-child(2) {
+  width: 22%;
+}
+.checkRecord-verticalText tr td:nth-child(3) {
+  width: 80%;
+}
+
+.checkRecord-verticalText-inner tr:first-child td {
+  border-top: none;
+}
+.checkRecord-verticalText-inner tr td:first-child {
+  width: 26%;
+}
+.checkRecord-verticalText-inner tr td:nth-child(2) {
+  text-align: center;
+  width: 25%;
+}
+.checkRecord-verticalText-inner tr td:nth-child(3) input {
+  width: 80%;
+}
+.checkRecord-verticalText-inner input {
+  margin-left: 50px;
+}
+.checkRecord-verticalText-inner .ajax__calendar tr td:first-child {
+  width: auto;
+}
+.checkRecord-verticalText-inner .ajax__calendar tr td:nth-child(2) {
+  width: auto;
+}
+
+.input-ML0 input {
+  margin-left: 20px;
+}
+
+.checkRecord-fileUpload tr td {
+  text-align: center;
+  width: 600px;
+}
+.checkRecord-fileUpload .redn {
+  color: #000;
+}
+
+.facilityMaintain table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.facilityMaintain table th, .facilityMaintain table td {
+  border: 1px solid #000;
+  line-height: 1.8;
+}
+.facilityMaintain table td {
+  padding: 10px;
+  vertical-align: middle;
+}
+.facilityMaintain table .td-padding {
+  padding-left: 30px;
+}
+.facilityMaintain .facilityMaintain-imgUpload textarea {
+  margin-top: 7px;
+  font-size: 16px;
+}
+.facilityMaintain .facilityMaintain-imgUpload select {
+  width: 25%;
+}
+.facilityMaintain .facilityMaintain-imgUpload tr:first-child td {
+  border-top: none;
+}
+.facilityMaintain .facilityMaintain-imgUpload tr:first-child td:first-child {
+  border-right: none;
+  width: 60%;
+  vertical-align: top;
+}
+.facilityMaintain .facilityMaintain-imgUpload tr:first-child td:last-child {
+  border-left: none;
+  width: 40%;
+  vertical-align: middle;
+  padding-left: 20px;
+}
+.facilityMaintain .ajax__calendar th, .facilityMaintain .ajax__calendar td {
+  border: none;
+}
+.facilityMaintain .ajax__calendar td {
+  padding: 0;
+}
+
+.facilityMaintain-out textarea {
+  margin-top: 7px;
+  width: 100%;
+  font-size: 16px;
+}
+.facilityMaintain-out tr td:first-child {
+  width: 23%;
+}
+.facilityMaintain-out tr td .ajax__calendar_container td:first-child {
+  width: auto;
+}
+.facilityMaintain-out select, .facilityMaintain-out input[type="text"] {
+  font-size: 16px;
+}
+
+.facilityMaintain-base tr td:first-child {
+  width: 11.5%;
+}
+
+.facilityMaintain-check tr:first-child td:first-child, .facilityMaintain-check tr:first-child td:last-child {
+  border-top: none;
+}
+.facilityMaintain-check tr td:last-child {
+  width: 77%;
+}
+.facilityMaintain-check textarea {
+  margin-top: 7px;
+  width: 100%;
+  font-size: 16px;
+}
+.facilityMaintain-check input[type="file"] {
+  margin-left: 0;
+}
+.facilityMaintain-check .ajax__calendar {
+  width: auto;
+}
+.facilityMaintain-check .ajax__calendar tr td:last-child {
+  width: auto;
+}
+
+.facilityMaintain-fileUpload tr:first-child td {
+  border-top: none;
+}
+.facilityMaintain-fileUpload tr td {
+  text-align: center;
+  line-height: 1;
+}
+.facilityMaintain-fileUpload tr td textarea {
+  width: 100%;
+}
+.facilityMaintain-fileUpload tr td select, .facilityMaintain-fileUpload tr td input[type="text"] {
+  width: 100%;
+}
+.facilityMaintain-fileUpload span.black {
+  color: #000;
+}
+.facilityMaintain-fileUpload input[type="file"] {
+  margin-left: 0;
+}
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+html {
+  line-height: 1;
+  font-family: "微軟正黑體";
+}
+
+.close {
+  display: none;
+}
+
+.l-Block {
+  display: block;
+}
+
+.l-span {
+  margin-top: 30px;
+}
+
+.l-add {
+  margin-bottom: 15px;
+}
+.l-add span, .l-add input {
+  float: left;
+  margin-top: 10px;
+  margin: 10px 0 0 12px;
+}
+.l-add span {
+  margin-top: 12px;
+  margin-left: 0;
+}
+.l-add input {
+  margin-right: 12px;
+}
+.l-add img {
+  cursor: pointer;
+}
+
+.header {
+  width: 990px;
+  margin: 0 auto;
+}
+
+.header-link {
+  display: block;
+  height: 80px;
+}
+
+.header-menu {
+  background-image: url("../images/menubg.jpg");
+  background-repeat: repeat;
+  width: 100%;
+  height: 34px;
+}
+.header-menu a:first-child {
+  margin-left: 10px;
+}
+
+.hedaer-login {
+  clear: both;
+  margin-top: 30px;
+}
+
+.loginBox {
+  background: #99FF66;
+  margin: 100px auto 30px;
+  width: 252px;
+  padding-top: 15px;
+}
+
+.wrapInBtn {
+  width: 205px;
+  margin: 0 auto;
+}
+
+.loginBtn {
+  text-align: center;
+}
+
+.errorShow {
+  text-align: center;
+  color: red;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.content {
+  margin: 10px auto 60px;
+  width: 990px;
+}
+
+.content-select {
+  border: 1px solid #000;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+.content-select table {
+  width: 100%;
+}
+.content-select table td {
+  padding: 7px;
+}
+
+              .content-select .ajax__calendar td {
+                padding: 0;
+              }
+
+.content-grid {
+  border-collapse: collapse;
+  width: 100%;
+}
+.content-grid th {
+  background: #507CD1;
+  padding: 10px;
+  color: #fff;
+  text-align: center;
+}
+.content-grid th a {
+  color: #fff;
+  text-align: center;
+}
+.content-grid tr:nth-child(even) {
+  background: #EFF3FB;
+}
+.content-grid tr:last-child {
+  color: #fff;
+  background: #507CD1;
+}
+.content-grid tr:last-child table {
+  margin: 0 auto;
+}
+.content-grid tr:last-child td {
+  color: #fff;
+  padding: 7px;
+  text-align: center;
+}
+.content-grid tr:last-child td a {
+  color: #fff;
+}
+.content-grid td {
+  padding: 10px;
+  vertical-align: middle;
+}
+
+.form-btn {
+  margin: 60px auto 0;
+  font-size: medium;
+  text-align: center;
+}
+
+.menuFix {
+  position: fixed;
+  bottom: 8px;
+  right: 10px;
+  cursor: pointer;
+  color: #fff;
+  z-index: 99;
+  width: 40px;
+  border-radius: 3px;
+}
+.menuFix:hover {
+  color: #48bed1;
+  opacity: 1;
+}
+.menuFix div {
+  margin-bottom: 15px;
+}
+
+.menuFix-edit {
+  width: 40px;
+  height: 40px;
+  background: pink;
+  opacity: 0.7;
+  box-shadow: 0 0 10px #525252;
+}
+.menuFix-edit:hover {
+  opacity: 1;
+}
+
+.menuFix-gotop {
+  width: 40px;
+  height: 40px;
+  background: red;
+  opacity: 0.7;
+  box-shadow: 0 0 10px #525252;
+}
+.menuFix-gotop:hover {
+  opacity: 1;
+}

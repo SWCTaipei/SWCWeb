@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>公佈欄</title>
+ <link rel="stylesheet" type="text/css" href="css/reset.css"/>
+    <link rel="stylesheet" type="text/css" href="css/all.css"/>
+    <link rel="stylesheet" type="text/css" href="css/iris.css"/>
+    <link rel="stylesheet" type="text/css" href="css/ad.css"/>
+</head>
+
+<body>
+    <div class="wrap-s">
+        <div class="header-wrap-s">
+            <div class="header header-s clearfix"><a href="SWC001.aspx" class="logo-s"></a>
+                <div class="header-menu-s">
+                <ul>
+                    <li><a href="../sysFile/系統操作手冊.pdf" title="系統操作手冊" target="_blank">系統操作手冊</a></li>
+                    <li>|</li>
+                    <li><a href="http://tcgeswc.taipei.gov.tw/index_new.aspx" title="水土保持計畫查詢系統" target="_blank">水土保持計畫查詢系統 </a></li>
+                <li>|&nbsp&nbsp&nbsp&nbsp<a href="http://172.28.100.55/TSLM" title="坡地管理資料庫" target="_blank">坡地管理資料庫</a></li>
+                    <li>|&nbsp&nbsp&nbsp&nbsp<a href="SWCBase001.aspx" title="系統管理">系統管理</a>
+                     <ul>
+                           <li><a href="">防災事件通知</a></li>
+                           <li><a href="">公佈欄</a></li>
+                     </ul>
+                    </li>
+                      
+                    <li>|</li>
+                    <li><a href="SWC000.aspx?ACT=LogOut" title="登出">登出</a></li>
+                </ul>
+            </div>
+        </div>
+
+            <div class="header-s-green">
+                <div class="header-s-green-nameWrap">
+                    <span><asp:Literal ID="TextUserName" runat="server">大雷包，您好</asp:Literal></span>
+                </div>
+            </div>
+      </div>
+
+            <div class="contentFooter">
+                <div class="content-s content-s-inquire">
+                <div class="detailsMenu"><img src="images/title/titlt-billboard.png" /></div>
+                   
+<div class="inquireForm-bbd date">
+        <span>流水號：<input type="text" /></span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span>主旨：<input type="text" /></span>
+                  </div>
+                       
+            <div class="inquireGrid">
+              <div class="inquireGrid-menu">
+                <h3>查詢到件數:<asp:Label ID="CaseCount" runat="server" Text="" />筆</h3>
+                  <img src="images/btn/btn-addCase.png" />
+                <asp:ImageButton ID="WriteExcel" runat="server" OnClick="WriteExcel_Click" title="輸出Excel" ImageUrl="../images/btn/btn-excel.png" OnClientClick="return confirm('確認是否要輸出Excel？')"  />
+                  <asp:ImageButton ID="WriteOds" runat="server" OnClick="WriteOds_Click" title="輸出ods" ImageUrl="../images/btn/btn-ods.png" />
+                  <asp:HyperLink ID="OdsPointDtl3Date" runat="server" NavigateUrl="~/SwcReport/OpenDocXls001.aspx" ImageUrl="~/images/btn/btn-rep.png" ToolTip="匯出施工檢查檢核半年報表" Visible="false" />
+              </div>
+              <table class="ADDGridView AutoNewLine" cellspacing="0" rules="all" border="1" id="GVSWCList" style="border-collapse:collapse; width:100%;">
+			<tbody>
+              <tr>
+                <th scope="col">流水號</a></th>
+                <th scope="col">主旨</a></th>
+                <th scope="col"><a href=""></a></th>
+                <th scope="col"><a href=""></a></th>
+                <th scope="col"><a href=""></a></th>
+			  </tr>
+             <tr>
+                <td >SWC20180625154242</td>
+                <td >某天某日系統維護</td>
+                <td><input type="button" value="詳情" onclick=""></td>
+                <td><input type="button" value="編輯" onclick=""></td>
+                <td><input type="button" value="刪除" onclick=""></td>
+            </tr>
+             <tr>
+                <td >SWC20180625154242</td>
+                <td >聊天機器人即將上線</td>
+                <td><input type="button" value="詳情" onclick=""></td>
+                <td><input type="button" value="編輯" onclick=""></td>
+                <td><input type="button" value="刪除" onclick=""></td>
+            </tr>
+             <tr>
+                <td >SWC20180625154242</td>
+                <td >某某颱風來了</td>
+                <td><input type="button" value="詳情" onclick=""></td>
+                <td><input type="button" value="編輯" onclick=""></td>
+                <td><input type="button" value="刪除" onclick=""></td>
+            </tr>
+		</tbody></table>
+   
+       </div>
+   </div>
+ </div>
+                
+
+            <div class="footer">
+                 <p><span class="span1">臺北市政府工務局大地工程處</span><br/>
+                    <span class="span2">110臺北市信義區松德路300號3樓 　服務專線(02)27591109   臺北市民當家熱線1999</span><br/>
+                    <span class="span2">建議使用IE11(含)以上，Chrome或Firefox版本瀏覽器 資料更新：<asp:Label ID="ToDay" runat="server" Text=""/>　來訪人數：<asp:Label ID="Visitor" runat="server" Text=""/> </span><br/>
+                    <span class="span2">客服電話：02-27593001#3718 許先生 本系統由多維空間資訊有限公司開發維護 TEL:(02)27929328</span></p>
+            </div>
+
+
+
+
+        </div>
+</body>
+</html>

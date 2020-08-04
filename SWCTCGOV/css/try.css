@@ -1,0 +1,326 @@
+.nav-container {
+  position: fixed;
+  top: 60px; /* 1 */
+  left: 0;
+  z-index: 9999;
+  overflow-y: auto;
+  visibility: hidden; /* 2 */
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  letter-spacing:2px;
+  font-weight:bold;
+ 
+}
+@media (max-width: 1200px) {
+	.nav-container {
+		margin-top:2.8em;
+	}
+	.nav-menu {
+      background:#add8e6;
+	}
+	
+}
+
+ 
+
+/* 1. Show when `.is-visible` class is added */
+.nav-container.is-visible {
+  visibility: visible; /* 1 */
+  transform: translateX(0); /* 1 */
+}
+
+/* Nav toggle */
+.nav-toggle {
+  line-height: 1;
+  display: inline-block;
+  padding: 1.25rem 1rem;
+  border: 0;
+  background:none;
+  position: absolute;
+  right: 20px;
+  top: 45px;
+  
+}
+
+/* Nav toggle icon */
+.nav-toggle .icon-menu {
+  position: relative;
+  display: inline-block;
+  width: 32px;
+  height: 20px;
+  vertical-align: middle;
+  fill: none;
+}
+
+/* Nav toggle icon lines */
+.icon-menu .line {
+  position: absolute;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 4px;
+  transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+  transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1.000);
+  background-color: #444;
+}
+
+/* Nav toggle icon line 1 */
+.icon-menu .line-1 {
+  top: 0;
+}
+
+/* When active, rotate line 1 to be lefthand part of X */
+.is-active .icon-menu .line-1 {
+  transform: translateY(8px) translateX(0) rotate(45deg);
+}
+
+/* Nav toggle icon line 2 */
+.icon-menu .line-2 {
+  top: 50%;
+  margin-top: -2px;
+}
+
+/* When active, hide line 2 */
+.is-active .icon-menu .line-2 {
+  opacity: 0;
+}
+
+/* Nav toggle icon line 3 */
+.icon-menu .line-3 {
+  bottom: 0;
+}
+
+/* When active, rotate line 3 to be righthand part of X */
+.is-active .icon-menu .line-3 {
+  transform: translateY(-8px) translateX(0) rotate(-45deg);
+}
+
+/* Remove default list styles for menus */
+.menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/** 
+* 1. Give menu a lighter background than its container 
+* 2. Prevent menu text from being accidentally highlighted
+*/
+.nav-menu {
+  user-select: none; 
+  margin:0 auto;
+  text-align:center;
+  font-weight:bold;
+  font-family:微軟正黑體;
+  
+}
+
+/* Give menu items a top border */
+.nav-menu .menu-item {
+  border-top: 1px solid #bbb;
+}
+
+/* Give last menu item a bottom border */
+.nav-menu > .menu-item:last-child {
+  border-bottom: 1px solid #bbb;
+}
+
+/* Darker background color on hover, and when toggled */
+.nav-menu > .menu-item:hover,
+.nav-menu > .menu-item.is-active {
+  background-color: #f0f8ff;
+}
+
+/* 1. Menu links are block level, by default */
+.nav-menu .menu-link {
+  display: block; /* 1 */
+  text-decoration: none;
+  color: #444;
+  padding: 0.75rem 1rem;
+  margin-right:3em;
+}
+
+/* 1. Menu items with dropdowns appear clickable */
+.has-dropdown {
+  position: relative;
+  cursor: pointer; /* 1 */
+}
+
+/* 1. Parent menu links inlined so you can toggle the dropdown */
+.has-dropdown > .menu-link {
+  display: inline-block;
+}
+
+/* 1. Add an icon to menu items that have sub menus */
+.has-dropdown:after {
+  font-size: 32px;
+  position: absolute;
+  top: 0;
+  right: 1rem;
+  bottom: 0;
+  content: "+"; /* 1 */
+  color: #222;
+}
+
+/* 1. Switch icon to n-dash when toggled */
+.has-dropdown.is-active:after {
+  content: "\2013"; /* 1 */
+}
+
+/**
+ * Dropdowns
+ * 1. Hide dropdowns by default
+ */
+.nav-dropdown {
+  display: none; /* 1 */
+  background-color: #afeeee;
+}
+
+/* 1. Show dropdown when toggled */
+.has-dropdown.is-active > .nav-dropdown {
+  display: block; /* 1 */
+}
+
+/* 2nd level dropdown */
+.nav-dropdown .nav-dropdown {
+  background-color: #aaa;
+}
+
+.nav-dropdown .menu-item {
+  border-color:#999;
+}
+
+.nav-dropdown .nav-dropdown .menu-item {
+  background-color: #b0b0b0;
+  border-color: #909090;
+}
+
+/* Main content area */
+.content {
+  margin-top: 60px;
+}
+
+.content .wrapper {
+  padding: 1rem 0;
+}
+
+@media (min-width: 1200px) {
+	
+  .nav {
+    background:url(../img/menubg.jpg);
+  }
+  
+  .nav,
+  .nav-container,
+  .nav-container.is-visible {
+    position: static;
+    top: auto;
+    left: auto;
+    z-index: auto;
+    transform: translateX(0);
+  }
+  
+  .nav-container,
+  .nav-container.is-visible {
+    visibility: visible;
+    height: auto;
+    min-height: 0;
+    overflow-y: visible;
+	
+  }
+  
+  .nav-toggle {
+    display: none;
+	
+  }
+  
+  /* 1. Display menu items inline */
+  .nav-menu > .menu-item,
+  .nav-menu > .menu-item.is-active {
+    display: inline-block; /* 1 */
+    background-color: transparent;
+    border: 0;
+  }
+  
+  /* Remove bottom border on last child */
+  .nav-menu > .menu-item:last-child {
+    border: 0;
+  }
+  
+  .nav-menu .menu-item {
+    transition: 
+      background-color 0.15s ease-in-out, 
+      color 0.15s ease-in-out;
+  }
+  
+  /* Remove +/- icons */
+  .has-dropdown:after {
+    content: "" !important;
+  }
+  
+  /* Add a caret to top-level menu items that have dropdowns */
+  .nav-menu > .has-dropdown:after {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    width: 0;
+    height: 0;
+    margin-top: -2px;
+    margin-left: -4px;
+    content: "";
+    border-width: 5px 5px 0 5px;
+    border-style: solid;
+    border-color: #444 transparent transparent transparent;
+  }
+  
+  /* Increase padding to compensate for caret */
+  .has-dropdown > .menu-link {
+    padding-right: 2rem;
+  }
+  
+  /* Re-style dropdowns for larger screens */
+  .nav-dropdown {
+    display: block;
+    opacity: 0;
+    position: absolute;
+    top: 100%;
+    width: 199.99px;
+    margin: 0;
+    padding: 0.5rem 0;
+    background-color: #afeeee;
+    visibility: hidden;
+    transition: 
+      visibility 0s linear 0.25s,
+      opacity 0.25s linear;
+  }
+  
+  .has-dropdown:hover > .nav-dropdown {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
+  }
+  
+  .nav-dropdown .menu-item {
+    border: 0;
+  }
+  
+  .nav-dropdown .menu-item:hover,
+  .nav-dropdown .nav-dropdown .menu-item:hover {
+    background-color: #f0ffff;
+  }
+
+  .nav-dropdown .nav-dropdown,
+  .nav-dropdown .nav-dropdown .menu-item {
+    background-color: #dedede;
+  }
+  
+  .nav-dropdown .nav-dropdown {
+    z-index: 9998;
+    top: 0;
+    left: 100%;
+	
+  }
+}

@@ -1,0 +1,153 @@
+.contentAB {
+    margin: 50px auto 20px;
+    width: 100%;
+    max-width: 1024px;
+}
+
+.dataTable{
+    text-align: center;
+    width: 100%;
+    max-width: 1024px;
+    border-collapse: collapse;
+    line-height: 1.5;
+}
+
+table caption{
+    font-size: 25px;
+    color: #4B4A61;
+    font-weight: bold;
+    padding-bottom: 20px;
+}
+table tr td img{
+background:red;
+    margin:0 auto;
+}
+.tableLine tbody tr td:last-child:after{
+    cursor: pointer;
+}
+
+.srl tbody tr:nth-child(even) ,.dataTable tbody tr:nth-child(even){
+    background-color:#FCF9EF;
+}
+
+.tableLine tr,
+.tableLine th,
+.tableLine td {
+    border: 1px solid black;
+}
+
+.tableLine,.srl {
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+    max-width: 1024px;
+    border-collapse: collapse;
+    line-height: 2;
+    color: #666;
+    font-weight: bold;
+}
+a{
+    color: #4B4A61;
+}
+.tableLine a:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.dTitle {
+    margin: 15px auto;
+    height: 50px;
+    max-width: 1024px;
+    width: 100%;
+    font-size: 22px;
+    color: #C1AA6A;
+    text-align: left;
+    font-weight: bold;
+    line-height: 50px;
+    letter-spacing: 1px;
+    border-bottom: 3px solid #a89253;
+}
+
+.contentE {
+    display: flex;
+    flex-direction: row;
+    justify-content:flex-end;
+    margin-top: 38px;
+    cursor: pointer;
+}
+.contentE input{
+    height:22px;
+}
+
+.contentF {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    /* position: absolute; */
+    cursor: pointer;
+    /* top: 75px;
+    right: 0; */
+    margin-top: 38px;
+    width: 230px;
+}
+
+@media only screen and (max-width: 640px) {
+/*     .Ewrap{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+   .contentE{
+        margin-top: 15px;
+    } */
+    .contentAB{
+        margin: 30px auto 20px;
+        width: 98%;
+    }
+}
+
+/*SAA*/
+/*.contentAB {
+	display: flex;
+	justify-content: space-between;
+	margin: 50px auto 20px;
+	width: 100%;
+	max-width: 1024px;
+}*/
+
+.list2 table {
+	width: 100%;
+	max-width: 1024px;
+	border-collapse: collapse;
+	line-height: 1.5;
+	font-weight: bold;
+	margin-bottom: 20px;
+}
+
+.list2 table caption {
+	font-size: 25px;
+	color: #4B4A61;
+	padding-bottom: 20px;
+}
+
+.list2 table tbody tr td:nth-child(2) {
+	cursor: pointer;
+}
+
+.list2 table tbody tr:nth-child(even) {
+	background-color: #FCF9EF;
+}
+
+.list2 table a{
+    color: #4B4A61;
+}
+.list2 table a:hover{
+    text-decoration: underline;
+}
+
+.PageTitle{
+	margin: -30px auto;
+}
+.fD{
+	margin-bottom: -3px;
+}
