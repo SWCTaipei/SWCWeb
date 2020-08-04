@@ -1,37 +1,24 @@
-## Welcome to GitHub Pages
+## 歡迎來到臺北市政府工務局大地工程處官方 GitHub Pages!
 
-You can use the [editor on GitHub](https://github.com/SWCTaipei/SWCWeb/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+近年各領域均積極推動e化管理，包括智慧系統管理、大數據分析、AI人工智慧以及機器人客服等等作為，
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+大地處亦希望分享山坡地水土保持管理所使用之資訊管理解決方案以及相關程式源碼，並與各單位互相交流，共同提升公共智慧財，讓廣大國民享受最高之服務品質。
 
-### Markdown
+### 開放目標
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+臺北市政府工務局大地工程處致力於達成Open Government目標，主動結合開源理念(Open Source)，將多年打造智慧財產開放免費授權使用，希望能達到以下目標：
 
 ```markdown
-Syntax highlighted code block
 
-# Header 1
-## Header 2
-### Header 3
+1. **基於人民稅金開發的公共行政軟體，屬公共資源共享，應避免後續擴充延伸因商業化而封閉。**
+2. **加強縣市政府間橫向聯繫，以合作代替互相對抗，共同提升對人民的服務品質。**
+3. **立求促成國內公部門行政資源共榮共享的環境。**
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+目前已將臺北市水土保持案件申請e化系統源碼公開，讓各界可以參考使用，詳情 see [臺北市水土保持申請書件管理平台](https://swc.taipei/).
 
-### Jekyll Themes
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/SWCTaipei/SWCWeb/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+### 聯絡
 
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+有任何問題或是心得分享可以來信至ge-40754@mail.taipei.gov.tw，將盡速回復
