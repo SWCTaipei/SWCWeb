@@ -50,7 +50,7 @@
 + 加強縣市政府間橫向聯繫，以合作代替互相對抗，共同提升對人民的服務品質。
 + 力求促成國內公部門行政資源共榮共享的環境。
 
-本專案目前已公開系統源碼(請[點此下載](https://github.com/SWCTaipei/SWCWeb/archive/master.zip)或至[Github](https://github.com/SWCTaipei/SWCWeb/tree/master)瀏覽，並採用A-GPL3授權，歡迎各界參考使用，並希望使用者積極提供反饋建議。
+本專案目前已公開系統源碼(請[點此下載](https://github.com/SWCTaipei/SWCWeb/archive/master.zip)或至[Github](https://github.com/SWCTaipei/SWCWeb/tree/master)瀏覽)，並採用A-GPL3授權，歡迎各界參考使用，並希望使用者積極提供反饋建議。
 
 ## 聯絡
 
