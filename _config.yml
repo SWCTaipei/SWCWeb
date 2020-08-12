@@ -2,7 +2,7 @@ theme: jekyll-theme-cayman
 show_downloads: true
 github:
   zip_url: https://github.com/SWCTaipei/SWCWeb/archive/master.zip
-  tar_url: another value
+  tar_url: https://drive.google.com/file/d/150iJimCOFd-8sToJ3zVClO_LSrokZ9Sv/view?usp=sharing
 
 title: [臺北市水土保持申請書件管理平台開源專案]
 description: [用開源系統打造水土保持「生產履歷」]
