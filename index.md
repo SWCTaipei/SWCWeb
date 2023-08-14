@@ -39,7 +39,7 @@
     <img src="https://i.imgur.com/saMoyVQ.png" width="400"/><img src="https://i.imgur.com/Rxt6EJq.png" width="400"/>
 </center>
 
-如欲了解實際建置狀況，請參考<a href="https://swc.taipei/" target="_blank">臺北市水土保持申請書件管理平台</a>或可[來信](mailto:ge-40754@mail.taipei.gov.tw)約時間討論。
+如欲了解實際建置狀況，請參考<a href="https://swc.taipei/" target="_blank">臺北市水土保持申請書件管理平台</a>。
 
 ## 為什麼本專案要開源，及目前開源狀況
 
@@ -50,7 +50,3 @@
 + 力求促成國內公部門行政資源共榮共享的環境。
 
 本專案目前已公開系統源碼(請[點此下載](https://github.com/SWCTaipei/SWCWeb/archive/master.zip)或至[Github](https://github.com/SWCTaipei/SWCWeb/tree/master)瀏覽)，並採用A-GPL3授權，歡迎各界參考使用，並希望使用者積極提供反饋建議。
-
-## 聯絡
-
-有任何問題或是心得分享歡迎[來信](mailto:ge-40754@mail.taipei.gov.tw)討論。
