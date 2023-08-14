@@ -376,8 +376,8 @@
 				</div>
 </div>
 	<script type="text/javascript">
-        var CLIENT_ID = '272620897647-f8ckjg7gh332v2ekrq4cc42fqcabbqfl.apps.googleusercontent.com';
-        var API_KEY = 'AIzaSyCtbLShVfKYagm_4MaU8TgH6RIUdRVZtFA';
+        var CLIENT_ID = '';
+        var API_KEY = '';
 
         var authParams = {
             'response_type': 'token', // Retrieves an access token only
