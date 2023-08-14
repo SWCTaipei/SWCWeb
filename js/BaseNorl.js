@@ -1,24 +1,75 @@
-﻿/*  Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
+﻿
+//+月
+function addMonthsUTC(dateStr, count) {
+    dateStr = dateStr.replace(/\-/g, '/');
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
+    var date = new Date(dateStr);
+    if (date && count) {
+        var m, d = (date = new Date(+date)).getUTCDate()
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
+        date.setUTCMonth(date.getUTCMonth() + count, 1)
+        m = date.getUTCMonth()
+        date.setUTCDate(d)
+        if (date.getUTCMonth() !== m) date.setUTCDate(0)
+    }
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+    return date;
+    //return date.toLocaleDateString();
+}
+
+//日期區間檢查
+function checkDateArea(jStartDate, jEndDate) {
+    if (dateValidationCheck(jStartDate) && dateValidationCheck(jEndDate))
+    {
+        if (Date.parse(jStartDate).valueOf() > Date.parse(jEndDate).valueOf()) {
+            alert("注意開始時間不能晚於結束時間！");
+            return false;
+        }
+    }
+}
+
+//日期檢查
+function dateValidationCheck(str) {
+    var re = new RegExp("^([0-9]{4})[.-]{1}([0-9]{1,2})[.-]{1}([0-9]{1,2})$");
+    var strDataValue;
+    var infoValidation = true;
+    if ((strDataValue = re.exec(str)) != null) {
+        var i;
+        i = parseFloat(strDataValue[1]);
+        if (i <= 0 || i > 9999) { /*年*/
+            infoValidation = false;
+        }
+        i = parseFloat(strDataValue[2]);
+        if (i <= 0 || i > 12) { /*月*/
+            infoValidation = false;
+        }
+        i = parseFloat(strDataValue[3]);
+        if (i <= 0 || i > 31) { /*日*/
+            infoValidation = false;
+        }
+    } else {
+        infoValidation = false;
+    }
+    if (!infoValidation) {
+        alert("請輸入 YYYY-MM-DD 日期格式");
+    }
+    return infoValidation;
+
+    //alert('你已檢查完畢');
+}
 
 function chknumber09(objElement) {
     var chrstring = objElement.value;
     var chr = chrstring.substring(chrstring.length - 1, chrstring.length);
     if ((chr != '0') && (chr != '1') && (chr != '2') && (chr != '3') && (chr != '4') && (chr != '5') && (chr != '6') && (chr != '7') && (chr != '8') && (chr != '9')) {
+        objElement.value = objElement.value.substring(0, chrstring.length - 1);
+    }
+}
+
+function chkdecimal(objElement) {
+    var chrstring = objElement.value;
+    var chr = chrstring.substring(chrstring.length - 1, chrstring.length);
+    if ((chr != '0') && (chr != '1') && (chr != '2') && (chr != '3') && (chr != '4') && (chr != '5') && (chr != '6') && (chr != '7') && (chr != '8') && (chr != '9') && (chr != '.')) {
         objElement.value = objElement.value.substring(0, chrstring.length - 1);
     }
 }
@@ -61,3 +112,4 @@ function checkID(id) {
     if (sum % 10 != 0) return false;
     return true;
 }
+

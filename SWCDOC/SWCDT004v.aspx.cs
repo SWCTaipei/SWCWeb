@@ -1,21 +1,4 @@
-﻿/*  Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
@@ -113,9 +96,11 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
             }
             else
             {
-                string strSQLRV2 = " select * from SWCDTL04 ";
-                strSQLRV2 = strSQLRV2 + " where SWC000 = '" + v + "' ";
-                strSQLRV2 = strSQLRV2 + "   and DTLD000 = '" + v2 + "' ";
+                string strSQLRV2 = " select D4.*,ISNULL(DE.DENAME,DE2.DENAME) AS DTLD085DESC from SWCDTL04 D4 ";
+                strSQLRV2 += " LEFT JOIN DisasterEvent DE ON D4.DTLD085=DE.DENo ";
+                strSQLRV2 += " LEFT JOIN DisasterEvent DE2 ON D4.DENo=DE2.DENo ";
+                strSQLRV2 = strSQLRV2 + " where D4.SWC000 = '" + v + "' ";
+                strSQLRV2 = strSQLRV2 + "   and D4.DTLD000 = '" + v2 + "' ";
 
                 SqlDataReader readeDTL;
                 SqlCommand objCmdDTL = new SqlCommand(strSQLRV2, SwcConn);
@@ -207,6 +192,8 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
                     string tDTLD082 = readeDTL["DTLD082"] + "";
                     string tDTLD083 = readeDTL["DTLD083"] + "";
                     string tDTLD084 = readeDTL["DTLD084"] + "";
+                    string tDTLD085 = readeDTL["DTLD085"] + "";
+                    string tDTLD085Desc = readeDTL["DTLD085DESC"] + "";
 
                     string tDATALOCK = readeDTL["DATALOCK"] + "";
 
@@ -294,6 +281,8 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
                     TXTDTL081.Text = tDTLD081.Replace("\r\n", "<br/>").Replace("\n\r", "<br/>");
                     TXTDTL083.Text = tDTLD083.Replace("\r\n", "<br/>").Replace("\n\r", "<br/>");
 
+                    TXTDTL085.Text = tDTLD085Desc;
+
                     //點擊放大圖片類處理
                     string[] arrayFileName2 = new string[] { tDTLD080, tDTLD082, tDTLD084 };
                     System.Web.UI.WebControls.HyperLink[] arrayImgAppobj2 = new System.Web.UI.WebControls.HyperLink[] { HyperLink080, HyperLink082, HyperLink084 };
@@ -308,9 +297,11 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
                         }
                         else
                         {
-                            string tempImgPateh = SwcUpLoadFilePath + v + "/" + strFileName;
-                            ImgFileObj.ImageUrl = tempImgPateh + "?ts=" + DateTime.Now.Millisecond;
-                            ImgFileObj.NavigateUrl = tempImgPateh + "?ts=" + DateTime.Now.Millisecond;
+                            Class1 C1 = new Class1();
+                            C1.FilesSortOut(strFileName,v,"");
+                            string tempImgPateh = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/SwcCaseFile/" + v + "/" + strFileName + "?ts=" + System.DateTime.Now.Millisecond;
+                            ImgFileObj.ImageUrl = tempImgPateh;
+                            ImgFileObj.NavigateUrl = tempImgPateh;
                         }
                     }
                     //按鈕處理
@@ -396,8 +387,8 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
         ConnERR.Close();
 
         //刪實體檔
-        string TempFolderPath = ConfigurationManager.AppSettings["SwcFileTemp"];
-        string SwcCaseFolderPath = ConfigurationManager.AppSettings["SwcFilePath"];
+        string TempFolderPath = ConfigurationManager.AppSettings["SwcFileTemp20"];
+        string SwcCaseFolderPath = ConfigurationManager.AppSettings["SwcFilePath20"];
 
         string DelFileName = ImgText.Text;
         string TempFileFullPath = TempFolderPath + csCaseID + "\\" + ImgText.Text;

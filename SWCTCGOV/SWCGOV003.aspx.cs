@@ -1,29 +1,7 @@
-﻿/*  Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
@@ -47,11 +25,32 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
             Response.Redirect("../SWCDOC/SWC001.aspx");
         }
 
+        switch (ssUserType)
+        {
+            case "01":
+                Response.Redirect("../SWCDOC/SWC000.aspx");
+                break;
+            case "02":
+                TitleLink00.Visible = true;
+                Response.Redirect("../SWCDOC/SWC000.aspx");
+                break;
+            case "03":  //大地人員
+                GoTslm.Visible = true;
+                GOVMG.Visible = true;
+                if (!IsPostBack) { /*GenerateDropDownList();*/ }
+                break;
+            case "04":
+                Response.Redirect("../SWCDOC/SWC000.aspx");
+                break;
+            default:
+                Response.Redirect("../SWCDOC/SWC000.aspx");
+                break;
+        }
 
 
 
         //以下全區公用
-        SBApp.ViewRecord("帳號管理", "view", "");
+        SBApp.ViewRecord("防災事件通知", "view", "");
 
         ToDay.Text = DateTime.Now.ToString("yyyy.M.d");
         Visitor.Text = SBApp.GetVisitorsCount();
@@ -90,14 +89,25 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
                     string sDEDATE = readerDN["DEDATE"] + "";
                     string sDENTTEXT = readerDN["DENTTEXT"] + "";
                     string sDETYPE = readerDN["DETYPE"] + "";
+					
+                    string sDEDISTRICT = readerDN["DEDISTRICT"] + "";
                     string sSWCSTATUS = readerDN["SWCSTATUS"] + "";
                     string sSENDMBR = readerDN["SENDMBR"] + "";
                     string sSENDFUN = readerDN["SENDFUN"] + "";
-
+                    string sSWCSTATUS_ILG = readerDN["ILGSTATUS"] + "";
+                    string sSENDMBR_ILG = readerDN["ILGSENDMBR"] + "";
+                    string sSENDFUN_ILG = readerDN["ILGSENDFUN"] + "";
+					
+                    string sDESENDCOUNT = readerDN["DESENDCOUNT"] + "";
+					St05.Text = sDESENDCOUNT;
+					
                     string tDETYPEDESC = "";
                     switch (sDETYPE) {
                         case "0104":
                             tDETYPEDESC = "颱風豪雨通知回傳自主檢查表";
+                            break;
+                        case "0203":
+                            tDETYPEDESC = "違規案件防災整備通知";
                             break;
                     }
 
@@ -108,10 +118,176 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
                     CHKSWCSTATUS.Text = sSWCSTATUS.Replace(","," ");
                     CHKSENDMBR.Text = sSENDMBR.Replace(",", " ");
                     CHKSENDFUN.Text = sSENDFUN.Replace(",", " ");
+					
+					LBDISTRICT.Text = sDEDISTRICT.Replace(",", " ");
+					LBSWCSTATUS.Text = sSWCSTATUS.Replace(",", " ");
+					LBSENDMBR.Text = sSENDMBR.Replace(",", " ");
+					LBSENDFUN.Text = sSENDFUN.Replace(",", " ");
+					LBSWCSTATUS_ILG.Text = sSWCSTATUS_ILG.Replace(",", " ");
+					LBSENDMBR_ILG.Text = sSENDMBR_ILG.Replace(",", " ");
+					LBSENDFUN_ILG.Text = sSENDFUN_ILG.Replace(",", " ");
+                }
+                readerDN.Close();
+                objCmdDN.Dispose();
+            }
+
+            //統計資料
+            string tmpSQL01 = " select count(*) as dC from SWCDTL04 where DTLD085 = '" + rCaseID+ "' and DTLD004='整備完成' and DATALOCK = 'Y'; ";
+            string tmpSQL02 = " select count(*) as dC from SWCDTL04 where DTLD085 = '" + rCaseID + "' and isnull(DTLD004,'待改善')='待改善' and DATALOCK = 'Y'; ";
+            string tmpSQL03 = " select count(*) as dC from SWCDTL04 where DTLD085 = '" + rCaseID + "' and DATALOCK = 'Y'; ";
+            string tmpSQL04 = " select count(*) as dC from SWCDTL04 where DTLD085 = '" + rCaseID + "' and isnull(DATALOCK,'')!='Y'; ";
+            string tmpSQL05 = " select count(*) as dC from SWCDTL04 where DTLD085 = '" + rCaseID + "' ; ";
+            string tmpSQL06 = " select count(*) as dC from SWCDTL04 where DTLD085 = '" + rCaseID + "' ; ";
+
+
+            using (SqlConnection DTLConn = new SqlConnection(connectionStringSwc.ConnectionString))
+            {
+                DTLConn.Open();
+
+                //整備完成
+                SqlDataReader readerDN;
+                SqlCommand objCmdDN = new SqlCommand(tmpSQL01, DTLConn);
+                readerDN = objCmdDN.ExecuteReader();
+
+                while (readerDN.Read())
+                {
+                    string tCount = readerDN["dC"] + "";
+
+                    St01.Text = tCount;
                 }
                 readerDN.Close();
                 objCmdDN.Dispose();
 
+                //未整備完成
+                objCmdDN = new SqlCommand(tmpSQL02, DTLConn);
+                readerDN = objCmdDN.ExecuteReader();
+
+                while (readerDN.Read())
+                {
+                    string tCount = readerDN["dC"] + "";
+
+                    St02.Text = tCount;
+                }
+                readerDN.Close();
+                objCmdDN.Dispose();
+
+                //已送出
+                objCmdDN = new SqlCommand(tmpSQL03, DTLConn);
+                readerDN = objCmdDN.ExecuteReader();
+
+                while (readerDN.Read())
+                {
+                    string tCount = readerDN["dC"] + "";
+
+                    St03.Text = tCount;
+                }
+                readerDN.Close();
+                objCmdDN.Dispose();
+
+                //未送出
+                objCmdDN = new SqlCommand(tmpSQL04, DTLConn);
+                readerDN = objCmdDN.ExecuteReader();
+
+                while (readerDN.Read())
+                {
+                    string tCount = readerDN["dC"] + "";
+
+                    St04.Text = tCount;
+                }
+                readerDN.Close();
+                objCmdDN.Dispose();
+
+                //發送筆數
+                objCmdDN = new SqlCommand(tmpSQL05, DTLConn);
+                readerDN = objCmdDN.ExecuteReader();
+
+                while (readerDN.Read())
+                {
+                    string tCount = readerDN["dC"] + "";
+
+                    //St05.Text = tCount;
+                }
+                readerDN.Close();
+                objCmdDN.Dispose();
+
+                //事件筆數
+                objCmdDN = new SqlCommand(tmpSQL06, DTLConn);
+                readerDN = objCmdDN.ExecuteReader();
+
+                while (readerDN.Read())
+                {
+                    string tCount = readerDN["dC"] + "";
+
+                    St06.Text = tCount;
+                }
+                readerDN.Close();
+                objCmdDN.Dispose();
+            }
+
+
+            //表4
+            using (SqlConnection DTLConn = new SqlConnection(connectionStringSwc.ConnectionString))
+            {
+                DTLConn.Open();
+
+                string Sql04Str = "";
+
+                Sql04Str = Sql04Str + " Select C.SWC002 AS DTLD001,C.SWC005 AS DTLD002,C.SWC013 AS DTLD003,U.ETNAME AS DTLD004 ,ISNULL(D4.DATALOCK,'RED') AS DTLD005,C.SWC000 AS DTLD006, DTLD001 as DTLD007  From SWCDTL04 D4 ";
+                Sql04Str += " LEFT JOIN SWCCASE C ON D4.SWC000=C.SWC000 ";
+                Sql04Str += " LEFT JOIN ETUsers U ON C.SWC045ID=U.ETID ";
+                Sql04Str = Sql04Str + "  Where DTLD085 = '" + rCaseID + "' ";
+                Sql04Str = Sql04Str + "  order by C.SWC002 ";
+
+                SqlDataReader readerItem04;
+                SqlCommand objCmdItem04 = new SqlCommand(Sql04Str, DTLConn);
+                readerItem04 = objCmdItem04.ExecuteReader();
+
+                while (readerItem04.Read())
+                {
+                    string dDTLD01 = readerItem04["DTLD001"] + "";
+                    string dDTLD02 = readerItem04["DTLD002"] + "";
+                    string dDTLD03 = readerItem04["DTLD003"] + "";
+                    string dDTLD04 = readerItem04["DTLD004"] + "";
+                    string dDTLD05 = readerItem04["DTLD005"] + "";
+                    string dDTLD06 = readerItem04["DTLD006"] + "";
+                    string dDTLD07 = readerItem04["DTLD007"] + "";
+                    string dUrl = "";
+
+                    if (dDTLD05 == "RED") { dUrl = "../images/icon/red.png"; }
+
+                    DataTable OBJ_GV04 = (DataTable)ViewState["GV04"];
+                    DataTable DTGV04 = new DataTable();
+
+                    if (OBJ_GV04 == null)
+                    {
+                        DTGV04.Columns.Add(new DataColumn("DTLD001", typeof(string)));
+                        DTGV04.Columns.Add(new DataColumn("DTLD002", typeof(string)));
+                        DTGV04.Columns.Add(new DataColumn("DTLD003", typeof(string)));
+                        DTGV04.Columns.Add(new DataColumn("DTLD004", typeof(string)));
+                        DTGV04.Columns.Add(new DataColumn("DTLD005", typeof(string)));
+                        DTGV04.Columns.Add(new DataColumn("DTLD006", typeof(string)));
+                        DTGV04.Columns.Add(new DataColumn("DTLD007", typeof(string)));
+
+                        ViewState["GV04"] = DTGV04;
+                        OBJ_GV04 = DTGV04;
+                    }
+                    DataRow dr04 = OBJ_GV04.NewRow();
+
+                    dr04["DTLD001"] = dDTLD01;
+                    dr04["DTLD002"] = dDTLD02;
+                    dr04["DTLD003"] = dDTLD03;
+                    dr04["DTLD004"] = dDTLD04;
+                    dr04["DTLD005"] = dUrl;
+                    dr04["DTLD006"] = dDTLD06;
+                    dr04["DTLD007"] = dDTLD07;
+
+                    OBJ_GV04.Rows.Add(dr04);
+
+                    ViewState["GV04"] = OBJ_GV04;
+
+                    SWCDTL04.DataSource = OBJ_GV04;
+                    SWCDTL04.DataBind();
+                }
             }
         }
     }
@@ -235,143 +411,6 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
         Response.Redirect("SWCGOV001.aspx");
     }
 
-    //protected void SaveAccount_Click(object sender, EventArgs e)
-    //{
-    //    error_msg.Text = "";
-        
-    //    string SaveDate = "Y";
-    //    string gETID1 = TXTETPW.Text + "";
-    //    string gETID2 = TXTETPWChk.Text + "";
-    //    string gETTel = TXTETTel.Text + "";
-    //    string gETEmail = TXTDENTTEXT.Text + "";
-
-    //    GBClass001 SBApp = new GBClass001();
-        
-
-    //    if (gETID1 != gETID2)
-    //    {
-    //        SaveDate = "N";
-    //        error_msg.Text = SBApp.AlertMsg("密碼與確認密碼不符");
-    //        TXTETPW.Focus();
-    //        return;
-    //    }
-
-    //    if(SaveDate == "Y")
-    //    {
-    //        string UserSqlStr = "";
-
-    //        UserSqlStr = UserSqlStr + " Update ETUsers Set ";
-    //        if (gETID1 !="")
-    //        {
-    //            UserSqlStr = UserSqlStr + " ETPW ='" + gETID1 + "', ";
-    //            Session["PW"] = gETID1;
-    //        }
-    //        UserSqlStr = UserSqlStr + " ETTel =N'" + gETTel + "', ";
-    //        UserSqlStr = UserSqlStr + " ETEmail =N'" + gETEmail + "', ";
-    //        UserSqlStr = UserSqlStr + " saveuser = N'" + NewAccount + "', ";
-    //        UserSqlStr = UserSqlStr + " savedate = getdate() ";
-    //        UserSqlStr = UserSqlStr + " Where ETIDNo = '" + NewAccount + "'";
-
-    //        ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
-    //        using (SqlConnection SWCConn = new SqlConnection(connectionString.ConnectionString))
-    //        {
-    //            SWCConn.Open();
-
-    //            SqlCommand objCmdUser = new SqlCommand(UserSqlStr, SWCConn);
-    //            objCmdUser.ExecuteNonQuery();
-    //            objCmdUser.Dispose();
-
-    //        }
-            
-    //        GetUserData(NewAccount);
-            
-    //        Response.Write("<script>alert('資料已存檔'); location.href='SWC001.aspx'; </script>");
-            
-    //    }
-    //}
-
-    //protected void AddNewAcc_Click(object sender, EventArgs e)
-    //{
-    //    string SaveDate = "Y";
-    //    string NewAccount = TXTETIDNo.Text + "";
-    //    string gETID1 = TXTETPW.Text + "";
-    //    string gETID2 = TXTETPWChk.Text + "";
-    //    string gETTel = TXTETTel.Text + "";
-    //    string gETEmail = TXTDENTTEXT.Text + "";
-        
-
-    //    GBClass001 SBApp = new GBClass001();
-
-    //    NewAccount = NewAccount.ToUpper();
-
-    //    if (NewAccount == "")
-    //    {
-    //        error_msg.Text = SBApp.AlertMsg("身分證字號務必填登，謝謝!!");
-    //        TXTETIDNo.Focus();
-    //        return;
-    //    }
-    //    if (gETID1 != gETID2)
-    //    {
-    //        error_msg.Text = SBApp.AlertMsg("密碼與確認密碼不符");
-    //        TXTETPW.Focus();
-    //        return;
-    //    }
-
-    //    //帳號重覆檢查
-    //    ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
-    //    using (SqlConnection SWCConn = new SqlConnection(connectionString.ConnectionString))
-    //    {
-    //        SWCConn.Open();
-
-    //        string strSQLUS = " select ETIDNo from ETUsers ";
-    //        strSQLUS = strSQLUS + " where ETIDNo ='" + NewAccount + "' ";
-
-    //        SqlDataReader readerUser;
-    //        SqlCommand objCmdUser = new SqlCommand(strSQLUS, SWCConn);
-    //        readerUser = objCmdUser.ExecuteReader();
-
-    //        if (readerUser.HasRows)
-    //        {
-    //            Response.Write("<script>alert('您好，此帳號已重複申請，請再次確認密碼，或與大地工程處聯繫，謝謝。'); location.href='SWC000.aspx'; </script>");
-    //            TXTETIDNo.Focus();
-    //            SaveDate = "N";
-    //            return;
-    //        }
-    //    }
-
-    //    string UserSqlStr = "";
-    //    if (SaveDate == "Y") {
-    //        UserSqlStr = UserSqlStr + " INSERT INTO ETUsers (ETID,ETIDNo,ETStatus,status) VALUES ('" + NewAccount + "','"+ NewAccount + "','0','申請中') ;";
-
-    //        UserSqlStr = UserSqlStr + " Update ETUsers Set ";
-
-    //        UserSqlStr = UserSqlStr + " ETPW =N'" + gETID1 + "', ";
-    //        UserSqlStr = UserSqlStr + " ETTel =N'" + gETTel + "', ";
-    //        UserSqlStr = UserSqlStr + " ETEmail =N'" + gETEmail + "', ";
-    //        UserSqlStr = UserSqlStr + " saveuser = '" + NewAccount + "', ";
-    //        UserSqlStr = UserSqlStr + " savedate = getdate() ";
-    //        UserSqlStr = UserSqlStr + " Where ETIDNo = '" + NewAccount + "'";
-
-    //        using (SqlConnection SWCConn = new SqlConnection(connectionString.ConnectionString))
-    //        {
-    //            SWCConn.Open();
-
-    //            SqlCommand objCmdUser = new SqlCommand(UserSqlStr, SWCConn);
-    //            objCmdUser.ExecuteNonQuery();
-    //            objCmdUser.Dispose();
-                
-    //            GBClass001 CL01 = new GBClass001();
-
-    //            CL01.Mail_Send(GetMailTo(), MailSub(), MailBody());
-
-    //        }
-            
-    //    }
-    //    GetUserData(NewAccount);
-        
-    //    Response.Write("<script>alert('已送出帳號申請，請等待審核通知，申請結果將以E-mail通知。'); location.href='SWC000.aspx'; </script>");
-
-    //}
     private string MailSub()
     {
         string rValue = "「臺北市水土保持書件管理平台」請填登颱風豪雨設施自主檢查表";
@@ -391,7 +430,7 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
     }
     private string[] GetMailTo()
     {
-        string MailStr = "claire@geovector.com.tw;;";
+        string MailStr = "geocheck@geovector.com.tw;;";
 
         ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["GEOINFOCONN"];
         using (SqlConnection UserConn = new SqlConnection(connectionString.ConnectionString))
@@ -418,4 +457,110 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
         return arrayMailMb;
     }
 
+
+    protected void ButtonDTL04_Click(object sender, EventArgs e)
+    {
+        Button LButton = (Button)sender;
+        GridViewRow gvr = (GridViewRow)LButton.NamingContainer;
+        int rowindex = gvr.RowIndex;
+        string view = "v";
+
+        HiddenField hiddenDate01 = (HiddenField)SWCDTL04.Rows[rowindex].Cells[5].FindControl("HiddenField1");
+        HiddenField hiddenDate02 = (HiddenField)SWCDTL04.Rows[rowindex].Cells[5].FindControl("HiddenField2");
+        HiddenField hiddenDate03 = (HiddenField)SWCDTL04.Rows[rowindex].Cells[5].FindControl("HiddenField3");
+
+        string tmpValue1 = hiddenDate01.Value;
+        string tmpValue2 = hiddenDate02.Value;
+        string tmpValue3 = hiddenDate03.Value;
+        
+        string gogoPage = "../SWCDOC/SWCDT004"+ view + ".aspx?SWCNO="+ tmpValue1 + "&DTLNO="+ tmpValue2+"&"+ tmpValue3;
+
+        Response.Write("<script>window.open('" + gogoPage + "','_blank')</script>");
+    }
+
+    protected void ShowRed_Click(object sender, System.Web.UI.ImageClickEventArgs e)
+    {
+        string rCaseID = Request.QueryString["DisEventId"] + "";
+
+        //表4
+        ConnectionStringSettings connectionStringSwc = ConfigurationManager.ConnectionStrings["SWCConnStr"];
+        using (SqlConnection DTLConn = new SqlConnection(connectionStringSwc.ConnectionString))
+        {
+            DTLConn.Open();
+
+            string Sql04Str = "";
+
+            Sql04Str = Sql04Str + " Select C.SWC002 AS DTLD001,C.SWC005 AS DTLD002,C.SWC013 AS DTLD003,U.ETNAME AS DTLD004 ,ISNULL(D4.DATALOCK,'RED') AS DTLD005,C.SWC000 AS DTLD006, DTLD001 as DTLD007  From SWCDTL04 D4 ";
+            Sql04Str += " LEFT JOIN SWCCASE C ON D4.SWC000=C.SWC000 ";
+            Sql04Str += " LEFT JOIN ETUsers U ON C.SWC045ID=U.ETID ";
+            Sql04Str = Sql04Str + "  Where DTLD085 = '" + rCaseID + "' ";
+            Sql04Str += " and ISNULL(D4.DATALOCK,'')<>'Y'";
+            Sql04Str = Sql04Str + "  order by C.SWC002 ";
+
+            SqlDataReader readerItem04;
+            SqlCommand objCmdItem04 = new SqlCommand(Sql04Str, DTLConn);
+            readerItem04 = objCmdItem04.ExecuteReader();
+
+            ViewState["GV04"] = null;
+
+            while (readerItem04.Read())
+            {
+                string dDTLD01 = readerItem04["DTLD001"] + "";
+                string dDTLD02 = readerItem04["DTLD002"] + "";
+                string dDTLD03 = readerItem04["DTLD003"] + "";
+                string dDTLD04 = readerItem04["DTLD004"] + "";
+                string dDTLD05 = readerItem04["DTLD005"] + "";
+                string dDTLD06 = readerItem04["DTLD006"] + "";
+                string dDTLD07 = readerItem04["DTLD007"] + "";
+                string dUrl = "";
+
+                if (dDTLD05 == "RED") { dUrl = "../images/icon/red.png"; }
+
+                DataTable OBJ_GV04 = (DataTable)ViewState["GV04"];
+                DataTable DTGV04 = new DataTable();
+
+                if (OBJ_GV04 == null)
+                {
+                    DTGV04.Columns.Add(new DataColumn("DTLD001", typeof(string)));
+                    DTGV04.Columns.Add(new DataColumn("DTLD002", typeof(string)));
+                    DTGV04.Columns.Add(new DataColumn("DTLD003", typeof(string)));
+                    DTGV04.Columns.Add(new DataColumn("DTLD004", typeof(string)));
+                    DTGV04.Columns.Add(new DataColumn("DTLD005", typeof(string)));
+                    DTGV04.Columns.Add(new DataColumn("DTLD006", typeof(string)));
+                    DTGV04.Columns.Add(new DataColumn("DTLD007", typeof(string)));
+
+                    ViewState["GV04"] = DTGV04;
+                    OBJ_GV04 = DTGV04;
+                }
+                DataRow dr04 = OBJ_GV04.NewRow();
+
+                dr04["DTLD001"] = dDTLD01;
+                dr04["DTLD002"] = dDTLD02;
+                dr04["DTLD003"] = dDTLD03;
+                dr04["DTLD004"] = dDTLD04;
+                dr04["DTLD005"] = dUrl;
+                dr04["DTLD006"] = dDTLD06;
+                dr04["DTLD007"] = dDTLD07;
+
+                OBJ_GV04.Rows.Add(dr04);
+
+                ViewState["GV04"] = OBJ_GV04;
+
+                SWCDTL04.DataSource = OBJ_GV04;
+                SWCDTL04.DataBind();
+            }
+        }
+    }
+
+
+    protected void SWCDTL04_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        SWCDTL04.PageIndex = e.NewPageIndex;
+    }
+
+    protected void SWCDTL04_PageIndexChanged(object sender, EventArgs e)
+    {
+        SWCDTL04.DataSource = ViewState["GV04"];
+        SWCDTL04.DataBind();
+    }
 }

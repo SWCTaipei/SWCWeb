@@ -1,21 +1,4 @@
-﻿/*  Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
@@ -56,7 +39,7 @@ public partial class SWCDOC_OnlineApply009 : System.Web.UI.Page
 
 
         //全區供用
-        SBApp.ViewRecord("水土保持計畫暫停審查", "update", "");
+        SBApp.ViewRecord("臺北市山坡地水土保持設施安全自主檢查表", "update", "");
 
         ToDay.Text = DateTime.Now.ToString("yyyy.M.d");
         Visitor.Text = SBApp.GetVisitorsCount();
@@ -74,7 +57,7 @@ public partial class SWCDOC_OnlineApply009 : System.Web.UI.Page
     protected void GoHomePage_Click(object sender, EventArgs e)
     {
         string vCaseID = Request.QueryString["SWCNO"] + "";
-        Response.Redirect("SWC003.aspx?CaseId=" + vCaseID);
+        Response.Redirect("SWC003.aspx?SWCNO=" + vCaseID);
     }
 
     protected void GVSWCList_RowCommand(object sender, GridViewCommandEventArgs e)

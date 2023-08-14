@@ -1,21 +1,4 @@
-﻿<!--
-    Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
--->
-
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="SWCDT004v.aspx.cs" Inherits="SWCDOC_SWCDT004" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="SWCDT004v.aspx.cs" Inherits="SWCDOC_SWCDT004" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <!DOCTYPE html>
@@ -31,7 +14,7 @@
     <meta name="copyright" content="© 2017 臺北市水土保持申請書件管理平台">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge, chrome=1">
     <link rel="stylesheet" type="text/css" href="../css/reset.css"/>
-    <link rel="stylesheet" type="text/css" href="../css/all.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/all.css?202007011110"/>
      <link rel="stylesheet" type="text/css" href="../css/iris.css"/>
 
     <script type="text/javascript">
@@ -95,8 +78,8 @@
             <ul>
                 <li><a href="../sysFile/系統操作手冊.pdf" title="系統操作手冊" target="_blank">系統操作手冊</a></li>
                 <li>|</li>
-                <li><a href="http://tcgeswc.taipei.gov.tw/index_new.aspx" title="水土保持計畫查詢系統" target="_blank">水土保持計畫查詢系統 </a></li>
-                <asp:Panel ID="GoTslm" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="http://172.28.100.55/TSLM" title="坡地管理資料庫" target="_blank">坡地管理資料庫</a></li></asp:Panel>
+                <li><a href="https://swc.taipei/swcinfo/" title="臺北市山坡地保育利用資訊查詢系統" target="_blank">臺北市山坡地保育利用資訊查詢系統 </a></li>
+                <asp:Panel ID="GoTslm" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="http://tslm.swc.taipei/tslmwork/" title="坡地管理資料庫" target="_blank">坡地管理資料庫</a></li></asp:Panel>
                 <asp:Panel ID="TitleLink00" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="SWCBase001.aspx" title="帳號管理">帳號管理</a></li></asp:Panel>
                         <asp:Panel ID="LogOutLink" runat="server" Visible="true"><li>|&nbsp&nbsp&nbsp&nbsp<a href="SWC000.aspx?ACT=LogOut" title="登出">登出</a></li></asp:Panel>
 
@@ -125,7 +108,9 @@
                 <tr><td>檢查日期</td>
                     <td><asp:Label ID="TXTDTL002" runat="server" width="150px"></asp:Label></td></tr>
                 <tr><td>防災標的</td>
-                    <td><asp:Label ID="TXTDTL003" runat="server" width="100%" /></td></tr>
+                    <td><asp:Label ID="TXTDTL003" runat="server" />
+                        <asp:Label ID="TXTDTL085" runat="server" />
+                    </td></tr>
                 <tr><td>自主檢查結果</td>
                     <td><asp:Label ID="TXTDTL004" runat="server" width="100%" /></td></tr>
             </table>
@@ -397,10 +382,11 @@
             </div>--%>
                 
             <div class="footer">
-                 <p><span class="span1">臺北市政府工務局大地工程處</span><br/>
-                           <span class="span2">110臺北市信義區松德路300號3樓 　服務專線(02)27591109   臺北市民當家熱線1999</span><br/>
-                            <span class="span2">建議使用IE11(含)以上，Chrome或Firefox版本瀏覽器 資料更新：<asp:Label ID="ToDay" runat="server" Text=""/>　來訪人數：<asp:Label ID="Visitor" runat="server" Text=""/> </span><br/>
-                           <span class="span2">客服電話：02-27593001#3718 許先生 本系統由多維空間資訊有限公司開發維護 TEL:(02)27929328</span></p>
+               <p><span class="span1">臺北市政府工務局大地工程處</span><br/>
+                    <span class="span2">110臺北市信義區松德路300號3樓 　服務專線(02)27591109   臺北市民當家熱線1999</span><br/>
+                    <span class="span2">建議使用IE11(含)以上，Chrome或Firefox版本瀏覽器　<b>資料更新：</b><asp:Label ID="ToDay" runat="server" Text=""/>　<b>來訪人數：</b><asp:Label ID="Visitor" runat="server" Text=""/> </span><br/>
+                    <span class="span2"><b>客服電話：</b>02-27929328 陳小姐　<b>信箱：</b>tcge7@geovector.com.tw　本系統由多維空間資訊有限公司開發維護 TEL：(02)27929328</span><br/>
+			        <span class="span2">※為維護系統服務品質，本平台訂於每周三凌晨AM 4:00-6:30 進行系統維護更新，更新期間偶有瞬斷情形，敬請使用者避開該時段使用。謝謝！</span></p>
             </div>
 
         </div>

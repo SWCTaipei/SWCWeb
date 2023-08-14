@@ -1,23 +1,7 @@
-﻿/*  Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
@@ -30,54 +14,93 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
 {
     string SwcUpLoadFilePath = "..\\UpLoadFiles\\SwcCaseFile\\";
     string GlobalUpLoadTempFilePath = "..\\UpLoadFiles\\temp\\";
+	string GetMax = "";
+    protected void Page_Error(object sender, EventArgs e)
+    {
+        Exception objErr = Server.GetLastError().GetBaseException(); // 獲取錯誤
+        string errUrl = Request.Url.ToString();
+        string errMsg = objErr.Message.ToString();
+        Class1 C1 = new Class1();
+        string[] mailTo = new string[] { "tcge7@geovector.com.tw" };
+        string ssUserName = Session["NAME"] + "";
+
+        string mailText = "使用者：" + ssUserName + "<br/>";
+        mailText += "時間：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "<br/>";
+        mailText += "url：" + errUrl + "<br/>";
+        mailText += "錯誤訊息：" + errMsg + "<br/>";
+
+        C1.Mail_Send(mailTo, "臺北市水土保持書件管理平台-系統錯誤通知", mailText);
+		Response.Redirect("~/errPage/500.htm");
+        Server.ClearError();
+    }
     protected void Page_Load(object sender, EventArgs e)
     {
+        string ssUserName = Session["NAME"] + "";
+        string ssUserType = Session["UserType"] + "";
+        string ssJobTitle = Session["JobTitle"] + "";
         string rCaseId = Request.QueryString["SWCNO"] + "";
         string rDTLId = Request.QueryString["DTLNO"] + "";
-
-        string ssUserName = Session["NAME"] + "";
-        string ssJobTitle = Session["JobTitle"] + "";
-
+		
+        GBClass001 SBApp = new GBClass001();
+		
+        if (!canDoModify(rCaseId, rDTLId))
+            Response.Redirect("SWCDT001v.aspx?SWCNO=" + rCaseId + "&DTLNO=" + rDTLId);
+		
         //PostBack後停留在原畫面
         Page.MaintainScrollPositionOnPostBack = true;
-
-        GBClass001 SBApp = new GBClass001();
 
         if (rCaseId == "")
         {
             Response.Redirect("SWC001.aspx");
         }
-
+		if (rDTLId == "AddNew"){
+			ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
+			using (SqlConnection SwcConn = new SqlConnection(connectionString.ConnectionString))
+			{
+				SwcConn.Open();
+				
+				string strSQLRV = " select * from SWCDTL01 ";
+				strSQLRV = strSQLRV + " where SWC000 = '" + rCaseId + "' and ISNULL(DataLock,'') != 'Y' ;";
+				
+				SqlDataReader readeSwc;
+				SqlCommand objCmdSwc = new SqlCommand(strSQLRV, SwcConn);
+				readeSwc = objCmdSwc.ExecuteReader();
+				
+				while (readeSwc.Read())
+				{
+					if(readeSwc.HasRows){
+						Response.Write("<script>alert('已經有審查表單於暫存區。'); location.href='SWC003.aspx?SWCNO=" + rCaseId + "' ; </script>");
+					}
+				}
+				
+				readeSwc.Close();
+				objCmdSwc.Dispose();
+			}
+		}
+		
         if (!IsPostBack)
         {
-            GenerateDropDownList();
+            GenerateDropDownList(rCaseId);
             Data2Page(rCaseId, rDTLId);
-        }
-
-        TextUserName.Text = "";
-        if (ssUserName != "")
-        {
-            TextUserName.Text = ssUserName + "，您好";
+            SBApp.ViewRecord("審查表單", "view", rCaseId+"-"+ rDTLId);
+			
+			if(ssUserType == "09") DataLock.Visible = false;
         }
 
         //全區供用
-
-        SBApp.ViewRecord("審查表單", "update", "");
-
         ToDay.Text = DateTime.Now.ToString("yyyy.M.d");
         Visitor.Text = SBApp.GetVisitorsCount();
 
         TextUserName.Text = "";
         if (ssUserName != "")
-        {
-            TextUserName.Text = ssUserName + ssJobTitle + "，您好";
-        }
-
+			TextUserName.Text = ssUserName + ssJobTitle + "，您好";
         //全區供用
     }
     private void Data2Page(string v,string v2)
     {
         GBClass001 SBApp = new GBClass001();
+        Class20 C20 = new Class20();
+        C20.swcLogRC("SWCDT001", "審查紀錄", "詳情", "瀏覽", v + ";" + v2);
 
         ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
         using (SqlConnection SwcConn = new SqlConnection(connectionString.ConnectionString))
@@ -93,9 +116,11 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
 
             while (readeSwc.Read())
             {
+                string tSWC002 = readeSwc["SWC002"] + "";
                 string tSWC005 = readeSwc["SWC005"] + "";
 
                 LBSWC000.Text = v;
+                LBSWC002.Text = tSWC002;
                 LBSWC005.Text = tSWC005;
                 LBSWC005a.Text = tSWC005;
                 LBSWC005_2.Text = tSWC005;
@@ -154,13 +179,17 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
                     string tDTLA030 = readeDTL["DTLA030"] + "";
                     string tDTLA031 = readeDTL["DTLA031"] + "";
                     string tDTLA032 = readeDTL["DTLA032"] + "";
+                    string tDTLA034 = readeDTL["DTLA034"] + "";
 
                     string tDATALOCK = readeDTL["DATALOCK"] + "";
 
                     LBDTL001.Text = tDTLA001;
                     TXTDTL003.Text = SBApp.DateView(tDTLA003, "00"); 
                     TXTDTL004.Text = tDTLA004;
-                    DDLDTL006.SelectedValue = tDTLA006;                    
+                    DDLDTL006.SelectedValue = tDTLA006;
+					if(DDLDTL006.SelectedIndex == 1){
+						TXTDTL034.Enabled = false;
+					}					
                     TXTDTL007.Text = SBApp.DateView(tDTLA007, "00");
                     TXTDTL008.Text = tDTLA008;
                     TXTDTL009.Text = tDTLA009;
@@ -168,12 +197,8 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
                     TXTDTL011.Text = tDTLA011;
                     TXTDTL012.Text = tDTLA012;
                     TXTDTL013.Text = tDTLA013;
-                    TXTDTL014.Text = tDTLA014;
-                    TXTDTL015.Text = tDTLA015;
-                    TXTDTL016.Text = tDTLA016;
                     TXTDTL017.Text = tDTLA017;
                     TXTDTL018.Text = tDTLA018;
-                    TXTDTL019.Text = tDTLA019;
                     TXTDTL020.Text = tDTLA020;
                     TXTDTL021.Text = tDTLA021;
                     TXTDTL022.Text = tDTLA022;
@@ -187,6 +212,7 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
                     TXTDTL030.Text = tDTLA030;
                     TXTDTL031.Text = tDTLA031;
                     TXTDTL032.Text = tDTLA032;
+                    TXTDTL034.Text = tDTLA034;
 
                     //點擊放大圖片類處理
                     string[] arrayFileName2 = new string[] { tDTLA018, tDTLA021, tDTLA023, tDTLA025, tDTLA027, tDTLA029, tDTLA031 };
@@ -202,12 +228,11 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
                         }
                         else
                         {
-                            string tempImgPateh = SwcUpLoadFilePath + v + "/" + strFileName;
+                            string tempImgPateh = "../tcgefile/SWCDOC/UpLoadFiles/SwcCaseFile/" + v + "/" + strFileName;
                             ImgFileObj.ImageUrl = tempImgPateh + "?ts=" + DateTime.Now.Millisecond;
                             ImgFileObj.NavigateUrl = tempImgPateh + "?ts=" + DateTime.Now.Millisecond;
                         }
                     }
-
                     //檔案類處理
                     string[] arrayFileNameLink = new string[] { tDTLA020 };
                     System.Web.UI.WebControls.HyperLink[] arrayLinkAppobj = new System.Web.UI.WebControls.HyperLink[] { Link020 };
@@ -223,14 +248,74 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
                         }
                         else
                         {
-                            string tempLinkPateh = SwcUpLoadFilePath + v + "/" + strFileName;
+                            string tempLinkPateh = "../tcgefile/SWCDOC/UpLoadFiles/SwcCaseFile/" + v + "/" + strFileName;
                             FileLinkObj.Text = strFileName;
                             FileLinkObj.NavigateUrl = tempLinkPateh;
                             FileLinkObj.Visible = true;
                         }
 
                     }
-                    
+
+                    //審查意見-多筆
+                    int nj = 0;
+                    DataTable tbRVList = null;
+                    string GetListSQLstr = " Select * From SWCDTL01R ";
+                    GetListSQLstr += " Where SWC000 = '"+v+"' and DTLA001 = '"+v2+"' ";
+                    GetListSQLstr += " Order by DTLR01 ";
+
+                    ConnectionStringSettings connectionString2 = ConfigurationManager.ConnectionStrings["SWCConnStr"];
+                    using (SqlConnection SwcConn2 = new SqlConnection(connectionString.ConnectionString))
+                    {
+                        SwcConn2.Open();
+
+                        SqlDataReader readeDTLR;
+                        SqlCommand objCmdDTLR = new SqlCommand(GetListSQLstr, SwcConn2);
+                        readeDTLR = objCmdDTLR.ExecuteReader();
+
+                        while (readeDTLR.Read())
+                        {
+                            nj++;
+                            string tDTLR01 = readeDTLR["DTLR01"] + "";
+                            string tDTLR02 = readeDTLR["DTLR02"] + "";
+                            string tDTLR03 = readeDTLR["DTLR03"] + "";
+
+                            tbRVList = (DataTable)ViewState["ReviewListVS"];
+
+                            if (tbRVList == null)
+                            {
+                                DataTable ListTable = new DataTable();
+
+                                ListTable.Columns.Add(new DataColumn("DataId", typeof(string)));
+                                ListTable.Columns.Add(new DataColumn("ShortText", typeof(string)));
+                                ListTable.Columns.Add(new DataColumn("FullText", typeof(string)));
+                                ListTable.Columns.Add(new DataColumn("SaveTime", typeof(string)));
+
+                                ViewState["ReviewListVS"] = ListTable;
+                                tbRVList = (DataTable)ViewState["ReviewListVS"];
+                            }
+
+                            //設定資料
+                            string tShortText = tDTLR02;
+                            if (tShortText.Length > 20) { tShortText = tShortText.Substring(0, 20) + "…"; };
+
+                            DataRow ListNewRow = tbRVList.NewRow();
+
+                            ListNewRow["DataId"] = tDTLR01;
+                            ListNewRow["ShortText"] = tShortText;
+                            ListNewRow["FullText"] = tDTLR02;
+                            ListNewRow["SaveTime"] = tDTLR03;
+
+                            tbRVList.Rows.Add(ListNewRow);
+
+                            ViewState["ReviewListVS"] = tbRVList;
+
+                            GVReViewList.DataSource = tbRVList;
+                            GVReViewList.DataBind();
+
+                            ListNo.Text = nj.ToString();
+                        }
+                    }
+
                     //按鈕處理
                     if (tDATALOCK == "Y")
                     {
@@ -241,7 +326,6 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
                     }
                 }
             }
-
         }
     }
 
@@ -280,11 +364,34 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
         return _ReturnVal;
     }
 
-    protected void GenerateDropDownList()
+    protected void GenerateDropDownList(string v)
     {
-        string[] array_DTL006 = new string[] { "1", "2", "3", "4", "5" };
-        DDLDTL006.DataSource = array_DTL006;
-        DDLDTL006.DataBind();
+        ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
+        using (SqlConnection SwcConn = new SqlConnection(connectionString.ConnectionString))
+        {
+            SwcConn.Open();
+
+            string strSQLRV = " select ISNULL(MAX(DTLA006),0) as MAX from SWCDTL01 ";
+            strSQLRV = strSQLRV + " where SWC000 = '" + v + "' and DATALOCK = 'Y';";
+
+            SqlDataReader readerSWC;
+            SqlCommand objCmdSWC = new SqlCommand(strSQLRV, SwcConn);
+            readerSWC = objCmdSWC.ExecuteReader();
+			
+            while (readerSWC.Read())
+            {
+                GetMax = readerSWC["MAX"] + "";
+            }
+        }
+		string[] array_DTL006 = new string[] {};
+		if(GetMax=="0"){
+			array_DTL006 = new string[] { "1" };
+			TXTDTL034.Enabled = false;
+		}else{
+			array_DTL006 = new string[] { (Convert.ToInt32(GetMax)).ToString(),(Convert.ToInt32(GetMax)+1).ToString() }; //(Convert.ToInt32(GetMax)).ToString(),(Convert.ToInt32(GetMax)+1).ToString()
+		}
+        DDLDTL006.DataSource = array_DTL006;	
+		DDLDTL006.DataBind();
 
         TXTDTL017.Text = "(一)審查委員：" + System.Environment.NewLine + "(二)主管機關：" + System.Environment.NewLine + "(三)承辦技師：" + System.Environment.NewLine + "(四)水保義務人：" + System.Environment.NewLine + "(五)其他業務主管機關：";
     }
@@ -297,6 +404,8 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
 
     protected void SaveCase_Click(object sender, EventArgs e)
     {
+        Class1 C1 = new Class1();
+        Class20 C20 = new Class20();
         string rCaseId = Request.QueryString["SWCNO"] + "";
         string ssUserID = Session["ID"] + "";
 
@@ -314,12 +423,8 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
         string sDTLA011 = TXTDTL011.Text + "";
         string sDTLA012 = TXTDTL012.Text + "";
         string sDTLA013 = TXTDTL013.Text + "";
-        string sDTLA014 = TXTDTL014.Text + "";
-        string sDTLA015 = TXTDTL015.Text + "";
-        string sDTLA016 = TXTDTL016.Text + "";
         string sDTLA017 = TXTDTL017.Text + "";
         string sDTLA018 = TXTDTL018.Text + "";
-        string sDTLA019 = TXTDTL019.Text + "";
         string sDTLA020 = TXTDTL020.Text + "";
         string sDTLA021 = TXTDTL021.Text + "";
         string sDTLA022 = TXTDTL022.Text + "";
@@ -333,21 +438,24 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
         string sDTLA030 = TXTDTL030.Text + "";
         string sDTLA031 = TXTDTL031.Text + "";
         string sDTLA032 = TXTDTL032.Text + "";
+        string sDTLA034 = TXTDTL034.Text + "";
+
+        if (!C1.chkDateFormat(sDTLA003)) { Response.Write("<script>alert('提醒您，您輸入的「補正期限」日期格式不正確，請重新輸入。');</script>"); TXTDTL003.Focus(); return; }
+        if (DDLDTL006.Items.Count!=1 && DDLDTL006.SelectedIndex==0 && TXTDTL034.Text=="") {
+			Response.Write("<script>alert('請填寫重新上傳原因');</script>");
+			return;
+		}
+		if (!C1.chkDateFormat(sDTLA007)) { Response.Write("<script>alert('提醒您，您輸入的「會議時間」日期格式不正確，請重新輸入。');</script>"); TXTDTL007.Focus(); return; }
 
         if (sDTLA013.Length > 255) { sDTLA013 = sDTLA013.Substring(0, 255); }
-        if (sDTLA014.Length > 255) { sDTLA014 = sDTLA014.Substring(0, 255); }
-        if (sDTLA015.Length > 255) { sDTLA015 = sDTLA015.Substring(0, 255); }
-        if (sDTLA016.Length > 500) { sDTLA016 = sDTLA016.Substring(0, 500); }
         if (sDTLA017.Length > 500) { sDTLA017 = sDTLA017.Substring(0, 500); }
-        if (sDTLA019.Length > 5000) { sDTLA019 = sDTLA019.Substring(0, 5000); }
         if (sDTLA022.Length > 255) { sDTLA022 = sDTLA022.Substring(0, 255); }
         if (sDTLA024.Length > 255) { sDTLA024 = sDTLA024.Substring(0, 255); }
         if (sDTLA026.Length > 255) { sDTLA026 = sDTLA026.Substring(0, 255); }
         if (sDTLA028.Length > 255) { sDTLA028 = sDTLA028.Substring(0, 255); }
         if (sDTLA030.Length > 255) { sDTLA030 = sDTLA030.Substring(0, 255); }
         if (sDTLA032.Length > 255) { sDTLA032 = sDTLA032.Substring(0, 255); }
-
-        sDTLA019 = sDTLA019.Replace("'", "''");
+        
         sDTLA002 = sDTLA007;
 
         GBClass001 SBApp = new GBClass001();
@@ -389,12 +497,8 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
             sEXESQLSTR = sEXESQLSTR + " DTLA011 ='" + sDTLA011 + "', ";
             sEXESQLSTR = sEXESQLSTR + " DTLA012 ='" + sDTLA012 + "', ";
             sEXESQLSTR = sEXESQLSTR + " DTLA013 ='" + sDTLA013 + "', ";
-            sEXESQLSTR = sEXESQLSTR + " DTLA014 ='" + sDTLA014 + "', ";
-            sEXESQLSTR = sEXESQLSTR + " DTLA015 ='" + sDTLA015 + "', ";
-            sEXESQLSTR = sEXESQLSTR + " DTLA016 ='" + sDTLA016 + "', ";
             sEXESQLSTR = sEXESQLSTR + " DTLA017 ='" + sDTLA017 + "', ";
             sEXESQLSTR = sEXESQLSTR + " DTLA018 ='" + sDTLA018 + "', ";
-            sEXESQLSTR = sEXESQLSTR + " DTLA019 ='" + sDTLA019 + "', ";
             sEXESQLSTR = sEXESQLSTR + " DTLA020 ='" + sDTLA020 + "', ";
             sEXESQLSTR = sEXESQLSTR + " DTLA021 ='" + sDTLA021 + "', ";
             sEXESQLSTR = sEXESQLSTR + " DTLA022 ='" + sDTLA022 + "', ";
@@ -408,6 +512,7 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
             sEXESQLSTR = sEXESQLSTR + " DTLA030 ='" + sDTLA030 + "', ";
             sEXESQLSTR = sEXESQLSTR + " DTLA031 ='" + sDTLA031 + "', ";
             sEXESQLSTR = sEXESQLSTR + " DTLA032 ='" + sDTLA032 + "', ";
+            sEXESQLSTR = sEXESQLSTR + " DTLA034 ='" + sDTLA034 + "', ";
 
             sEXESQLSTR = sEXESQLSTR + " saveuser = '" + ssUserID + "', ";
             sEXESQLSTR = sEXESQLSTR + " savedate = getdate() ";
@@ -418,19 +523,70 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
             sEXESQLUPD = sEXESQLUPD + " Upd02 = 'Y', ";
             sEXESQLUPD = sEXESQLUPD + " Savdate02 = getdate() ";
             sEXESQLUPD = sEXESQLUPD + " Where Key01 = '" + sSWC000 + "'";
-            
+            C20.swcLogRC("SWCDT001", "審查紀錄", "詳情", "修改", sSWC000 + ";" + sDTLA000);
+
             SqlCommand objCmdUpd = new SqlCommand(sEXESQLSTR + sEXESQLUPD, SwcConn);
             objCmdUpd.ExecuteNonQuery();
             objCmdUpd.Dispose();
 
             //上傳檔案…
             UpLoadTempFileMoveChk(sSWC000);
+            //儲存審查意見
+            SaveReviewList();
 
-            string vCaseID = Request.QueryString["SWCNO"] + "";
-            Response.Write("<script>alert('資料已存檔'); location.href='SWC002.aspx?CaseId=" + vCaseID + "'; </script>");
+            SBApp.ViewRecord("審查表單", "update", rCaseId + "-" + sDTLA000);
             
         }
+        string btnType = ((Button)(sender)).ID;
+		if(btnType == "DataLock")
+			SendMailNotice(sSWC000);
+		
+		Response.Write("<script>alert('資料已存檔'); location.href='SWC003.aspx?SWCNO=" + sSWC000 + "'; </script>");
     }
+    private void SaveReviewList()
+    {
+        string vSWC000 = LBSWC000.Text;
+        string vSWC002 = LBSWC002.Text;
+        string vDTLA001 = LBDTL001.Text;
+        string ssUserID = Session["ID"] + "";
+        DataTable RList = (DataTable)ViewState["ReviewListVS"];
+        ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
+        string qq111 = " delete SWCDTL01R Where SWC000=@SWC000 and DTLA001=@DTLA001; ";
+
+        if (RList != null)
+        {
+            int i = 0;
+            for (i = 0; i <= (Convert.ToInt32(RList.Rows.Count) - 1); i++)
+            {
+                string tDTLR01 = RList.Rows[i]["DataId"].ToString().Trim();
+                string tDTLR02 = RList.Rows[i]["FullText"].ToString().Trim();
+                string tDTLR03 = RList.Rows[i]["SaveTime"].ToString().Trim();
+
+                string qq222 = " INSERT INTO SWCDTL01R (SWC000,SWC002,DTLA001,DTLR01,DTLR02,DTLR03,Saveuser,savedate) VALUES (@SWC000,@SWC002,@DTLA001,@DTLR01,@DTLR02,@DTLR03,@Saveuser,getdate()) ";
+                using (SqlConnection dbConn = new SqlConnection(connectionString.ConnectionString))
+                {
+                    dbConn.Open();
+                    using (var cmd = dbConn.CreateCommand())
+                    {
+                        cmd.CommandText = qq111+ qq222;
+                        cmd.Parameters.Add(new SqlParameter("@SWC000", vSWC000));
+                        #region.設定值
+                        cmd.Parameters.Add(new SqlParameter("@SWC002", vSWC002));
+                        cmd.Parameters.Add(new SqlParameter("@DTLA001", vDTLA001));
+                        cmd.Parameters.Add(new SqlParameter("@DTLR01", tDTLR01));
+                        cmd.Parameters.Add(new SqlParameter("@DTLR02", tDTLR02));
+                        cmd.Parameters.Add(new SqlParameter("@DTLR03", tDTLR03));
+                        cmd.Parameters.Add(new SqlParameter("@Saveuser", ssUserID));
+                        #endregion
+                        cmd.ExecuteNonQuery();
+                        cmd.Cancel();
+                    }
+                }
+                qq111 = "";
+            }
+        }
+    }
+
     private void UpLoadTempFileMoveChk(string CaseId)
     {
         Boolean folderExists;
@@ -440,8 +596,8 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
         string csUpLoadField = "TXTDTL018";
         TextBox csUpLoadAppoj = TXTDTL018;
 
-        string TempFolderPath = ConfigurationManager.AppSettings["SwcFileTemp"];
-        string SwcCaseFolderPath = ConfigurationManager.AppSettings["SwcFilePath"];
+        string TempFolderPath = ConfigurationManager.AppSettings["SwcFileTemp20"];
+        string SwcCaseFolderPath = ConfigurationManager.AppSettings["SwcFilePath20"];
 
         folderExists = Directory.Exists(SwcCaseFolderPath);
         if (folderExists == false)
@@ -567,7 +723,7 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
 
 
             // 檢查 Server 上該資料夾是否存在，不存在就自動建立
-            string serverDir = ConfigurationManager.AppSettings["SwcFileTemp"] + CaseId;
+            string serverDir = ConfigurationManager.AppSettings["SwcFileTemp20"] + CaseId;
 
             if (Directory.Exists(serverDir) == false) Directory.CreateDirectory(serverDir);
 
@@ -604,12 +760,13 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
                 switch (ChkType)
                 {
                     case "PIC2":
-                        UpLoadLink.ImageUrl = "..\\UpLoadFiles\\temp\\" + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
-                        UpLoadLink.NavigateUrl = "..\\UpLoadFiles\\temp\\" + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
+                        string tmpLink = "../tcgefile/SWCDOC/UpLoadFiles/temp/" + CaseId + "/" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
+                        UpLoadLink.ImageUrl = tmpLink;
+                        UpLoadLink.NavigateUrl = tmpLink;
                         break;
 
                     case "PIC":
-                        UpLoadView.Attributes.Add("src", "..\\UpLoadFiles\\temp\\" + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond);
+                        UpLoadView.Attributes.Add("src","../tcgefile/SWCDOC/UpLoadFiles/temp/" + CaseId + "/" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond);
                         //UpLoadView.ImageUrl = "..\\UpLoadFiles\\temp\\" + CaseId +"\\"+ geohfilename;
 
                         imagestitch(UpLoadView, serverDir + "\\" + SwcFileName, 320, 180);
@@ -617,7 +774,7 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
 
                     case "DOC":
                         UpLoadLink.Text = SwcFileName;
-                        UpLoadLink.NavigateUrl = "..\\UpLoadFiles\\temp\\" + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
+                        UpLoadLink.NavigateUrl = "../tcgefile/SWCDOC/UpLoadFiles/temp/" + CaseId + "/" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
                         UpLoadLink.Visible = true;
                         break;
 
@@ -642,7 +799,6 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
         string rDTLNO = LBDTL001.Text + "";
         error_msg.Text = "";
         FileUpLoadApp("PIC2", TXTDTL018_fileupload, TXTDTL018, "TXTDTL018", "_" + rDTLNO + "_01_photo1", null, HyperLink018);
-
     }
     protected void TXTDTL020_fileuploadok_Click(object sender, EventArgs e)
     {
@@ -656,7 +812,18 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
     {
         string sSWC000 = LBSWC000.Text;
         string sDTLA000 = LBDTL001.Text + "";
-
+		
+		//20220523若上一次修正本尚未上傳，無法送出只能暫存
+		string sfno = "";
+		bool Can_Send = false;
+		if (DDLDTL006.SelectedValue != "" && DDLDTL006.SelectedValue != "1") {
+			sfno = "00"+(Convert.ToInt16(DDLDTL006.SelectedValue)-1).ToString();
+			Can_Send = CanSend(sSWC000,sfno);
+			if(!Can_Send){
+				Response.Write("<script>alert('您好，前次審查會議紀錄尚未上傳修正本，請確認承辦技師是否已上傳修正本。')</script>");
+				return;
+			}
+		}
         string sEXESQLSTR = "";
 
 		
@@ -689,10 +856,7 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
             objCmdUpd.ExecuteNonQuery();
             objCmdUpd.Dispose();
         }
-
-        SendMailNotice(sSWC000);
         SaveCase_Click(sender, e);
-
     }
     private void SendMailNotice(string gSWC000)
     {
@@ -738,7 +902,7 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
                 string tETEmail = readeSwc["ETEmail"] + "";
                 string tSWC108 = readeSwc["SWC108"] + "";
 
-                //寄件名單
+                //寄信名單：股長、管理者、承辦人員、章姿隆
                 string SentMailGroup = "";
                 for (int i = 1; i < arrayUserId.Length; i++)
                 {
@@ -748,28 +912,20 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
                     string aUserMail = arrayUserMail[i];
                     string aMBGROUP = arrayMBGROUP[i];
 
-                    if (aJobTitle.Trim() == "科長" || aJobTitle.Trim() == "正工" || aJobTitle.Trim() == "股長" || aMBGROUP.Trim() == "系統管理員" || aUserName.Trim() == tSWC025.Trim())
+                    if (aJobTitle.Trim() == "股長" || aMBGROUP.Trim() == "系統管理員" || aUserName.Trim() == tSWC025.Trim() || aUserName.Trim() == "章姿隆")
                     {
                         SentMailGroup = SentMailGroup + ";;" + aUserMail;
 
                         //一人一封不打結
                         string[] arraySentMail01 = new string[] { aUserMail };
                         string ssMailSub01 = tSWC012 + "水土保持計畫【" + tSWC002 + "】已新增審查紀錄";
-                        string ssMailBody01 = tSWC012 + "【" + tSWC005 + "】已新增審查紀錄，請上管理平台查看" + "<br><br>";
+                        string ssMailBody01 = tSWC012 + "【" + tSWC005 + "】已新增審查紀錄，請上臺北市坡地管理資料庫查看" + "<br><br>";
                         ssMailBody01 = ssMailBody01 + "「臺北市水土保持書件管理平台」系統管理員 敬上<br><br><br>";
                         ssMailBody01 = ssMailBody01 + "＜此封信為系統自動發送，請勿直接回信，若有任何問題請洽臺北市政府工務局大地工程處＞";
 
                         bool MailTo01 = SBApp.Mail_Send(arraySentMail01, ssMailSub01, ssMailBody01);
                     }
                 }
-
-                //string[] arraySentMail01 = SentMailGroup.Split(new string[] { ";;" }, StringSplitOptions.None);
-                //string ssMailSub01 = tSWC012 + "水土保持計畫【" + tSWC002 + "】已新增審查紀錄";
-                //string ssMailBody01 = tSWC012 + "【" + tSWC005 + "】已新增審查紀錄，請上管理平台查看" + "<br><br>";
-                //ssMailBody01 = ssMailBody01 + "「臺北市水土保持書件管理平台」系統管理員 敬上<br><br><br>";
-                //ssMailBody01 = ssMailBody01 + "＜此封信為系統自動發送，請勿直接回信，若有任何問題請洽臺北市政府工務局大地工程處＞";
-                
-                //bool MailTo01 = SBApp.Mail_Send(arraySentMail01, ssMailSub01, ssMailBody01);
                 
                 string[] arraySentMail02a = new string[] { tETEmail };
                 string[] arraySentMail02b = new string[] { tSWC108 };
@@ -820,8 +976,8 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
         ConnERR.Close();
         
         //刪實體檔
-        string TempFolderPath = ConfigurationManager.AppSettings["SwcFileTemp"];
-        string SwcCaseFolderPath = ConfigurationManager.AppSettings["SwcFilePath"];
+        string TempFolderPath = ConfigurationManager.AppSettings["SwcFileTemp20"];
+        string SwcCaseFolderPath = ConfigurationManager.AppSettings["SwcFilePath20"];
 
         string DelFileName = ImgText.Text;
         string TempFileFullPath = TempFolderPath + csCaseID + "\\" + ImgText.Text;
@@ -952,7 +1108,205 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
     {
         string rDTLNO = LBDTL001.Text + "";
         error_msg.Text = "";
-        DeleteUpLoadFile("PIC", TXTDTL018, TXTDTL018_img, null, "DTLA018", "TXTDTL018", 320, 180);
+        DeleteUpLoadFile("PIC", TXTDTL018, null, HyperLink018 , "DTLA018", "TXTDTL018", 320, 180);
+    }
+
+    protected void AddList_Click(object sender, EventArgs e)
+    {
+        string sAction = AddList.Text + "";
+
+        string DataTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+        string tFullText = ReViewText.Text;
+        string tShortText = ReViewText.Text;
+        if (tShortText.Length > 20) { tShortText = tShortText.Substring(0, 20) + "…"; };
+
+        DataTable ReviewListVS = (DataTable)ViewState["ReviewListVS"];
+
+        switch (sAction)
+        {
+            case "確定修改":
+                int aa = Convert.ToInt16(Session["ReViewListIndex"].ToString());
+
+                ReviewListVS.Rows[aa]["ShortText"] = tShortText;
+                ReviewListVS.Rows[aa]["FullText"] = tFullText;
+                ReviewListVS.Rows[aa]["SaveTime"] = DataTime;
+
+                ViewState["ReviewListVS"] = ReviewListVS;
+
+                GVReViewList.DataSource = ReviewListVS;
+                GVReViewList.DataBind();
+
+                AddList.Text = "加入清單";
+                QuitAddListTxt.Visible = false;
+                ReViewText.Text = "";
+
+                break;
+
+            default:
+                ListNo.Text = (Convert.ToInt16(ListNo.Text) + 1).ToString();
+
+                //設定資料頭
+                if (ReviewListVS == null)
+                {
+                    DataTable ListTable = new DataTable();
+
+                    ListTable.Columns.Add(new DataColumn("DataId", typeof(string)));
+                    ListTable.Columns.Add(new DataColumn("ShortText", typeof(string)));
+                    ListTable.Columns.Add(new DataColumn("FullText", typeof(string)));
+                    ListTable.Columns.Add(new DataColumn("SaveTime", typeof(string)));
+
+                    ViewState["ReviewListVS"] = ListTable;
+                    ReviewListVS = ListTable;
+                }
+
+                //設定資料
+
+                DataRow ListNewRow = ReviewListVS.NewRow();
+
+                ListNewRow["DataId"] = ListNo.Text;
+                ListNewRow["ShortText"] = tShortText;
+                ListNewRow["FullText"] = tFullText;
+                ListNewRow["SaveTime"] = DataTime;
+
+                ReviewListVS.Rows.Add(ListNewRow);
+
+                ViewState["ReviewListVS"] = ReviewListVS;
+
+                GVReViewList.DataSource = ReviewListVS;
+                GVReViewList.DataBind();
+
+                ReViewText.Text = "";
+
+                break;
+        }
+    }
+
+
+    protected void GVReViewList_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        string ExcAction = e.CommandName;
+        int aa = Convert.ToInt32(e.CommandArgument);
+
+        switch (ExcAction)
+        {
+            case "DelReView":
+                int number = Convert.ToInt32(GVReViewList.Rows[aa].Cells[0].Text);
+
+                DataTable VS_GV1 = (DataTable)ViewState["ReviewListVS"];
+                
+                VS_GV1.Rows.RemoveAt(aa);
+
+                ViewState["ReviewListVS"] = VS_GV1;
+                GVReViewList.DataSource = VS_GV1;
+                GVReViewList.DataBind();
+
+                break;
+
+            case "EditReView":
+                Session["ReViewListIndex"] = aa.ToString();
+
+                DataTable GetSTReviewList = (DataTable)ViewState["ReviewListVS"];
+
+                string DataId = GVReViewList.Rows[aa].Cells[0].Text;
+                string DataText = GetSTReviewList.Rows[aa][2].ToString();
+
+                ReViewText.Text = DataText;
+                AddList.Text = "確定修改";
+                QuitAddListTxt.Visible = true;
+                break;
+        }
 
     }
+    private bool canDoModify(string pSWC000, string pDTLF000)
+    {
+        Class1 C1 = new Class1();
+        bool rValue = true;
+        string ssUserID = Session["ID"] + "";
+
+        string sqlStr = " select * from SWCDTL01 Where SWC000=@SWC000 and DTLA000=@DTLA000; ";
+        ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
+        using (SqlConnection TslmConn = new SqlConnection(connectionString.ConnectionString))
+        {
+            TslmConn.Open();
+            using (var cmd = TslmConn.CreateCommand())
+            {
+                cmd.CommandText = sqlStr;
+                #region.設定值
+                cmd.Parameters.Add(new SqlParameter("@SWC000", pSWC000));
+                cmd.Parameters.Add(new SqlParameter("@DTLA000", pDTLF000));
+                #endregion
+                cmd.ExecuteNonQuery();
+
+                using (SqlDataReader readerTslm = cmd.ExecuteReader())
+                {
+                    while (readerTslm.Read())
+                    {
+                        string tmpDataLock = readerTslm["DATALOCK"] + "";
+                        //string tmpDataLock2 = readerTslm["DATALOCK2"] + "";
+                        string tmpSaveuser = readerTslm["Saveuser"] + "";
+
+                        if (tmpDataLock == "Y")
+                            rValue = false;
+                        //else if (tmpDataLock2 != "Y" && tmpSaveuser != ssUserID)
+                        else if (tmpSaveuser != ssUserID && C1.getSWCSWCData(pSWC000, "SWC022ID") != ssUserID)
+                                    rValue = false;
+
+                    }
+                    readerTslm.Close();
+                }
+                cmd.Cancel();
+            }
+        }
+        return rValue;
+    }
+
+    protected void QuitAddListTxt_Click(object sender, EventArgs e)
+    {
+        AddList.Text = "加入清單";
+        QuitAddListTxt.Visible = false;
+        ReViewText.Text = "";
+    }
+	protected void DDLDTL006_SelectedIndexChanged(object sender, EventArgs e)
+	{
+		if(DDLDTL006.SelectedIndex==1){
+			TXTDTL034.Text="";
+			TXTDTL034.Enabled=false;
+		}
+		if(DDLDTL006.SelectedIndex==0){
+			TXTDTL034.Enabled=true;
+		}
+	}
+	
+	protected bool CanSend(string SWC000,string no)
+    {
+        bool rValue = false;
+
+        string sqlStr = " select * from ShareFiles Where SWC000=@SWC000 and SFTYPE=@SFTYPE; ";
+        ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
+        using (SqlConnection TslmConn = new SqlConnection(connectionString.ConnectionString))
+        {
+            TslmConn.Open();
+            using (var cmd = TslmConn.CreateCommand())
+            {
+                cmd.CommandText = sqlStr;
+                #region.設定值
+                cmd.Parameters.Add(new SqlParameter("@SWC000", SWC000));
+                cmd.Parameters.Add(new SqlParameter("@SFTYPE", no));
+                #endregion
+                cmd.ExecuteNonQuery();
+
+                using (SqlDataReader readeSwc = cmd.ExecuteReader())
+                {
+                    while (readeSwc.Read())
+                    {
+                        if(readeSwc.HasRows)
+							rValue = true;
+                    }
+                    readeSwc.Close();
+                }
+                cmd.Cancel();
+            }
+        }
+        return rValue;
+	}
 }

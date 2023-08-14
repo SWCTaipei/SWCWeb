@@ -1,23 +1,7 @@
-﻿/*  Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
@@ -42,6 +26,9 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
 
         if (!IsPostBack)
         {
+            Session["AddGuildGVFile"] = "";
+            Session["GuildSelect"] = "";
+
             if (rETID == "" && SessETID =="")
             {
                 Response.Redirect("SWC001.aspx");
@@ -52,6 +39,7 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
                 Image1.ImageUrl = "../images/title/title-apply.png";
                 GetUserData("NEW");
                 TitleLink01.Visible = false;
+                GenerateDropDownList();
             }
             else
             {
@@ -61,6 +49,7 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
                 }
                 else
                 {
+                    GenerateDropDownList();
                     Image1.ImageUrl = "../images/title/title-account.png";
                     JSID.Text = SessETID;
                     TXTACTION.Text = SessETID;
@@ -70,6 +59,9 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
                 }
             }
         }
+        TXTETPWOLD.Attributes.Add("value", TXTETPWOLD.Text);
+        TXTETPW.Attributes.Add("value", TXTETPW.Text);
+        TXTETPWChk.Attributes.Add("value", TXTETPWChk.Text);
         GoTslm.Visible = false;
         //以下全區公用
 
@@ -84,6 +76,42 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
             TextUserName.Text = ssUserName + ssJobTitle + "，您好";
         }
     }
+
+    private void GenerateDropDownList()
+    {
+        //身份別
+        string[] array_Identity = new string[] { "", "學校老師", "公務員", "技師" };
+        DDLIdentity.DataSource = array_Identity;
+        DDLIdentity.DataBind();
+        #region-公會選單
+        DDLGuild.Items.Clear();
+        DDLGuild.Items.Add(new ListItem("選擇公會名稱", ""));
+
+        ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["TSLMSWCCONN"];
+        using (SqlConnection SWCConn = new SqlConnection(connectionString.ConnectionString))
+        {
+            SWCConn.Open();
+
+            //公會
+            string strSQLCase = " SELECT * FROM [geouser]  where unit = '技師公會' order by id ";
+
+            SqlDataReader readerData;
+            SqlCommand objCmdRV = new SqlCommand(strSQLCase, SWCConn);
+            readerData = objCmdRV.ExecuteReader();
+
+            while (readerData.Read())
+            {
+                string tuserid = readerData["userid"] + "";
+                string tname = readerData["name"] + "";
+
+                DDLGuild.Items.Add(new ListItem(tname, tuserid));
+            }
+            readerData.Close();
+            objCmdRV.Dispose();
+        }
+        #endregion
+    }
+
     private void GetUserData(string v)
     {
         GBClass001 SBApp = new GBClass001();
@@ -128,6 +156,7 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
 
                 while (readeUser.Read())
                 {
+                    #region-取得db資料
                     string tSYSID = readeUser["SYSID"] + "";
                     string tETID = readeUser["ETID"] + "";
                     string tETPW = readeUser["ETPW"] + "";
@@ -136,19 +165,24 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
                     string tETTCNo02 = readeUser["ETTCNo02"] + "";
                     string tETTCNo03 = readeUser["ETTCNo03"] + "";
                     string tETTCNo04 = readeUser["ETTCNo04"] + "";
+                    string tETTCNo05 = readeUser["ETTCNo05"] + "";
                     string tETTel = readeUser["ETTel"] + "";
                     string tETEmail = readeUser["ETEmail"] + "";
                     string tETOrgName = readeUser["ETOrgName"] + "";
                     string tETOrgGUINo = readeUser["ETOrgGUINo"] + "";
                     string tETOrgIssNo = readeUser["ETOrgIssNo"] + "";
                     string tETOrgAddr = readeUser["ETOrgAddr"] + "";
+                    string tETOrgAddr2 = readeUser["ETOrgAddr2"] + "";
                     string tETOrgTel = readeUser["ETOrgTel"] + "";
                     string tETCOPC = readeUser["ETCOPC"] + "";
                     string tTCNo01ED = readeUser["TCNo01ED"] + "";
                     string tTCNo02ED = readeUser["TCNo02ED"] + "";
                     string tTCNo03ED = readeUser["TCNo03ED"] + "";
                     string tTCNo04ED = readeUser["TCNo04ED"] + "";
+                    string tTCNo05ED = readeUser["TCNo05ED"] + "";
                     string tETCOPCExp = readeUser["ETCOPCExp"] + "";
+                    string tETIdentity = readeUser["ETIdentity"] + "";
+                    #endregion
 
                     TXTSYSID.Text = tSYSID;
                     TXTETIDNo.Text = tETID;
@@ -158,52 +192,44 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
                     TXTETTCNo02.Text = tETTCNo02;
                     TXTETTCNo03.Text = tETTCNo03;
                     TXTETTCNo04.Text = tETTCNo04;
+                    TXTETTCNo05.Text = tETTCNo05;
                     TXTETTel.Text = tETTel;
                     TXTETEmail.Text = tETEmail;
                     TXTETOrgName.Text = tETOrgName;
                     TXTETOrgGUINo.Text = tETOrgGUINo;
                     TXTETOrgIssNo.Text = tETOrgIssNo;
                     TXTETOrgAddr.Text = tETOrgAddr;
+                    TXTETOrgAddr2.Text = tETOrgAddr2;
                     TXTETOrgTel.Text = tETOrgTel;
-                    TXTETCOPC.Text = tETCOPC;
+                    DDLIdentity.SelectedItem.Text = tETIdentity;
 
                     TXTTCNo01ED.Text = SBApp.DateView(tTCNo01ED, "00");
                     TXTTCNo02ED.Text = SBApp.DateView(tTCNo02ED, "00");
                     TXTTCNo03ED.Text = SBApp.DateView(tTCNo03ED, "00");
                     TXTTCNo04ED.Text = SBApp.DateView(tTCNo04ED, "00");
-                    TXTETCOPCExp.Text = SBApp.DateView(tETCOPCExp, "00");
+                    TXTTCNo05ED.Text = SBApp.DateView(tTCNo05ED, "00");
 
                     TXTETIDNo.Visible = false;
                     LBETIDNo.Visible = true;
 
-                    //string tETIDNo = readeUser["ETIDNo"] + ";
+                    string tETIDNo = readeUser["ETIDNo"] + "";
+                    string tETStatus = readeUser["ETStatus"] + "";
+                    string tApproved = readeUser["Approved"] + "";
+                    string tApprovedDate = readeUser["ApprovedDate"] + "";
+                    string tSaveuser = readeUser["Saveuser"] + "";
+                    string tsavedate = readeUser["savedate"] + "";
+                    string tstatus = readeUser["status"] + "";
+                    string tGDSub01 = readeUser["GuildSubstitute"] + "";
+                    string tGDSub01Chk = readeUser["GuildTcgeChk"] + "";
+                    string tGDSub02 = readeUser["GuildSubstitute2"] + "";
 
-
-
-
-
-
-
-
-
-                    //string tETStatus = readeUser["ETStatus"] + ";
-
-                    //string tApproved = readeUser["Approved"] + ";
-
-                    //string tApprovedDate = readeUser["ApprovedDate"] + ";
-
-                    //string tSaveuser = readeUser["Saveuser"] + ";
-
-                    //string tsavedate = readeUser["savedate"] + ";
-
-
-                    //string tstatus = readeUser["status"] + ";
-
-
+                    TextBoxGD01.Text = tGDSub01;
+                    TextBoxGD01Chk.Text = tGDSub01Chk;
+                    TextBoxGD02.Text = tGDSub02;
 
                     //圖片類處理
-                    string[] arrayFileName = new string[] { tETTCNo01, tETTCNo02, tETTCNo03, tETTCNo04 };
-                    System.Web.UI.WebControls.Image[] arrayImgAppobj = new System.Web.UI.WebControls.Image[] { TXTETTCNo01_img, TXTETTCNo02_img, TXTETTCNo03_img, TXTETTCNo04_img };
+                    string[] arrayFileName = new string[] { tETTCNo01, tETTCNo02, tETTCNo03, tETTCNo04, tETTCNo05};
+                    System.Web.UI.WebControls.Image[] arrayImgAppobj = new System.Web.UI.WebControls.Image[] { TXTETTCNo01_img, TXTETTCNo02_img, TXTETTCNo03_img, TXTETTCNo04_img, TXTETTCNo05_img };
 
                     for (int i = 0; i < arrayFileName.Length; i++)
                     {
@@ -215,7 +241,7 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
                         }
                         else
                         {
-                            string tempImgPateh = UserUpLoadFilePath + v + "/" + strFileName;
+                            string tempImgPateh = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/SwcUser/" + v + "/" + strFileName;
                             ImgFileObj.Attributes.Add("src", tempImgPateh + "?ts=" + DateTime.Now.Millisecond);
                         }
                     }
@@ -225,6 +251,82 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
                 objCmdUser.Dispose();
 
             }
+
+            #region 公會列表
+            string exeSqlStr = " select * from ETUOwnGuild where ETID='"+v+"' order by No ";
+
+            using (SqlConnection GuildConn = new SqlConnection(connectionString.ConnectionString))
+            {
+                GuildConn.Open();
+
+                SqlDataReader readerData;
+                SqlCommand objCmdRV = new SqlCommand(exeSqlStr, GuildConn);
+                readerData = objCmdRV.ExecuteReader();
+
+                //float nj = 0;
+                string tGuildSel = "";
+                while (readerData.Read())
+                {
+                    string tNo = readerData["No"] + "";
+                    string tGuildId = readerData["EtGuild"] + "";
+                    string tGuildName = readerData["GuildName"] + "";
+                    string tCertificate = readerData["Certificate"] + "";
+                    string tExperience = readerData["Experience"] + "";
+                    string tEXP = readerData["EXP"] + "";
+                    string tExperienceText = "";
+                    string tGuildFileLink = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/SwcUser/" + v + "/" + tCertificate; //GuildImage.ImageUrl;
+                    string tExperienceLink = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/SwcUser/" + v + "/" + tExperience;
+                    tGuildSel += tGuildId + ";";
+
+                    if (tExperience != "") tExperienceText = "審查經歷";
+
+                    DataTable tbGuild = (DataTable)ViewState["OwnGuild"];
+
+                    if (tbGuild == null)
+                    {
+                        DataTable GVGuild = new DataTable();
+
+                        GVGuild.Columns.Add(new DataColumn("NI", typeof(string)));
+                        GVGuild.Columns.Add(new DataColumn("GuildName", typeof(string)));
+                        GVGuild.Columns.Add(new DataColumn("GuildId", typeof(string)));
+                        GVGuild.Columns.Add(new DataColumn("GuildText", typeof(string)));
+                        GVGuild.Columns.Add(new DataColumn("GuildFileName", typeof(string)));
+                        GVGuild.Columns.Add(new DataColumn("GuildFileLink", typeof(string)));
+                        GVGuild.Columns.Add(new DataColumn("ExperienceText", typeof(string)));
+                        GVGuild.Columns.Add(new DataColumn("ExperienceFileName", typeof(string)));
+                        GVGuild.Columns.Add(new DataColumn("ExperienceFileLink", typeof(string)));
+                        GVGuild.Columns.Add(new DataColumn("EXPDate", typeof(string)));
+
+                        ViewState["OwnGuild"] = GVGuild;
+                        tbGuild = (DataTable)ViewState["OwnGuild"];
+                    }
+
+                    DataRow GVGuildRow = tbGuild.NewRow();
+
+                    GVGuildRow["NI"] = tNo;
+                    GVGuildRow["GuildName"] = tGuildName;
+                    GVGuildRow["GuildId"] = tGuildId;
+                    GVGuildRow["GuildText"] = "公會證書";
+                    GVGuildRow["GuildFileName"] = tCertificate;
+                    GVGuildRow["GuildFileLink"] = tGuildFileLink;
+                    GVGuildRow["ExperienceText"] = tExperienceText;
+                    GVGuildRow["ExperienceFileName"] = tExperience;
+                    GVGuildRow["ExperienceFileLink"] = tExperienceLink;
+                    GVGuildRow["EXPDate"] = SBApp.DateView(tEXP,"00");
+
+                    tbGuild.Rows.Add(GVGuildRow);
+                    ViewState["OwnGuild"] = tbGuild;
+
+                    GuildList.DataSource = tbGuild;
+                    GuildList.DataBind();
+
+                    GuildCount.Text = tNo;
+                }
+                readerData.Close();
+                objCmdRV.Dispose();
+                Session["GuildSelect"] = tGuildSel;
+            }
+            #endregion
         }
     }
 
@@ -247,6 +349,7 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
 
         string SSPW = Session["PW"]+"";
 
+        #region-取得頁面值
         string SaveDate = "Y";
         string NewAccount = TXTETIDNo.Text + "";
         string gETID1 = TXTETPW.Text + "";
@@ -257,12 +360,13 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
         string gETOrgName = TXTETOrgName.Text + "";
         string gETOrgGUINo = TXTETOrgGUINo.Text + "";
         string gETOrgAddr = TXTETOrgAddr.Text + "";
+        string gETOrgAddr2 = TXTETOrgAddr2.Text + "";
         string gETOrgTel = TXTETOrgTel.Text + "";
-        string gETCOPC = TXTETCOPC.Text + "";
         string gETTCNo01 = TXTETTCNo01.Text + "";
         string gETTCNo02 = TXTETTCNo02.Text + "";
         string gETTCNo03 = TXTETTCNo03.Text + "";
         string gETTCNo04 = TXTETTCNo04.Text + "";
+        string gETTCNo05 = TXTETTCNo05.Text + "";
         string gETOrgIssNo = TXTETOrgIssNo.Text + "";
         string gSYSID = TXTSYSID.Text + "";
         string gOldPw = TXTETPWOLD.Text + "";
@@ -270,8 +374,12 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
         string gTCNo02ED = TXTTCNo02ED.Text + "";
         string gTCNo03ED = TXTTCNo03ED.Text + "";
         string gTCNo04ED = TXTTCNo04ED.Text + "";
-        string gETCOPCExp = TXTETCOPCExp.Text + "";
+        string gTCNo05ED = TXTTCNo05ED.Text + "";
+        string gIdentity = DDLIdentity.SelectedItem.Text + "";
+        float gGuildCount = GuildList.Rows.Count;
+        #endregion
 
+        #region-基本檢查
         GBClass001 SBApp = new GBClass001();
 
         if (gOldPw == "" && (gETID1 != "" || gETID2 !=""))
@@ -298,7 +406,15 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
             return;
         }
 
-        if(SaveDate == "Y")
+        if (gIdentity == "技師")
+        {
+            if (gGuildCount < 1) { Response.Write("<script>alert('請上傳公會會員證書'); </script>"); return; }
+            if (gETOrgIssNo == "") { Response.Write("<script>alert('請上傳公會會員證書'); </script>"); return; }
+            if (gTCNo01ED == "" & gTCNo02ED == "" & gTCNo03ED == "" & gTCNo04ED == "") { Response.Write("<script>alert('請上傳至少一張執業執照');</script>"); return; }
+        }
+        #endregion
+
+        if (SaveDate == "Y")
         {
             string UserSqlStr = "";
 
@@ -308,25 +424,28 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
                 UserSqlStr = UserSqlStr + " ETPW ='" + gETID1 + "', ";
                 Session["PW"] = gETID1;
             }
+            #region-存入db
             UserSqlStr = UserSqlStr + " ETName =N'" + gETName + "', ";
             UserSqlStr = UserSqlStr + " ETTel =N'" + gETTel + "', ";
             UserSqlStr = UserSqlStr + " ETEmail =N'" + gETEmail + "', ";
             UserSqlStr = UserSqlStr + " ETOrgName =N'" + gETOrgName + "', ";
             UserSqlStr = UserSqlStr + " ETOrgGUINo =N'" + gETOrgGUINo + "', ";
             UserSqlStr = UserSqlStr + " ETOrgAddr =N'" + gETOrgAddr + "', ";
+            UserSqlStr = UserSqlStr + " ETOrgAddr2 =N'" + gETOrgAddr2 + "', ";
             UserSqlStr = UserSqlStr + " ETOrgTel =N'" + gETOrgTel + "', ";
-            UserSqlStr = UserSqlStr + " ETCOPC =N'" + gETCOPC + "', ";
             UserSqlStr = UserSqlStr + " ETTCNo01 =N'" + gETTCNo01 + "', ";
             UserSqlStr = UserSqlStr + " ETTCNo02 =N'" + gETTCNo02 + "', ";
             UserSqlStr = UserSqlStr + " ETTCNo03 =N'" + gETTCNo03 + "', ";
             UserSqlStr = UserSqlStr + " ETTCNo04 =N'" + gETTCNo04 + "', ";
+            UserSqlStr = UserSqlStr + " ETTCNo05 =N'" + gETTCNo05 + "', ";
             UserSqlStr = UserSqlStr + " ETOrgIssNo =N'" + gETOrgIssNo + "', ";
             UserSqlStr = UserSqlStr + " TCNo01ED =N'" + gTCNo01ED + "', ";
             UserSqlStr = UserSqlStr + " TCNo02ED =N'" + gTCNo02ED + "', ";
             UserSqlStr = UserSqlStr + " TCNo03ED =N'" + gTCNo03ED + "', ";
             UserSqlStr = UserSqlStr + " TCNo04ED =N'" + gTCNo04ED + "', ";
-            UserSqlStr = UserSqlStr + " ETCOPCExp =N'" + gETCOPCExp + "', ";
+            UserSqlStr = UserSqlStr + " TCNo05ED =N'" + gTCNo05ED + "', ";
             UserSqlStr = UserSqlStr + " SYSID =N'" + gSYSID + "', ";
+            UserSqlStr = UserSqlStr + " ETIdentity =N'" + gIdentity + "', ";
             UserSqlStr = UserSqlStr + " saveuser = N'" + NewAccount + "', ";
             UserSqlStr = UserSqlStr + " savedate = getdate() ";
             UserSqlStr = UserSqlStr + " Where ETIDNo = '" + NewAccount + "'";
@@ -341,9 +460,14 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
                 objCmdUser.Dispose();
 
             }
+            #endregion
 
             //上傳檔案…
             UpLoadTempFileMoveChk(NewAccount);
+
+            #region-SaveGuildData
+            SaveGuildData(NewAccount);
+            #endregion
 
             GetUserData(NewAccount);
             
@@ -352,9 +476,74 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
         }
     }
 
+    private void SaveGuildData(string newAccount)
+    {
+        #region-公會會員證書存檔
+        DataTable dtGuild = new DataTable();
+
+        string exeSQLStr = " delete ETUOwnGuild Where ETID = '" + newAccount + "' ; ";
+        ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
+        using (SqlConnection SWCConn = new SqlConnection(connectionString.ConnectionString))
+        {
+            SWCConn.Open();
+            SqlCommand objCmdItem = new SqlCommand(exeSQLStr, SWCConn);
+            objCmdItem.ExecuteNonQuery();
+
+            objCmdItem.Cancel();
+            objCmdItem.Dispose();
+        }
+
+        dtGuild = (DataTable)ViewState["OwnGuild"];
+
+        if (dtGuild != null)
+        {
+            int i = 0;
+
+            for (i = 0; i <= (Convert.ToInt32(dtGuild.Rows.Count) - 1); i++)
+            {
+                string tNo = dtGuild.Rows[i]["NI"].ToString().Trim();
+                string tEtGuild = dtGuild.Rows[i]["GuildId"].ToString().Trim();
+                string tGuildName = dtGuild.Rows[i]["GuildName"].ToString().Trim();
+                string tCertificate = dtGuild.Rows[i]["GuildFileName"].ToString().Trim();
+                string tExperience = dtGuild.Rows[i]["ExperienceFileName"].ToString().Trim();
+                string tEXP = dtGuild.Rows[i]["EXPDate"].ToString().Trim();
+
+                exeSQLStr = " insert into ETUOwnGuild (No,ETID,EtGuild,GuildName,Certificate,Experience,EXP) VALUES ";
+                exeSQLStr += " (@No,@ETID,@EtGuild,@GuildName,@Certificate,@Experience,@EXP); ";
+                #region-存入db
+                using (SqlConnection SWCConn = new SqlConnection(connectionString.ConnectionString))
+                {
+                    SWCConn.Open();
+
+                    using (var cmd = SWCConn.CreateCommand())
+                    {
+                        cmd.CommandText = exeSQLStr;
+                        #region-設定值
+                        cmd.Parameters.Add(new SqlParameter("@No", tNo));
+                        cmd.Parameters.Add(new SqlParameter("@ETID", newAccount));
+                        cmd.Parameters.Add(new SqlParameter("@EtGuild", tEtGuild));
+                        cmd.Parameters.Add(new SqlParameter("@GuildName", tGuildName));
+                        cmd.Parameters.Add(new SqlParameter("@Certificate", tCertificate));
+                        cmd.Parameters.Add(new SqlParameter("@Experience", tExperience));
+                        cmd.Parameters.Add(new SqlParameter("@EXP", tEXP));
+                        #endregion
+                        cmd.ExecuteNonQuery();
+                        cmd.Cancel();
+                    }
+                }
+                #endregion
+            }            
+        }
+        #endregion
+    }
+
     protected void AddNewAcc_Click(object sender, EventArgs e)
     {
+        GBClass001 SBApp = new GBClass001();
+
         string SaveDate = "Y";
+		string FirstApply="true";
+        #region-取得畫面資料
         string NewAccount = TXTETIDNo.Text + "";
         string gETID1 = TXTETPW.Text + "";
         string gETID2 = TXTETPWChk.Text + "";
@@ -362,47 +551,57 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
         string gETTel = TXTETTel.Text + "";
         string gETEmail = TXTETEmail.Text + "";
         string gETOrgName = TXTETOrgName.Text + "";
-        string gETOrgGUINo = TXTETOrgGUINo.Text = "";
+        string gETOrgGUINo = TXTETOrgGUINo.Text + "";
         string gETOrgAddr = TXTETOrgAddr.Text + "";
+        string gETOrgAddr2 = TXTETOrgAddr2.Text + "";
         string gETOrgTel = TXTETOrgTel.Text + "";
-        string gETCOPC = TXTETCOPC.Text + "";
         string gETTCNo01 = TXTETTCNo01.Text + "";
         string gETTCNo02 = TXTETTCNo02.Text + "";
         string gETTCNo03 = TXTETTCNo03.Text + "";
         string gETTCNo04 = TXTETTCNo04.Text + "";
+        string gETTCNo05 = TXTETTCNo05.Text + "";
         string gETOrgIssNo = TXTETOrgIssNo.Text + "";
         string gSYSID = TXTSYSID.Text + "";
         string gTCNo01ED = TXTTCNo01ED.Text + "";
         string gTCNo02ED = TXTTCNo02ED.Text + "";
         string gTCNo03ED = TXTTCNo03ED.Text + "";
         string gTCNo04ED = TXTTCNo04ED.Text + "";
-        string gETCOPCExp = TXTETCOPCExp.Text + "";
-        
-
-        GBClass001 SBApp = new GBClass001();
+        string gTCNo05ED = TXTTCNo05ED.Text + "";
+        string gIdentity = DDLIdentity.SelectedItem.Text+"";
+        float gGuildCount = GuildList.Rows.Count;
 
         NewAccount = NewAccount.ToUpper();
 
-        if (NewAccount == "")
-        {
-            error_msg.Text = SBApp.AlertMsg("身分證字號務必填登，謝謝!!");
-            TXTETIDNo.Focus();
-            return;
-        }
-        if (gETID1 != gETID2)
-        {
-            error_msg.Text = SBApp.AlertMsg("密碼與確認密碼不符");
-            TXTETPW.Focus();
-            return;
-        }
+        if (gIdentity.Trim() == "") { Response.Write("<script>alert('請選擇身分別'); </script>"); DDLIdentity.Focus(); return; }
+        if (gETName.Trim() == "") { Response.Write("<script>alert('請輸入姓名'); </script>"); TXTETName.Focus(); return; }
+        if (NewAccount == "") { Response.Write("<script>alert('身分證字號務必填登，謝謝!!'); </script>"); TXTETIDNo.Focus(); return; }
+        if (gETID1 == "") { Response.Write("<script>alert('請輸入密碼'); </script>"); TXTETIDNo.Focus(); return; }
+        if (gETID1 != gETID2) { Response.Write("<script>alert('密碼與確認密碼不符'); </script>"); TXTETPW.Focus(); return; }
+        if (gETTel == "") { Response.Write("<script>alert('請輸入手機'); </script>"); TXTETTel.Focus(); return; }
+        if (gETEmail == "") { Response.Write("<script>alert('請輸入電子信箱'); </script>"); TXTETEmail.Focus(); return; }
+        if (gETOrgAddr == "") { Response.Write("<script>alert('請輸入通訊地址'); </script>"); TXTETOrgAddr.Focus(); return; }
+        if (gETOrgName == "") { Response.Write("<script>alert('請輸入執業機構名稱'); </script>"); TXTETOrgName.Focus(); return; }
+        if (gETOrgGUINo == "") { Response.Write("<script>alert('請輸入執業機構統一編號'); </script>"); TXTETOrgGUINo.Focus(); return; }
+        if (gIdentity == "技師") {
+            if(gETOrgIssNo==""){Response.Write("<script>alert('請輸入執業執照字號'); </script>"); return; }
+            if (gGuildCount<1) { Response.Write("<script>alert('請上傳公會會員證書'); </script>"); return; }
+            if (gTCNo01ED == "" & gTCNo02ED == "" & gTCNo03ED == "" & gTCNo04ED == "")
+			{
+				Response.Write("<script>alert('請上傳至少一張執業執照');</script>");
+				return;
+			}
+		}
+        #endregion
 
-        //帳號重覆檢查
+
+        
+        //帳號重覆檢查 如果狀態為駁回 要能給他重新申請
         ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
         using (SqlConnection SWCConn = new SqlConnection(connectionString.ConnectionString))
         {
             SWCConn.Open();
 
-            string strSQLUS = " select ETIDNo from ETUsers ";
+            string strSQLUS = " select ETIDNo,status from ETUsers ";
             strSQLUS = strSQLUS + " where ETIDNo ='" + NewAccount + "' ";
 
             SqlDataReader readerUser;
@@ -411,17 +610,27 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
 
             if (readerUser.HasRows)
             {
-                Response.Write("<script>alert('您好，此帳號已重複申請，請再次確認密碼，或與大地工程處聯繫，謝謝。'); location.href='SWC000.aspx'; </script>");
-                TXTETIDNo.Focus();
-                SaveDate = "N";
-                return;
+				while (readerUser.Read())
+                {
+                    if(readerUser["status"] + "" == "駁回")
+						FirstApply = "false";
+					else{
+						Response.Write("<script>alert('您好，此帳號已重複申請，請再次確認密碼，或與大地工程處聯繫，謝謝。'); location.href='SWC000.aspx'; </script>");
+						TXTETIDNo.Focus();
+						SaveDate = "N";
+						return;
+					}
+                }
             }
         }
 
         string UserSqlStr = "";
         if (SaveDate == "Y") {
-            UserSqlStr = UserSqlStr + " INSERT INTO ETUsers (ETID,ETIDNo,ETStatus,status) VALUES ('" + NewAccount + "','"+ NewAccount + "','0','申請中') ;";
-
+			if(FirstApply == "false")
+				UserSqlStr = UserSqlStr + " Update ETUsers set ETID = '" + NewAccount + "',ETIDNo = '" + NewAccount + "',ETStatus = '0',status = '申請中' where ETID = '" + NewAccount + "' ;";
+			else
+				UserSqlStr = UserSqlStr + " INSERT INTO ETUsers (ETID,ETIDNo,ETStatus,status) VALUES ('" + NewAccount + "','"+ NewAccount + "','0','申請中') ;";
+			
             UserSqlStr = UserSqlStr + " Update ETUsers Set ";
 
             UserSqlStr = UserSqlStr + " ETPW =N'" + gETID1 + "', ";
@@ -431,19 +640,21 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
             UserSqlStr = UserSqlStr + " ETOrgName =N'" + gETOrgName + "', ";
             UserSqlStr = UserSqlStr + " ETOrgGUINo =N'" + gETOrgGUINo + "', ";
             UserSqlStr = UserSqlStr + " ETOrgAddr =N'" + gETOrgAddr + "', ";
+            UserSqlStr = UserSqlStr + " ETOrgAddr2 =N'" + gETOrgAddr2 + "', ";
             UserSqlStr = UserSqlStr + " ETOrgTel =N'" + gETOrgTel + "', ";
-            UserSqlStr = UserSqlStr + " ETCOPC =N'" + gETCOPC + "', ";
             UserSqlStr = UserSqlStr + " ETTCNo01 =N'" + gETTCNo01 + "', ";
             UserSqlStr = UserSqlStr + " ETTCNo02 =N'" + gETTCNo02 + "', ";
             UserSqlStr = UserSqlStr + " ETTCNo03 =N'" + gETTCNo03 + "', ";
-            UserSqlStr = UserSqlStr + " ETTCNo04 =N'" + gETTCNo04 + "', "; 
+            UserSqlStr = UserSqlStr + " ETTCNo04 =N'" + gETTCNo04 + "', ";
+            UserSqlStr = UserSqlStr + " ETTCNo05 =N'" + gETTCNo05 + "', ";
             UserSqlStr = UserSqlStr + " ETOrgIssNo =N'" + gETOrgIssNo + "', ";
             UserSqlStr = UserSqlStr + " TCNo01ED =N'" + gTCNo01ED + "', ";
             UserSqlStr = UserSqlStr + " TCNo02ED =N'" + gTCNo02ED + "', ";
             UserSqlStr = UserSqlStr + " TCNo03ED =N'" + gTCNo03ED + "', ";
             UserSqlStr = UserSqlStr + " TCNo04ED =N'" + gTCNo04ED + "', ";
-            UserSqlStr = UserSqlStr + " ETCOPCExp =N'" + gETCOPCExp + "', ";            
+            UserSqlStr = UserSqlStr + " TCNo05ED =N'" + gTCNo05ED + "', ";
             UserSqlStr = UserSqlStr + " SYSID ='" + gSYSID + "', ";
+            UserSqlStr = UserSqlStr + " ETIdentity =N'" + gIdentity + "', ";
             UserSqlStr = UserSqlStr + " saveuser = '" + NewAccount + "', ";
             UserSqlStr = UserSqlStr + " savedate = getdate() ";
             UserSqlStr = UserSqlStr + " Where ETIDNo = '" + NewAccount + "'";
@@ -455,17 +666,17 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
                 SqlCommand objCmdUser = new SqlCommand(UserSqlStr, SWCConn);
                 objCmdUser.ExecuteNonQuery();
                 objCmdUser.Dispose();
-                
-                GBClass001 CL01 = new GBClass001();
-
-                CL01.Mail_Send(GetMailTo(), MailSub(), MailBody());
-
             }
 
             //上傳檔案…
             UpLoadTempFileMoveChk(NewAccount);
+
+            SaveGuildData(NewAccount);
         }
+        SaveAccount_Click(sender,e);
         GetUserData(NewAccount);
+		GBClass001 CL01 = new GBClass001();
+		CL01.Mail_Send(GetMailTo(), MailSub(), MailBody());
         
         Response.Write("<script>alert('已送出帳號申請，請等待審核通知，申請結果將以E-mail通知。'); location.href='SWC000.aspx'; </script>");
 
@@ -492,43 +703,58 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
     }
     private string[] GetMailTo()
     {
-        string MailStr = "claire@geovector.com.tw;;";
+        string mailStr = "";
+        mailStr += TXTETEmail.Text + ";;";
 
-        ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["GEOINFOCONN"];
-        using (SqlConnection UserConn = new SqlConnection(connectionString.ConnectionString))
+        string sqlStr = " select * from geouser where department = '審查管理科' and status = '正常'; ";
+        ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["TSLMSWCCONN"];
+        #region
+        using (SqlConnection TslmConn = new SqlConnection(connectionString.ConnectionString))
         {
-            UserConn.Open();
-
-            string strSQLRV = " select * from geouser ";
-            strSQLRV = strSQLRV + " where (department = '審查管理科' and mbgroup02 = '系統管理員') ";
-            strSQLRV = strSQLRV + "    or (department = '審查管理科' and jobtitle = '股長') ";
-
-            SqlDataReader readeUser;
-            SqlCommand objCmdUser = new SqlCommand(strSQLRV, UserConn);
-            readeUser = objCmdUser.ExecuteReader();
-
-            string mbMail = "";
-            while (readeUser.Read())
+            TslmConn.Open();
+            using (var cmd = TslmConn.CreateCommand())
             {
-                mbMail = readeUser["email"] + "";
-                MailStr = MailStr + mbMail + ";;";
+                cmd.CommandText = sqlStr;
+                #region.設定值
+                //cmd.Parameters.Add(new SqlParameter("@SWC000", v));
+                #endregion
+                cmd.ExecuteNonQuery();
+
+                using (SqlDataReader readerTslm = cmd.ExecuteReader())
+                {
+                    if (readerTslm.HasRows)
+                        while (readerTslm.Read())
+                        {
+                            string tmpMail = readerTslm["email"] + "";
+                            string tmpUID = readerTslm["userid"] + "";
+                            string tmpMailGroup1 = readerTslm["MailGroup1"] + "";
+
+                            //42.大地處開通技師帳號時寄信。
+                            //2021-01-26 名單:申請人、黃凱暉(ge-40732)、許巽舜(gv-hsun)
+                            //2022-05-05 名單:申請人、系統相關通知收信窗口群組
+                            if (tmpMailGroup1.Trim()== "Y")
+                                mailStr += tmpMail + ";;";
+                        }
+                    readerTslm.Close();
+                }
+                cmd.Cancel();
             }
         }
-
-        string[] arrayMailMb = MailStr.Split(new string[] { ";;" }, StringSplitOptions.None);
-        return arrayMailMb;
+        string[] rValue = mailStr.Split(new string[] { ";;" }, StringSplitOptions.None);
+        #endregion
+        return rValue;
     }
     private void UpLoadTempFileMoveChk(string CaseId)
     {
         Boolean folderExists;
 
-        string[] arryUpLoadField = new string[] { "TXTETTCNo01", "TXTETTCNo02", "TXTETTCNo03", "TXTETTCNo04" };
-        TextBox[] arryUpLoadAppoj = new TextBox[] { TXTETTCNo01, TXTETTCNo02, TXTETTCNo03, TXTETTCNo04 };
+        string[] arryUpLoadField = new string[] { "TXTETTCNo01", "TXTETTCNo02", "TXTETTCNo03", "TXTETTCNo04", "TXTETTCNo05" };
+        TextBox[] arryUpLoadAppoj = new TextBox[] { TXTETTCNo01, TXTETTCNo02, TXTETTCNo03, TXTETTCNo04, TXTETTCNo05 };
         string csUpLoadField = "TXTETTCNo01";
         TextBox csUpLoadAppoj = TXTETTCNo01;
 
-        string TempFolderPath = ConfigurationManager.AppSettings["SwcFileTemp"];
-        string UserCaseFolderPath = ConfigurationManager.AppSettings["UserFilePath"];
+        string TempFolderPath = ConfigurationManager.AppSettings["SwcFileTemp20"];
+        string UserCaseFolderPath = ConfigurationManager.AppSettings["UserFilePath20"];
 
         folderExists = Directory.Exists(UserCaseFolderPath);
         if (folderExists == false)
@@ -541,7 +767,6 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
         {
             Directory.CreateDirectory(UserCaseFolderPath + CaseId);
         }
-
 
         for (int i = 0; i < arryUpLoadField.Length; i++)
         {
@@ -566,10 +791,34 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
 
             }
         }
+        #region-
+        string tAddFile = Session["AddGuildGVFile"] + "";
+        string[] arrayAddFiles = tAddFile.Split(new string[] { ";" }, StringSplitOptions.None);
+
+        for (int i = 0; i < arrayAddFiles.Length; i++)
+        {
+            string tmpFile = arrayAddFiles[i];
+
+            Boolean fileExists;
+            string TempFilePath = TempFolderPath + CaseId + "\\" + tmpFile;
+            string SwcCaseFilePath = UserCaseFolderPath + CaseId + "\\" + tmpFile;
+
+            fileExists = File.Exists(TempFilePath);
+            if (fileExists)
+            {
+                if (File.Exists(SwcCaseFilePath))
+                {
+                    File.Delete(SwcCaseFilePath);
+                }
+                File.Move(TempFilePath, SwcCaseFilePath);
+            }
+        }
+        Session["AddGuildGVFile"] = "";
+        #endregion
 
     }
 
-    private void FileUpLoadApp(string ChkType, FileUpload UpLoadBar, TextBox UpLoadText, string UpLoadStr, string UpLoadType, System.Web.UI.WebControls.Image UpLoadView, HyperLink UpLoadLink)
+    private void FileUpLoadApp(string ChkType, FileUpload UpLoadBar, TextBox UpLoadText, string UpLoadStr, string UpLoadType, System.Web.UI.WebControls.Image UpLoadView, HyperLink UpLoadLink,int MaxSize)
     {
         GBClass001 MyBassAppPj = new GBClass001();
         string SwcFileName = "";
@@ -594,12 +843,12 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
                         return;
                     }
                     break;
-                case "DOC":
-                    List<string> allowedExtextsion02 = new List<string> { ".jpg", ".png", "doc", "pdf", "dwg", "dxf" };
+                case "PDF":
+                    List<string> allowedExtextsion02 = new List<string> { ".pdf" };
 
                     if (allowedExtextsion02.IndexOf(extension) == -1)
                     {
-                        error_msg.Text = MyBassAppPj.AlertMsg("請選擇 JPG PNG DOC PDF DWG DXF 檔案格式上傳，謝謝!!");
+                        error_msg.Text = MyBassAppPj.AlertMsg("請選擇 PDF 檔案格式上傳，謝謝!!");
                         return;
                     }
                     break;
@@ -609,20 +858,20 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
             // 限制檔案大小，限制為 10MB
             int filesize = UpLoadBar.PostedFile.ContentLength;
 
-            if (filesize > 10000000)
+            if (filesize > MaxSize * 1000000)
             {
-                error_msg.Text = MyBassAppPj.AlertMsg("請選擇 10Mb 以下檔案上傳，謝謝!!");
+                error_msg.Text = MyBassAppPj.AlertMsg("請選擇 "+ MaxSize + "Mb 以下檔案上傳，謝謝!!");
                 return;
             }
 
             // 檢查 Server 上該資料夾是否存在，不存在就自動建立
-            string serverDir = ConfigurationManager.AppSettings["SwcFileTemp"] + CaseId;
+            string serverDir = ConfigurationManager.AppSettings["SwcFileTemp20"] + CaseId;
 
             if (Directory.Exists(serverDir) == false) Directory.CreateDirectory(serverDir);
 
             Session[UpLoadStr] = "有檔案";
             //SwcFileName = CaseId + UpLoadType + System.IO.Path.GetExtension(UpLoadBar.FileName);
-            SwcFileName = Path.GetFileNameWithoutExtension(filename) + UpLoadType + System.IO.Path.GetExtension(UpLoadBar.FileName);
+            SwcFileName = UpLoadType + System.IO.Path.GetExtension(UpLoadBar.FileName);
             UpLoadText.Text = SwcFileName;
 
             // 判斷 Server 上檔案名稱是否有重覆情況，有的話必須進行更名
@@ -653,15 +902,15 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
                 switch (ChkType)
                 {
                     case "PIC":
-                        UpLoadView.Attributes.Add("src", "..\\UpLoadFiles\\temp\\" + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond);
+                        UpLoadView.Attributes.Add("src", ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/temp/" + CaseId + "/" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond);
                         //UpLoadView.ImageUrl = "..\\UpLoadFiles\\temp\\" + CaseId +"\\"+ geohfilename;
 
                         imagestitch(UpLoadView, serverDir + "\\" + SwcFileName, 320, 180);
                         break;
 
-                    case "DOC":
+                    case "PDF":
                         UpLoadLink.Text = SwcFileName;
-                        UpLoadLink.NavigateUrl = "..\\UpLoadFiles\\temp\\" + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
+                        UpLoadLink.NavigateUrl = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/temp/" + CaseId + "/" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
                         UpLoadLink.Visible = true;
                         break;
 
@@ -737,8 +986,8 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
         ConnERR.Close();
 
         //刪實體檔
-        string TempFolderPath = ConfigurationManager.AppSettings["SwcFileTemp"];
-        string SwcCaseFolderPath = ConfigurationManager.AppSettings["SwcFilePath"];
+        string TempFolderPath = ConfigurationManager.AppSettings["SwcFileTemp20"];
+        string SwcCaseFolderPath = ConfigurationManager.AppSettings["SwcFilePath20"];
 
         string DelFileName = ImgText.Text;
         string TempFileFullPath = TempFolderPath + csCaseID + "\\" + ImgText.Text;
@@ -790,7 +1039,7 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
 
         error_msg.Text = "";
 
-        FileUpLoadApp("PIC", TXTETTCNo01_FileUpload, TXTETTCNo01, "TXTETTCNo01", "_" + rID + "_photo1", TXTETTCNo01_img, null);
+        FileUpLoadApp("PIC", TXTETTCNo01_FileUpload, TXTETTCNo01, "TXTETTCNo01", "_" + rID + "_photo1", TXTETTCNo01_img, null,10);
     }
 
     protected void TXTETTCNo01_fileuploaddel_Click(object sender, EventArgs e)
@@ -803,43 +1052,308 @@ public partial class SWCDOC_SWCBase001 : System.Web.UI.Page
     {
         string rID = TXTSYSID.Text + "";
         error_msg.Text = "";
-        FileUpLoadApp("PIC", TXTETTCNo02_FileUpload, TXTETTCNo02, "TXTETTCNo02", "_" + rID + "_photo2", TXTETTCNo02_img, null);
+        FileUpLoadApp("PIC", TXTETTCNo02_FileUpload, TXTETTCNo02, "TXTETTCNo02", "_" + rID + "_photo2", TXTETTCNo02_img, null, 10);
     }
+
     protected void TXTETTCNo02_fileuploaddel_Click(object sender, EventArgs e)
     {
         error_msg.Text = "";
         DeleteUpLoadFile("PIC", TXTETTCNo02, TXTETTCNo02_img, null, "TCNo02ED", "TXTETTCNo02", 0, 0);
-
     }
 
     protected void TXTETTCNo03_fileuploadok_Click(object sender, EventArgs e)
     {
         string rID = TXTSYSID.Text + "";
         error_msg.Text = "";
-        FileUpLoadApp("PIC", TXTETTCNo03_FileUpload, TXTETTCNo03, "TXTETTCNo03", "_" + rID + "_photo3", TXTETTCNo03_img, null);
-
+        FileUpLoadApp("PIC", TXTETTCNo03_FileUpload, TXTETTCNo03, "TXTETTCNo03", "_" + rID + "_photo3", TXTETTCNo03_img, null, 10);
     }
+
     protected void TXTETTCNo03_fileuploaddel_Click(object sender, EventArgs e)
     {
         error_msg.Text = "";
         DeleteUpLoadFile("PIC", TXTETTCNo03, TXTETTCNo03_img, null, "TCNo03ED", "TXTETTCNo03", 0, 0);
     }
+
     protected void TXTETTCNo04_fileuploadok_Click(object sender, EventArgs e)
     {
         string rID = TXTSYSID.Text + "";
 
         error_msg.Text = "";
 
-        FileUpLoadApp("PIC", TXTETTCNo04_FileUpload, TXTETTCNo04, "TXTETTCNo04", "_" + rID + "_photo4", TXTETTCNo04_img, null);
+        FileUpLoadApp("PIC", TXTETTCNo04_FileUpload, TXTETTCNo04, "TXTETTCNo04", "_" + rID + "_photo4", TXTETTCNo04_img, null, 10);
 
     }
 
     protected void TXTETTCNo04_fileuploaddel_Click(object sender, EventArgs e)
     {
         error_msg.Text = "";
+
         DeleteUpLoadFile("PIC", TXTETTCNo04, TXTETTCNo04_img, null, "TCNo04ED", "TXTETTCNo04", 0, 0);
+    }
+
+    protected void TXTETTCNo05_fileuploadok_Click(object sender, EventArgs e)
+    {
+        string rID = TXTSYSID.Text + "";
+
+        error_msg.Text = "";
+
+        FileUpLoadApp("PIC", TXTETTCNo05_FileUpload, TXTETTCNo05, "TXTETTCNo05", "_" + rID + "_photo5", TXTETTCNo05_img, null, 10);
+
+    }
+    protected void TXTETTCNo05_fileuploaddel_Click(object sender, EventArgs e)
+    {
+        error_msg.Text = "";
+
+        DeleteUpLoadFile("PIC", TXTETTCNo05, TXTETTCNo05_img, null, "TCNo05ED", "TXTETTCNo05", 0, 0);
+    }
+
+    protected void FileUpLoad_Click(object sender, EventArgs e)
+    {
+        Button btn = (Button)sender;
+        string SendId = btn.ID.ToString();
+        string UserId = TXTETIDNo.Text;
+
+        #region-預設值
+        FileUpload oUpLoadBar = null;
+        TextBox oUpLoadTxt = null;
+        System.Web.UI.WebControls.Image oShowImg = null;
+        HyperLink oFileLink = null;
+        string fFileType = "DOC";
+        string fSSReMark = "";
+        string fReName = "";
+        int fMaxSize = 10;
+        string GuildFileCount = Convert.ToInt16(GuildCount.Text)+1.ToString();        
+        #endregion
+
+        switch (SendId) {
+            case "GuildFile_UpLoad":
+                fFileType = "PIC";
+                fMaxSize = 10;
+                oUpLoadBar = GuildFile_FileUpload;
+                oUpLoadTxt = TxtGuildFile;
+                fSSReMark = "TxtGuildFile";
+                oShowImg = GuildImage;
+                fReName = UserId + "_Guild_" + GuildFileCount.PadLeft(3,'0');
+                break;
+            case "Experience_UpLoad":
+                fFileType = "PDF";
+                fMaxSize = 50;
+                oUpLoadBar = Experience_FileUpload;
+                oUpLoadTxt = TxtExperience;
+                fSSReMark = "TxtExperience";
+                oFileLink = ExperienceLink;
+                fReName = UserId + "_Experience_" + GuildFileCount.PadLeft(3, '0');
+                break;
+        }
+
+        string rID = TXTSYSID.Text + "";
+        error_msg.Text = "";
+        FileUpLoadApp(fFileType, oUpLoadBar, oUpLoadTxt, fSSReMark, fReName, oShowImg, oFileLink, fMaxSize);
 
     }
 
+    protected void ADDLIST_Click(object sender, EventArgs e)
+    {
+        GBClass001 SBApp = new GBClass001();
+        
+        string tmpNo = TXTETIDNo.Text;
+        string UpLoadTempFilePath = "..\\UpLoadFiles\\temp\\";
+        string tOwnGuild = DDLGuild.SelectedItem.Value;
+        string tOwnGuiName = DDLGuild.SelectedItem.Text;
+        string tGuildFile = TxtGuildFile.Text + "";
+        string tGuildFileLink = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/temp/" + tmpNo+"/" + tGuildFile; //GuildImage.ImageUrl;
+        string tExperience = TxtExperience.Text + "";
+        string tExperienceText = "";
+        string tExperienceLink = ExperienceLink.NavigateUrl;
+        string tEXP = TXTEXP.Text + "";
+        string tGuildSelect = "";
+        string tADDFile = Session["AddGuildGVFile"] +"";
 
+        #region-基本檢查
+        tGuildSelect = Session["GuildSelect"] + "";
+        if (tOwnGuild.Trim()=="") { Response.Write("<script>alert('請選擇公會名稱');</script>"); return; }
+        if(tGuildSelect.IndexOf(tOwnGuild) >= 0) { Response.Write("<script>alert('您所選擇之公會資料已存在，請選擇其他公會。');</script>"); return; }
+        if (tGuildFile.Trim() == "") { Response.Write("<script>alert('請上傳公會會員證書');</script>"); return; }
+        if (tEXP.Trim() == "") { Response.Write("<script>alert('請選擇有效日期');</script>"); return; }
+        if (SBApp.IsDate(tEXP.Trim())) { if (Convert.ToDateTime(tEXP.Trim()) < DateTime.Now) { Response.Write("<script>alert('請選擇正確的有效日期');</script>"); return; } }else { Response.Write("<script>alert('請選擇正確的有效日期');</script>"); return; }
+        if (tExperience.Trim() != "") tExperienceText = "審查經歷";
+        #endregion
+
+        GuildCount.Text = (Convert.ToInt32(GuildCount.Text) + 1).ToString();
+
+        DataTable tbGuild = (DataTable)ViewState["OwnGuild"];
+
+        if (tbGuild==null)
+        {
+            DataTable GVGuild = new DataTable();
+
+            GVGuild.Columns.Add(new DataColumn("NI", typeof(string)));
+            GVGuild.Columns.Add(new DataColumn("GuildName", typeof(string)));
+            GVGuild.Columns.Add(new DataColumn("GuildId", typeof(string)));
+            GVGuild.Columns.Add(new DataColumn("GuildText", typeof(string)));
+            GVGuild.Columns.Add(new DataColumn("GuildFileName", typeof(string)));
+            GVGuild.Columns.Add(new DataColumn("GuildFileLink", typeof(string)));
+            GVGuild.Columns.Add(new DataColumn("ExperienceText", typeof(string)));
+            GVGuild.Columns.Add(new DataColumn("ExperienceFileName", typeof(string)));
+            GVGuild.Columns.Add(new DataColumn("ExperienceFileLink", typeof(string)));
+            GVGuild.Columns.Add(new DataColumn("EXPDate", typeof(string)));
+
+            ViewState["OwnGuild"] = GVGuild;
+            tbGuild = (DataTable)ViewState["OwnGuild"];
+        }
+
+        DataRow GVGuildRow = tbGuild.NewRow();
+
+        GVGuildRow["NI"] = GuildCount.Text;
+        GVGuildRow["GuildName"] = tOwnGuiName;
+        GVGuildRow["GuildId"] = tOwnGuild;
+        GVGuildRow["GuildText"] = "公會證書";
+        GVGuildRow["GuildFileName"] = tGuildFile;
+        GVGuildRow["GuildFileLink"] = tGuildFileLink;
+        GVGuildRow["ExperienceText"] = tExperienceText;
+        GVGuildRow["ExperienceFileName"] = tExperience;
+        GVGuildRow["ExperienceFileLink"] = tExperienceLink;
+        GVGuildRow["EXPDate"] = tEXP;
+
+        tbGuild.Rows.Add(GVGuildRow);
+        ViewState["OwnGuild"] = tbGuild;
+        tADDFile += ";"+ tGuildFile+";"+ tExperience;
+
+        Session["AddGuildGVFile"] = tADDFile;
+        GuildList.DataSource = tbGuild;
+        GuildList.DataBind();
+
+        #region-清空畫面
+        Session["GuildSelect"] += tOwnGuild + ";";
+
+        DDLGuild.Text = "";
+        TxtGuildFile.Text = "";
+        GuildImage.Attributes.Clear();
+        GuildImage.ImageUrl = "";
+        GuildImage.Width = 0;
+        GuildImage.Height = 0;
+        TxtExperience.Text = "";
+        ExperienceLink.NavigateUrl = "";
+        ExperienceLink.Text = "";
+        TXTEXP.Text = "";
+        #endregion
+    }
+
+    protected void GuildList_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        string ExcAction = e.CommandName;
+
+        switch (ExcAction)
+        {
+            case "DelGuild":
+                int aa = Convert.ToInt32(e.CommandArgument);
+                int number = Convert.ToInt32(GuildList.Rows[aa].Cells[0].Text);
+                string tmpGuild = ";" + Session["GuildSelect"] + "";
+                string tmpGuildFile = Session["AddGuildGVFile"] + ";";
+                DataTable VS_GV1 = (DataTable)ViewState["OwnGuild"];
+                string delGuildId = VS_GV1.Rows[aa]["GuildId"].ToString().Trim();
+                string delGuildFile1 = VS_GV1.Rows[aa]["GuildFileName"].ToString().Trim();
+                string delGuildFile2 = VS_GV1.Rows[aa]["ExperienceFileName"].ToString().Trim();
+                VS_GV1.Rows.RemoveAt(aa);
+                tmpGuild = tmpGuild.Replace(";" + delGuildId + ";", ";").Replace(";;",";");
+                Session["GuildSelect"] = tmpGuild;
+                ViewState["OwnGuild"] = VS_GV1;
+                tmpGuildFile = tmpGuildFile.Replace(";" + delGuildFile1 + ";", ";").Replace(";" + delGuildFile2 + ";", ";").Replace(";" + tmpGuildFile + ";", ";").Replace(";;", ";");
+                Session["AddGuildGVFile"] = tmpGuildFile;
+                GuildList.DataSource = VS_GV1;
+                GuildList.DataBind();
+
+                break;
+        }
+    }
+
+    protected void FileDel_Click(object sender, EventArgs e)
+    {
+        Button btn = (Button)sender;
+        string SendId = btn.ID.ToString();
+        string UserId = TXTETIDNo.Text;
+        string tAct = "Clear";
+        string tFileName = "";
+        string tFileType = "";
+
+        #region-
+        TextBox oUpLoadTxt = null;
+        System.Web.UI.WebControls.Image oShowImg = null;
+        HyperLink oFileLink = null;
+        #endregion
+
+        switch (SendId)
+        {
+            case "GuildFile_FileDel":
+                tAct = "";
+                tFileName = TxtGuildFile.Text+"";
+                oShowImg = GuildImage;
+                oUpLoadTxt = TxtGuildFile;
+                tFileType = "PIC";
+                break;
+            case "Experience_FileDel":
+                tAct = "";
+                tFileName = TxtExperience.Text + "";
+                oFileLink = ExperienceLink;
+                oUpLoadTxt = TxtExperience;
+                tFileType = "DOC";
+                break;
+
+        }
+
+        //刪資料庫
+        if (tAct == "Clear") { }
+
+        //刪實體檔
+        DeleteUpLoadFile2(tFileName,"");
+
+        #region-清空畫面
+        oUpLoadTxt.Text = "";
+        switch (tFileType) { case "PIC":
+        oShowImg.Attributes.Clear();
+        oShowImg.ImageUrl = "";
+        oShowImg.Width = 0;
+        oShowImg.Height = 0;
+                break;
+            case "DOC":
+        oFileLink.NavigateUrl = "";
+        oFileLink.Text = "";
+                break;
+        }
+        #endregion
+        
+    }
+    #region-刪檔案
+    private void DeleteUpLoadFile2(string DelFileName,string FileDocPath)
+    {
+        string TempFolderPath = ConfigurationManager.AppSettings["SwcFileTemp"];
+        string SwcCaseFolderPath = ConfigurationManager.AppSettings["SwcFilePath"];
+        string delTempFile= TempFolderPath + FileDocPath + DelFileName;
+        string delRealFile = SwcCaseFolderPath + FileDocPath + DelFileName;
+
+        if (FileDocPath !="") {
+        try { if (File.Exists(delTempFile)) File.Delete(delTempFile); } catch { }
+        try { if (File.Exists(delRealFile)) File.Delete(delRealFile); } catch { }
+        }
+    }
+    #endregion
+
+    protected void GuildList_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        switch (e.Row.RowType)
+        {
+            case DataControlRowType.Header: 
+                break;
+            case DataControlRowType.DataRow:
+                Button BtnDel = (Button)e.Row.Cells[5].FindControl("BtnDel");
+                HiddenField HFID = (HiddenField)e.Row.Cells[5].FindControl("GuildID");
+                string vGV = HFID.Value;
+                string vGVChk = TextBoxGD01Chk.Text;
+                string vGD1 = TextBoxGD01.Text;
+                string vGD2 = TextBoxGD02.Text;
+                if ((vGV== vGD1 && vGVChk == "1") || vGV == vGD2) { BtnDel.Visible = false; }
+                break;
+        }
+
+    }
 }

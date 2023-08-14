@@ -11,6 +11,7 @@
 }
 
 
+
 .inquireForm_iris .ajax__calendar{ /*自主檢查表查詢框的日期選單*/
     line-height: 1;
 }
@@ -124,24 +125,29 @@
 }
 /*暫停審查綠色子表格設定結束*/
 
+
+
 /*startskyblue*/
 .startskyblue th { /*設定表頭*/
     background-color: #ddf1ff;
     text-align: center;
     border: 0;
+	vertical-align: middle;
     }
 .startskyblue{
    text-align:center;
    border:0;
+   vertical-align: middle;
 }
 .startskyblue td { 
     text-align:center;
     border:0;
+	vertical-align: middle;
 }
 .startskyblue  tr td:first-child {/*選取綠色表格第一格為白色*/
    background: #fff;
    width:10%;
-   vertical-align: top;
+   vertical-align: middle;
    margin-left:20px;
 }
 .startskyblue .pgr table { /*Page 分頁表格寬度*/
@@ -168,6 +174,15 @@
 .constructionPurple td { 
     text-align:center;
     border:0;
+	background: #fff !important;
+	vertical-align:middle;
+	
+}
+.CF th:nth-child(3){
+	width:15%;
+}
+.CF th:nth-child(4){
+	width:30%;
 }
 .constructionPurple  tr td:first-child {/*選取綠色表格第一格為白色*/
    background: #fff;
@@ -175,6 +190,22 @@
    vertical-align: top;
    margin-left:20px;
 }
+
+.constructionPurple .pgr table { /*Page 分頁表格寬度*/
+    width:auto;
+    margin-left:auto;
+    margin-right:auto;
+	padding:3px;
+}
+.constructionPurple .pgr td { /*Page 分頁表格顏色*/
+    background-color: #f3e7ff;
+    border-width:0px;
+	padding:3px;
+}
+.constructionPurple td:nth-child(5) {
+    text-align:left;
+}
+
 /*.constructionPurple  tr td:nth-child(2){選取綠色表格第一格為白色
    background: red;
    width: 14%;
@@ -208,13 +239,16 @@
 /*SWC001GridView*/
 .ADDGridView{
     margin:0 auto;
-    width:1200px;
+    max-width:1200px;
+	width:100%;
+	border:none !important;
 }
 .ADDGridView th { /*設定表頭*/
     background-color:#7baac5;
     color:#FFFFFF;
     text-align:center;
     border:0;
+	border:none !important;
 }
 .ADDGridView tr:nth-child(2n+3) { /*換行變色*/
     background-color:#FFFFFF;
@@ -232,7 +266,8 @@
     padding: 10px;
     text-align: center;
     line-height: 1.5;
-    
+	vertical-align:middle;
+    border:none !important;
 }
 .ADDGridView th  {
     padding:10px;
@@ -245,14 +280,18 @@
     width:auto;
     margin-left:auto;
     margin-right:auto;
+    line-height:none;
 }
 .ADDGridView .pgr td { /*Page 分頁表格顏色*/
     background-color: #7baac5;
     border-width:0px;
+    line-height:normal;
+    line-height:none;
+    padding:5px;
 }
-.ADDGridView td:nth-child(5) {
+/*.ADDGridView td:nth-child(5) {
     text-align:left;
-}
+}*/
 .date .ajax__calendar{ /*查詢SWC001框的日期選單*/
     line-height: 1;
 }
@@ -262,20 +301,26 @@
 
 /*SWC001GridView結束*/
 
+.changerequest{
+	max-width:1280px;
+	width:100%;
+	border:none !important;
+}
 .changerequest th { /*設定表頭*/
-    background-color:#47885e;
+    background-color:#659657;
     color:#FFFFFF;
     text-align:center;
     border:0;
+	border:none !important;
 }
 .changerequest tr:nth-child(2n+3) { /*換行變色*/
-    background-color:#d6e9ca;
+    background-color:#FFF;
     color:#000000;
     line-height:1;
     text-align:center;
 }
 .changerequest tr:nth-child(2n+2) { /*換行變色*/
-    background-color:#cee4ae;
+    background-color:#e4ede2;
     color:#000000;
     line-height:1;
     text-align:center;
@@ -284,7 +329,7 @@
     padding: 10px;
     text-align: center;
     line-height: 1.5;
-    
+    border:none !important;
 }
 .changerequest th  {
     padding:10px;
@@ -297,10 +342,12 @@
     width:auto;
     margin-left:auto;
     margin-right:auto;
+	padding:3px;
 }
 .changerequest .pgr td { /*Page 分頁表格顏色*/
-    background-color: #7baac5;
+    background-color: #659657;
     border-width:0px;
+	padding:3px;
 }
 .changerequest td:nth-child(5) {
     text-align:left;
@@ -392,50 +439,50 @@
 
 
 /*SWC004*/
-.changerequest{
-    width:1200px;
+.changerequest1{
+    width:1280px;
 }
-.changerequest th { /*設定表頭*/
+.changerequest1 th { /*設定表頭*/
     background-color:#47885e;
     color:#FFFFFF;
     text-align:center;
     border:0;
 }
-.changerequest tr:nth-child(2n+3) { /*換行變色*/
+.changerequest1 tr:nth-child(2n+3) { /*換行變色*/
     background-color:#d6e9ca;
     color:#000000;
     line-height:1;
     text-align:center;
 }
-.changerequest tr:nth-child(2n+2) { /*換行變色*/
+.changerequest1 tr:nth-child(2n+2) { /*換行變色*/
     background-color:#cee4ae;
     color:#000000;
     line-height:1;
     text-align:center;
 }
-.changerequest td {
+.changerequest1 td {
     padding: 10px;
     text-align: center;
     line-height: 1.5;
     
 }
-.changerequest th  {
+.changerequest1 th  {
     padding:10px;
 }
-.changerequest th a {
+.changerequest1 th a {
     color: #fff;
     text-decoration: none;
 }
-.changerequest .pgr table { /*Page 分頁表格寬度*/
+.changerequest1 .pgr table { /*Page 分頁表格寬度*/
     width:auto;
     margin-left:auto;
     margin-right:auto;
 }
-.changerequest .pgr td { /*Page 分頁表格顏色*/
+.changerequest1 .pgr td { /*Page 分頁表格顏色*/
     background-color: #7baac5;
     border-width:0px;
 }
-.changerequest td:nth-child(5) {
+.changerequest1 td:nth-child(5) {
     text-align:left;
 }
 
@@ -525,6 +572,9 @@
     background-color: #68be8d;
     text-align: center;
     border: 0;
+	color:#FFF;
+	font-weight:bold;
+	vertical-align:middle;
     }
 .greenCR{
    text-align:center;
@@ -536,9 +586,18 @@
 }
 .greenCR  tr td:first-child {/*選取綠色表格第一格為白色*/
    background: #fff;
-   width:10%;
    vertical-align: top;
    margin-left:20px;
+}
+.greenCR tr td:nth-child(1) {
+	width:20% !important;
+	
+}
+.greenCR tr td:nth-child(2) {
+	width:23% !important;
+}
+.greenCR tr td:nth-child(3) {
+	width:21% !important;
 }
 .greenCR .pgr table { /*Page 分頁表格寬度*/
     width: 30px;
@@ -550,3 +609,828 @@
     padding:3px 3px 3px 3px;    
 }
 /*greenCR表格設定結束*/
+
+/*颱風*/
+.TFtitle{
+	max-width:1200px;
+	width:100%;
+	background-color:#a0d8ef;
+	color:#000; 
+	font-size:19px;
+	font-weight:bold;
+	text-align:center;
+	padding:10px;
+	/*border:1px solid;*/
+}
+.TFbase{
+    margin:0 auto;
+    max-width:1200px;
+	width:100%;
+}
+.TFbase th { /*設定表頭*/
+    background-color:#7baac5;
+    color:#FFFFFF;
+    text-align:center;
+    border:0;
+	padding:10px;
+}
+.TFbase tr:nth-child(2n+3) { /*換行變色*/
+    background-color:#FFFFFF;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.TFbase tr:nth-child(2n+2) { /*換行變色*/
+    background-color:#b6d9e5;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.TFbase td {
+    padding: 10px;
+    text-align: center;
+    line-height: 1.5;
+    
+}
+.TFbase th a {
+    color: #fff;
+    text-decoration: none;
+}
+.TFbase .pgr table { /*Page 分頁表格寬度*/
+    width:auto;
+    margin-left:auto;
+    margin-right:auto;
+}
+.TFbase .pgr td { /*Page 分頁表格顏色*/
+    background-color: #F;
+    border-width:0px;
+}
+.TFbase th:nth-child(1) {
+    width:20%;
+}
+.TFbase td:nth-child(2) {
+    /*width:32%;*/
+	text-align:left;
+}
+.TFbase th:nth-child(4) {
+    width:18%;
+}
+.TFbase th:nth-child(5) {
+    width:12%;
+}
+.btn{ 
+    text-align:center;
+    margin:0 auto;
+    margin-top:2em;
+}
+
+.inquireGrid-menu_s{
+margin:0 auto;
+max-width:1200px;
+width:100%;
+display: -ms-flexbox;
+	display: flex;
+	-ms-flex-direction: row;
+	flex-direction: row;
+	-ms-flex-align: center;
+	align-items: center;
+    margin-bottom:1em;
+}
+.inquireGrid-menu_s img, .inquireGrid-menu_s input {
+	height: 25px;
+	margin-left: 1em;
+	cursor: pointer;
+	outline: none;
+}
+/*審查表單*/
+.rvfrom{
+    margin:0 auto;
+    width:1200px;
+    border:none;
+}
+.rvfrom th { /*設定表頭*/
+    background-color:#028760;
+    color:#FFFFFF;
+    text-align:center;
+    border:0;
+	padding:10px;
+}
+.rvfrom td {
+    text-align:center;
+}
+
+.rvfrom tr:nth-child(2n+3) { /*換行變色*/
+    background-color:#FFFFFF;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.rvfrom tr:nth-child(2n+2) { /*換行變色*/
+    background-color:#d6e9ca;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+/*審查表單*/
+
+/*留言板*/
+.MSbox{
+	width:1200px;
+	margin-bottom:1em;
+}
+.MSbox th{
+	width:20%;
+	text-align:center;
+	border:1px #000000 solid;
+}
+.MSbox td{
+	padding:10px;
+	border:1px #000000 solid; 
+}
+.MStype{
+	width:99%;
+	height:33px;
+}
+.MSarea{
+	width:99%;
+	height:200px;
+}
+.MSselsct{
+	width:13%;
+	height:25px;
+	margin-right:0.5em;
+}
+.MSbtn{
+	border-radius:10px;
+	width:8%;
+	height:30px;
+}
+
+/*留言板*/
+
+
+
+.center{
+     text-align:center;
+}
+.LH{
+	line-height:2;
+}
+.review .LH  .ajax__calendar td{
+	line-height:normal;
+}
+
+
+
+/*分段驗收*/
+.detailsGrid_skyblue .segedit tr td:first-child{
+    background:none;
+    font-weight:normal;
+}
+
+
+
+
+.detailsGrid_skyblue .segtable th { /*設定表頭*/
+    background-color:#ddf1ff;
+    text-align:center;
+    padding:3px;
+    font-weight:bold;
+    vertical-align:middle;
+}
+.detailsGrid_skyblue .segtable tr td:first-child{
+    background:none;
+    font-weight:normal;
+}
+.detailsGrid_skyblue .segtable tr td{
+    text-align:center;
+    vertical-align:middle;
+}
+
+.segtable .pgr table { /*Page 分頁表格寬度*/
+    width:auto;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    background:#87ceeb;
+    clear:both;
+}
+.seg .pgr td { /*Page 分頁表格顏色*/
+    background-color: #dcdddd;
+    border-width:0px;
+}
+
+
+.seg003 tr td{
+    text-align:center !important;
+    vertical-align:middle !important;
+    line-height:1.2;
+}
+
+
+
+.checkRecord .seg003 tr td{/*施工監督檢查紀錄*/
+    padding:3px;
+    border:none;
+    line-height:1.5;
+}
+.checkRecord .seg003 tr th{/*施工監督檢查紀錄*/
+    padding:5px;
+    text-align:center;
+    vertical-align:middle;
+    background:#81BC71;
+    color:#FFFFFF;
+    border:none;
+    line-height:1.3;
+}
+.checkRecord .seg003 tr:nth-child(2n+3) { /*換行變色*/
+    background-color:#F5FCF2;
+    color:#000000;
+    line-height:1.2;
+    text-align:center;
+    border-bottom:10px solid #FFFFFF;
+}
+.checkRecord .seg003 tr:nth-child(2n+2) { /*換行變色*/
+    background-color:#E4EFDC;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.checkRecord .seg003 input{
+    text-align:center;
+}
+
+
+.inline {
+    display: block;
+}
+#ThreeArea {
+    display: inline-block;
+}
+.lab{
+    float:right;
+    margin-bottom:0.5em;
+    display:inline;
+}
+.icon1{
+	width:13px;
+	height:18px;
+	background:#fce7ca;
+   display:inline-block;
+   vertical-align:central;
+   margin-right:0.4em;
+}
+.icon2{
+	width:13px;
+	height:18px;
+	background:#fdf6f2;
+   display:inline-block;
+   vertical-align:central;
+   margin-right:0.4em;
+   margin-left:0.8em;
+}
+.labcolor1{
+	font-weight:bold;
+	margin-top:1em;
+	letter-spacing:2px;
+	display:inline-block;
+    font-weight:bold;
+    color:#844b17;
+}
+.labcolor2{
+	font-weight:bold;
+	margin-top:1em;
+	letter-spacing:2px;
+	display:inline-block;
+    font-weight:bold;
+}
+
+.OFseg {
+    max-width: 1580px;
+    width: auto;
+    margin: 0 auto;
+}
+
+.OFseg .OFcheck {
+    max-width: 1580px;
+    width: 100%;
+    overflow-x: scroll;
+    margin: 0 auto;
+    clear: both;
+    /*border:1px solid #a15641;*/
+    border:none;
+}
+.OFseg .OFcheck th  {
+    white-space:nowrap;
+}
+@media only screen and (max-width: 1380px) {
+    .OFseg {
+        width: 95%;
+    }
+    .OFseg .OFcheck {
+        white-space: normal;
+    }
+}
+.OFseg .OFcheck td:nth-child(10), .OFseg .OFcheck td:nth-child(12) {
+    white-space:nowrap;
+}
+/*.OFseg .OFcheck td:nth-child(9), .OFseg .OFcheck td:nth-child(10), .OFseg .OFcheck td:nth-child(11) {
+    white-space:nowrap;
+}*/
+.OFseg .OFcheck tr td {
+    padding: 4px 2px;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 2;
+    border: none;
+}
+.OFseg .OFcheck tr th {
+    padding: 5px;
+    text-align: center;
+    vertical-align: middle;
+    background: #eaaf46;
+    color: #fce7ca;
+    border: none;
+    line-height: 1.3;
+    font-weight: bold;
+    /*width:1200px;*/
+}
+.OFseg .OFcheck tr:nth-child(2n+3) { /*換行變色*/
+    background-color:#fef6f2;
+    color:#000000;
+    text-align:center;
+    border-bottom:15px solid #FFFFFF;
+}
+.OFseg .OFcheck tr:nth-child(2n+2) { /*換行變色*/
+    background-color: #fce7ca;
+    color: #844b17;
+    text-align: center;
+}
+.supervision .seg005 input{
+    text-align:center;
+}
+.ww{
+	max-width:1580px !important;
+	width:100% !important;
+	
+}
+
+
+
+
+/*綠*/
+.OFsegG {
+    max-width: 1580px;
+    width: auto;
+    margin: 0 auto;
+}
+@media only screen and (max-width: 768px) {
+    .OFsegG {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+	#DDLDTL004{
+	    width:80%
+    }
+}
+
+.OFsegG .OFcheckG {
+    max-width: 1580px;
+    width: 100%;
+    overflow-x: scroll;
+    margin: 0 auto;
+    clear: both;
+    border:none;
+}
+.OFsegG .OFcheckG tr td:first-child {
+    width: 10%;
+}
+.OFsegG .OFcheckG tr td {
+    padding: 3px;
+    border: none !important;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 2;
+}
+.OFsegG .OFcheckG tr th {
+    padding: 5px;
+    text-align: center;
+    vertical-align: middle;
+    background:#a1cc64;
+    color: #2f470a;
+    border: none;
+    font-weight:bold;
+    line-height: 1.3;
+    /*width:1200px;*/
+}
+.OFsegG .OFcheckG tr:nth-child(2n+3) { /*換行變色*/
+    background-color:#fdfff0;
+    color:#000000;
+    line-height:1.2;
+    text-align:center;
+    border-bottom:10px solid #FFFFFF;
+}
+.OFsegG .OFcheckG tr:nth-child(2n+2) { /*換行變色*/
+    background-color: #f0ffd9;
+    color: #4e7a10;
+    text-align: center;
+}
+
+
+
+
+/*監造紀錄*/
+.supervision .seg005{
+    width:1200px;
+}
+.supervision .seg005 tr td:first-child {
+    width:10%;
+}
+.supervision .seg005 tr td{
+    padding:3px;
+    border:none;
+    vertical-align:middle;
+    text-align:center;
+    line-height:1.5;
+}
+.supervision .seg005 tr th{
+    padding:5px;
+    text-align:center;
+    vertical-align:middle;
+    background:#cd8c5c;
+    color:#FFFFFF;
+    border:none;
+    line-height:1.3;
+    width:1200px;
+}
+.supervision .seg005 tr:nth-child(2n+3) { /*換行變色*/
+    background-color:#fff1cf;
+    color:#000000;
+    text-align:center;
+    border-bottom:10px solid #FFFFFF;
+}
+.supervision .seg005 tr:nth-child(2n+2) { /*換行變色*/
+    background-color:#fddea5;
+    color:#000000;
+    text-align:center;
+}
+.supervision .seg005 input{
+    text-align:center;
+}
+
+/*完工檢查紀錄表*/
+
+.completed .seg006 tr td:first-child {
+    width:10%;
+}
+.completed .seg006 tr td{
+    padding:3px;
+    border:none;
+    vertical-align:middle;
+    text-align:center;
+    line-height:1.5;
+}
+.completed .seg006 tr th{
+    padding:5px;
+    text-align:center;
+    vertical-align:middle;
+    background:#81BC71;
+    color:#FFFFFF;
+    border:none;
+    line-height:1.3;
+}
+.completed .seg006 tr:nth-child(2n+3) { /*換行變色*/
+    background-color:#F5FCF2;
+    color:#000000;
+    line-height:1.2;
+    text-align:center;
+    border-bottom:10px solid #FFFFFF;
+}
+.completed .seg006 tr:nth-child(2n+2) { /*換行變色*/
+    background-color:#E4EFDC;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.completed .seg006 input{
+    text-align:center;
+}
+/*分段驗收*/
+
+/*檔案交換區*/
+.filechange{
+    width:1200px;
+    text-align:center;
+    margin:0 auto;
+}
+    .filechange th {
+        background: #47885e;
+        border: 1px;
+        padding:10px;
+        text-align:center;
+        color:#FFFFFF;
+        font-size:18px;
+        font-weight:bold;
+    }
+    .filechange td {
+        border: 1px;
+        padding:10px;
+    }
+.filechange .filebase{
+    margin-top:0.6em;
+}
+.filechange .filebase tr td:first-child {
+    font-weight:normal;
+}
+.filechange .filebase th {
+    color:#000000;
+    background:#d8e8ea;
+    padding:5px;
+    font-weight:normal;
+    border:1px solid #000000;
+}
+.filechange .filebase td{
+    margin-top:1em;
+    background:none;
+    text-align:center;
+    padding:5px;
+    border:1px solid #000000;
+    line-height:2.5;
+}
+
+.detailsGrid  .filebase th {
+   
+    font-weight:bold;
+}
+.detailsGrid .filebase td:first-child {
+	text-align: center;
+	font-weight: bold;
+	width: 123px;
+}
+.detailsGrid .filechange  td {
+	border: none;
+	padding: 10px;
+}
+.detailsGrid .filechange  .filebase th{
+	border: 1px solid #000000;
+}
+.detailsGrid .filechange  .filebase td{
+	border: 1px solid #000000;
+}
+/*檔案交換區end*/
+
+
+/*完工申報書*/
+
+.startReport .seg009 tr td:first-child {
+    width:10%;
+}
+.startReport .seg009 tr td{
+    padding:3px;
+    border:none;
+    vertical-align:middle;
+    text-align:center;
+    line-height:1.5;
+}
+.startReport .seg009 tr th{
+    padding:5px;
+    text-align:center;
+    vertical-align:middle;
+    background:#cd8c5c;
+    color:#FFFFFF;
+    border:none;
+    width:1205px;
+    line-height:1.3;
+}
+.startReport .seg009 tr:nth-child(2n+3) { /*換行變色*/
+    background-color:#fff1cf;
+    color:#000000;
+    line-height:1.2;
+    text-align:center;
+    border-bottom:10px solid #FFFFFF;
+}
+.startReport .seg009 tr:nth-child(2n+2) { /*換行變色*/
+    background-color:#fddea5;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.startReport .seg009 input{
+    text-align:center;
+}
+.nodata{
+    color:#F00;
+    width:1200px;
+    display:inline-block;
+    text-align:center;
+    padding-top:2em;
+    padding-bottom:3em;
+    font-weight:bold;
+    font-size:18px;
+}
+
+
+/*退補正OnlineApply006v*/
+.back{
+    width:1200px;
+}
+.back th{
+    background:#ee827c;
+     padding:8px;
+     text-align:center;
+}
+.back td{
+     padding:8px;
+     text-align:center;
+}
+.back tr:nth-child(2n+3) { /*換行變色*/
+    background-color:#fdeff2;
+    color:#000000;
+    line-height:1.2;
+    text-align:center;
+}
+.back tr:nth-child(2n+2) { /*換行變色*/
+    background-color:#f6bfbc;
+    color:#000000;
+    line-height:1;
+    text-align:center;
+}
+.checkbox input[type="CheckBox"]{
+	width:19px;
+	height:19px;
+	vertical-align:middle;
+    background:#7baac5;
+}
+
+/*公告子帳號*/
+.content-bbd {
+	margin: 50px auto 60px;
+	max-width:1200px;
+	width:100%;
+	/*flex-grow: 4;
+	margin-top:3em;
+	margin:0 auto;*/
+}
+.swcanbbd{
+	text-align:center;
+	font-weight:bold;
+	font-size:16pt;
+	margin-bottom:0.5em;
+}
+.message{
+	text-align:center;
+	margin-top:1em;
+	letter-spacing:1.5px;
+	color:#F00;
+}
+.GUPDF{
+    float:left;
+    color:#7baac5;
+    margin:20px 0 10px 0;
+    border:2px solid #7baac5;
+    padding:8px 10px;
+    border-radius:5px;
+}
+@media only screen and (max-width: 996px) {
+	.GUPDF{
+		float:none;
+		display:block;
+		max-width:410px;
+		width:100%;
+	}
+}
+.update{
+	margin:30px 0 10px 0; 
+    float:right;
+}
+.SWCbbd{
+	border:1px #000000 solid;
+	margin: 0 auto;
+	max-width:1200px;
+	width:100%;
+	table-layout:fixed;
+	margin-bottom:1.5em;
+}
+@media only screen and (max-width: 996px) {
+	.content-bbd{
+		width:95%;
+	}
+}
+
+.bbdtitle{
+	max-width:1200px;
+	width:100%;
+	border:1px #000000 solid;
+	padding:2px 2px;
+	text-align:center !important;
+	font-weight:900;
+    background:#D7DEF0;
+	line-height:1.7;
+	vertical-align:middle;
+}
+
+.SWCbbd td{
+	border:1px #000000 solid;
+	padding:5px 5px;
+	line-height:2;
+   text-align:center;
+   padding-left:1em;
+}
+.SWCbbd td :nth-child(1) {
+    padding-left:5em;
+}
+.SWCbbd td :nth-child(2) {
+    width:100px;
+    float:right;
+}
+.showtd{
+    text-align:left !important;
+    margin-left:2em;
+}
+
+.up-2{
+	margin-top:-1.5em;
+	}
+/*
+#GuildUserTB {
+   background:#7baac5;
+   font-size:20pt;
+}*/
+/*公告子帳號end*/
+
+.addchangbtn{
+    margin-top:1em;
+    letter-spacing:2px;
+    cursor:pointer;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    padding: 5px 9px 5px 10px;
+    border: 1.5px solid #3d9161;
+    border-radius: 8px;
+    background: #FFF;
+    font: normal normal bold 15px 微軟正黑;
+    color: #47885e;
+    text-decoration: none;
+    text-align:center;
+    box-shadow:2px 2px 2px #dddddd;
+}
+.addchangbtnin {
+    letter-spacing: 2px;
+    cursor: pointer;
+    display: inline-block;
+    float: right;
+    text-align: center;
+    vertical-align: middle;
+    padding: 7px 18px 7px 18px;
+    border: 2.5px solid #47885e;
+    border-radius: 8px;
+    background: #FFF;
+    font-size:18px;
+    font-weight:bold;
+    color: #47885e;
+    text-decoration: none;
+    text-align: center;
+    margin-right:10px;
+    position: relative;
+    top: 2px;
+	right: 3px;
+	margin-bottom:-20px;
+}
+.plan td{
+    text-align:left;
+}
+
+.innerBR_file td{
+    line-height:1.8 !important;
+}
+
+.HLbtn{
+    border:none;
+    outline:none;
+    background:none;
+    text-decoration:underline;
+    color:#0b17f7;
+    font-size:16px;
+    padding:3px;
+    cursor:pointer;
+	padding-left:0px;
+}
+.word{
+  font-size:17px;
+  }
+  
+  
+.inline {
+    display: block;
+}
+#ThreeArea {
+    display: inline-block;
+}
+.lab{
+    float:right;
+    margin-bottom:0.5em;
+    display:inline;
+}
+

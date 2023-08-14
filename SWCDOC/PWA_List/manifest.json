@@ -1,0 +1,685 @@
+{
+  "dir": "auto",
+  "display": "fullscreen",
+  "name": "GeoVectorPWA",
+  "short_name": "GeoVector",
+  "scope": "https://geo.geovector.com.tw/swc6/SWCDOC/PWA_List",
+  "lang": "zh",
+  "description": "placeholder description",
+  "theme_color": "none",
+  "background_color": "none",
+  "icons": [
+    {
+      "src": "images/PWA/71x71.png",
+      "type": "image/png",
+      "sizes": "71x71",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/89x89.png",
+      "type": "image/png",
+      "sizes": "89x89",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/107x107.png",
+      "type": "image/png",
+      "sizes": "107x107",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/142x142.png",
+      "type": "image/png",
+      "sizes": "142x142",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/284x284.png",
+      "type": "image/png",
+      "sizes": "284x284",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/150x150.png",
+      "type": "image/png",
+      "sizes": "150x150",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/188x188.png",
+      "type": "image/png",
+      "sizes": "188x188",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/225x225.png",
+      "type": "image/png",
+      "sizes": "225x225",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/300x300.png",
+      "type": "image/png",
+      "sizes": "300x300",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/600x600.png",
+      "type": "image/png",
+      "sizes": "600x600",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/310x150.png",
+      "type": "image/png",
+      "sizes": "310x150",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/388x188.png",
+      "type": "image/png",
+      "sizes": "388x188",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/465x225.png",
+      "type": "image/png",
+      "sizes": "465x225",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/620x300.png",
+      "type": "image/png",
+      "sizes": "620x300",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/1240x600.png",
+      "type": "image/png",
+      "sizes": "1240x600",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/310x310.png",
+      "type": "image/png",
+      "sizes": "310x310",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/388x388.png",
+      "type": "image/png",
+      "sizes": "388x388",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/465x465.png",
+      "type": "image/png",
+      "sizes": "465x465",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/620x620.png",
+      "type": "image/png",
+      "sizes": "620x620",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/1240x1240.png",
+      "type": "image/png",
+      "sizes": "1240x1240",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/44x44.png",
+      "type": "image/png",
+      "sizes": "44x44",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/55x55.png",
+      "type": "image/png",
+      "sizes": "55x55",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/66x66.png",
+      "type": "image/png",
+      "sizes": "66x66",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/88x88.png",
+      "type": "image/png",
+      "sizes": "88x88",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/176x176.png",
+      "type": "image/png",
+      "sizes": "176x176",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/50x50.png",
+      "type": "image/png",
+      "sizes": "50x50",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/63x63.png",
+      "type": "image/png",
+      "sizes": "63x63",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/75x75.png",
+      "type": "image/png",
+      "sizes": "75x75",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/100x100.png",
+      "type": "image/png",
+      "sizes": "100x100",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/200x200.png",
+      "type": "image/png",
+      "sizes": "200x200",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/620x300.png",
+      "type": "image/png",
+      "sizes": "620x300",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/775x375.png",
+      "type": "image/png",
+      "sizes": "775x375",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/930x450.png",
+      "type": "image/png",
+      "sizes": "930x450",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/1240x600.png",
+      "type": "image/png",
+      "sizes": "1240x600",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/2480x1200.png",
+      "type": "image/png",
+      "sizes": "2480x1200",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/16x16.png",
+      "type": "image/png",
+      "sizes": "16x16",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/20x20.png",
+      "type": "image/png",
+      "sizes": "20x20",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/24x24.png",
+      "type": "image/png",
+      "sizes": "24x24",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/30x30.png",
+      "type": "image/png",
+      "sizes": "30x30",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/32x32.png",
+      "type": "image/png",
+      "sizes": "32x32",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/36x36.png",
+      "type": "image/png",
+      "sizes": "36x36",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/40x40.png",
+      "type": "image/png",
+      "sizes": "40x40",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/44x44.png",
+      "type": "image/png",
+      "sizes": "44x44",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/48x48.png",
+      "type": "image/png",
+      "sizes": "48x48",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/60x60.png",
+      "type": "image/png",
+      "sizes": "60x60",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/64x64.png",
+      "type": "image/png",
+      "sizes": "64x64",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/72x72.png",
+      "type": "image/png",
+      "sizes": "72x72",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/80x80.png",
+      "type": "image/png",
+      "sizes": "80x80",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/96x96.png",
+      "type": "image/png",
+      "sizes": "96x96",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/256x256.png",
+      "type": "image/png",
+      "sizes": "256x256",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/16x16.png",
+      "type": "image/png",
+      "sizes": "16x16",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/20x20.png",
+      "type": "image/png",
+      "sizes": "20x20",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/24x24.png",
+      "type": "image/png",
+      "sizes": "24x24",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/30x30.png",
+      "type": "image/png",
+      "sizes": "30x30",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/32x32.png",
+      "type": "image/png",
+      "sizes": "32x32",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/36x36.png",
+      "type": "image/png",
+      "sizes": "36x36",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/40x40.png",
+      "type": "image/png",
+      "sizes": "40x40",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/44x44.png",
+      "type": "image/png",
+      "sizes": "44x44",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/48x48.png",
+      "type": "image/png",
+      "sizes": "48x48",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/60x60.png",
+      "type": "image/png",
+      "sizes": "60x60",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/64x64.png",
+      "type": "image/png",
+      "sizes": "64x64",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/72x72.png",
+      "type": "image/png",
+      "sizes": "72x72",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/80x80.png",
+      "type": "image/png",
+      "sizes": "80x80",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/96x96.png",
+      "type": "image/png",
+      "sizes": "96x96",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/256x256.png",
+      "type": "image/png",
+      "sizes": "256x256",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/16x16.png",
+      "type": "image/png",
+      "sizes": "16x16",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/20x20.png",
+      "type": "image/png",
+      "sizes": "20x20",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/24x24.png",
+      "type": "image/png",
+      "sizes": "24x24",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/30x30.png",
+      "type": "image/png",
+      "sizes": "30x30",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/32x32.png",
+      "type": "image/png",
+      "sizes": "32x32",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/36x36.png",
+      "type": "image/png",
+      "sizes": "36x36",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/40x40.png",
+      "type": "image/png",
+      "sizes": "40x40",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/44x44.png",
+      "type": "image/png",
+      "sizes": "44x44",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/48x48.png",
+      "type": "image/png",
+      "sizes": "48x48",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/60x60.png",
+      "type": "image/png",
+      "sizes": "60x60",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/64x64.png",
+      "type": "image/png",
+      "sizes": "64x64",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/72x72.png",
+      "type": "image/png",
+      "sizes": "72x72",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/80x80.png",
+      "type": "image/png",
+      "sizes": "80x80",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/96x96.png",
+      "type": "image/png",
+      "sizes": "96x96",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/256x256.png",
+      "type": "image/png",
+      "sizes": "256x256",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/144x144.png",
+      "type": "image/png",
+      "sizes": "144x144",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/96x96.png",
+      "type": "image/png",
+      "sizes": "96x96",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/72x72.png",
+      "type": "image/png",
+      "sizes": "72x72",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/48x48.png",
+      "type": "image/png",
+      "sizes": "48x48",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/16x16.png",
+      "type": "image/png",
+      "sizes": "16x16",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/20x20.png",
+      "type": "image/png",
+      "sizes": "20x20",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/29x29.png",
+      "type": "image/png",
+      "sizes": "29x29",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/32x32.png",
+      "type": "image/png",
+      "sizes": "32x32",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/40x40.png",
+      "type": "image/png",
+      "sizes": "40x40",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/50x50.png",
+      "type": "image/png",
+      "sizes": "50x50",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/57x57.png",
+      "type": "image/png",
+      "sizes": "57x57",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/58x58.png",
+      "type": "image/png",
+      "sizes": "58x58",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/60x60.png",
+      "type": "image/png",
+      "sizes": "60x60",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/64x64.png",
+      "type": "image/png",
+      "sizes": "64x64",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/72x72.png",
+      "type": "image/png",
+      "sizes": "72x72",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/76x76.png",
+      "type": "image/png",
+      "sizes": "76x76",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/80x80.png",
+      "type": "image/png",
+      "sizes": "80x80",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/87x87.png",
+      "type": "image/png",
+      "sizes": "87x87",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/100x100.png",
+      "type": "image/png",
+      "sizes": "100x100",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/114x114.png",
+      "type": "image/png",
+      "sizes": "114x114",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/120x120.png",
+      "type": "image/png",
+      "sizes": "120x120",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/128x128.png",
+      "type": "image/png",
+      "sizes": "128x128",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/144x144.png",
+      "type": "image/png",
+      "sizes": "144x144",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/152x152.png",
+      "type": "image/png",
+      "sizes": "152x152",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/167x167.png",
+      "type": "image/png",
+      "sizes": "167x167",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/180x180.png",
+      "type": "image/png",
+      "sizes": "180x180",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/256x256.png",
+      "type": "image/png",
+      "sizes": "256x256",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "images/PWA/1024x1024.png",
+      "type": "image/png",
+      "sizes": "1024x1024",
+      "purpose": "any"
+    }
+  ]
+}

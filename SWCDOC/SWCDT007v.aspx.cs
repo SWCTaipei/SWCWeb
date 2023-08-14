@@ -1,21 +1,4 @@
-﻿/*  Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
@@ -37,20 +20,19 @@ public partial class SWCDOC_SWCDT007 : System.Web.UI.Page
         string rDTLId = Request.QueryString["DTLNO"] + "";
 
         string ssUserName = Session["NAME"] + "";
-
         string ssJobTitle = Session["JobTitle"] + "";
         GBClass001 SBApp = new GBClass001();
+        Class20 C20 = new Class20();
 
         //PostBack後停留在原畫面
         Page.MaintainScrollPositionOnPostBack = true;
 
-        if (rCaseId == "")
-        {
+        if (rCaseId == "" || ssUserName == "")
             Response.Redirect("SWC001.aspx");
-        }
 
         if (!IsPostBack)
         {
+            C20.swcLogRC("SWCDT007v", "設施維護檢查表", "詳情", "瀏覽", rCaseId + "," + rDTLId);
             GenerateDropDownList();
             Data2Page(rCaseId, rDTLId);
         }
@@ -62,7 +44,7 @@ public partial class SWCDOC_SWCDT007 : System.Web.UI.Page
         else {
             LogOutLink.Visible = true;
         }
-        
+		
         //全區供用
 
         SBApp.ViewRecord("臺北市山坡地水土保持設施維護檢查及輔導紀錄表", "update", "");
@@ -299,6 +281,7 @@ public partial class SWCDOC_SWCDT007 : System.Web.UI.Page
                     if (tDTLG053 == "1") { CHKDTL053.Checked = true; }
                     if (tDTLG055 == "1") { CHKDTL055.Checked = true; }
                     if (tDTLG057 == "1") { CHKDTL057.Checked = true; }
+                    SwcUpLoadFilePath = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/SwcCaseFile/";
 
                     //檔案類處理
                     string[] arrayFileNameLink = new string[] { tDTLG047, tDTLG079, tDTLG080,tDTLG081 };
@@ -724,7 +707,7 @@ public partial class SWCDOC_SWCDT007 : System.Web.UI.Page
             UpLoadTempFileMoveChk(sSWC000);
             
             string vCaseID = Request.QueryString["SWCNO"] + "";
-            Response.Redirect("SWC003.aspx?CaseId=" + vCaseID);
+            Response.Redirect("SWC003.aspx?SWCNO=" + vCaseID);
         }
     }
     private void UpLoadTempFileMoveChk(string CaseId)

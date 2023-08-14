@@ -1,21 +1,4 @@
-﻿<!--
-    Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
--->
-
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="OnlineApply001v.aspx.cs" Inherits="SWCDOC_OnlineApply001" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="OnlineApply001v.aspx.cs" Inherits="SWCDOC_OnlineApply001" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <!DOCTYPE html>
@@ -165,8 +148,8 @@
                     <ul>
                         <li><a href="../sysFile/系統操作手冊.pdf" title="系統操作手冊" target="_blank">系統操作手冊</a></li>
                         <li>|</li>
-                        <li><a href="http://tcgeswc.taipei.gov.tw/index_new.aspx" title="水土保持計畫查詢系統" target="_blank">水土保持計畫查詢系統 </a></li>
-                        <asp:Panel ID="GoTslm" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="http://172.28.100.55/TSLM" title="坡地管理資料庫" target="_blank">坡地管理資料庫</a></li></asp:Panel>
+                        <li><a href="https://swc.taipei/swcinfo/" title="臺北市山坡地保育利用資訊查詢系統" target="_blank">臺北市山坡地保育利用資訊查詢系統 </a></li>
+                        <asp:Panel ID="GoTslm" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="http://tslm.swc.taipei/tslmwork/" title="坡地管理資料庫" target="_blank">坡地管理資料庫</a></li></asp:Panel>
                         <asp:Panel ID="TitleLink00" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="SWCBase001.aspx" title="帳號管理">帳號管理</a></li></asp:Panel>
                         <asp:Panel ID="LogOutLink" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="SWC000.aspx?ACT=LogOut" title="登出">登出</a></li></asp:Panel>
                     </ul>
@@ -182,32 +165,42 @@
 
         <div class="content-s">
             <div class="facilityMaintain form">
-                <h1>臺北市山坡地水土保持設施安全自主檢查表<br/><br/></h1>
+                <h1>臺北市山坡地水土保持設施安全自主檢查表</h1>
+                
+                <div class="detailsMenu-btn">
+                    <asp:ImageButton ID="OutPdf" runat="server" title="輸出PDF" ImageUrl="../images/btn/icon_exportpdf.png" OnClick="OutPdf_Click" Visible="true" />
+                </div>
                 
                 <table class="facilityMaintain-out">
                     <tr><td>安全自主檢查表編號</td>
                         <td><asp:Label ID="LBONA001" runat="server" />
                             <asp:Label ID="LBSWC000" runat="server" Visible="false"/>
                         </td></tr>
-                    <tr><td>水保局編號<span style="color: red;font-family:cursive;">＊</span></td>
+                    <tr><td>項次編號</td>
+                        <td><asp:Label ID="TXTONA027" runat="server" MaxLength="10" width="100px"/>
+                        </td></tr>
+                    <tr><td>水保局編號</td>
                         <td><asp:Label ID="TXTSWC002" runat="server" MaxLength="12" width="200px"/>
                             <%--<asp:TextBox ID="TXTSWC002" runat="server" MaxLength="12" placeholder="(如不知可由市府填寫)" width="200px"/>--%>
                             <asp:Label ID="LBSWC002" runat="server" Visible="false" />
                         </td></tr>
-                    <tr><td>檢查日期<span style="color: red;font-family:cursive;">＊</span></td>
+                    <tr><td>檢查日期</td>
                         <td><asp:Label ID="TXTONA002" runat="server" width="120px"></asp:Label></td></tr>
-                    <tr><td>社區(設施)地址<span style="color: red;font-family:cursive;">＊</span></td>
+                    <tr><td>社區(設施)地址</td>
                         <td><asp:Label ID="TXTONA003" runat="server" width="100%" onkeyup="textcount(this,'TXTONA003_count','100');" MaxLength="100" /></td></tr>
-                    <tr><td>義務人(聯絡人)<span style="color: red;font-family:cursive;">＊</span></td>
+                    <tr><td>水土保持義務人</td>
                         <td><asp:Label ID="TXTONA004" runat="server" width="100%" onkeyup="textcount(this,'TXTONA004_count','100');" MaxLength="100" />
                             <asp:Label ID="TXTONA004_count" runat="server" Text="(0/100)" ForeColor="Red" Visible="false" /></td></tr>
-                    <tr><td>聯絡地址<span style="color: red;font-family:cursive;">＊</span></td>
+                    <tr><td>聯絡人</td>
+                        <td><asp:Label ID="TXTONA028" runat="server" width="100%" onkeyup="textcount(this,'TXTONA028_count','100');" MaxLength="100" />
+                            <asp:Label ID="TXTONA028_count" runat="server" Text="(0/100)" ForeColor="Red" Visible="false" /></td></tr>
+                    <tr><td>聯絡地址</td>
                         <td><asp:Label ID="TXTONA005" runat="server" width="100%" onkeyup="textcount(this,'TXTONA005_count','100');" MaxLength="100" />
                             <asp:Label ID="TXTONA005_count" runat="server" Text="(0/100)" ForeColor="Red" Visible="false" /></td></tr>
-                    <tr><td>聯絡電話<span style="color: red;font-family:cursive;">＊</span></td>
+                    <tr><td>聯絡電話（市話）</td>
                         <td><asp:Label ID="TXTONA006" runat="server" width="100%" onkeyup="textcount(this,'TXTONA006_count','100');" MaxLength="100" />
                             <asp:Label ID="TXTONA006_count" runat="server" Text="(0/100)" ForeColor="Red" Visible="false" /></td></tr>
-                    <tr><td>行動電話<span style="color: red;font-family:cursive;">＊</span></td>
+                    <tr><td>行動電話</td>
                         <td><asp:Label ID="TXTONA007" runat="server" width="100%" onkeyup="textcount(this,'TXTONA007_count','100');" MaxLength="100" />
                             <asp:Label ID="TXTONA007_count" runat="server" Text="(0/100)" ForeColor="Red" Visible="false" /></td></tr>
                 </table>
@@ -238,10 +231,10 @@
                 </tr>
                 <tr><td class="td-padding" colspan="4">1.排水溝是否損壞？</td>
                     <td style="text-align:left;">
-                        <asp:Label ID="LBONA012" runat="server" /></td></tr>
+                        <asp:Label ID="LBONA012" runat="server" /><asp:Label ID="LBONA012D" runat="server" /></td></tr>
                 <tr><td class="td-padding" colspan="4">2.排水溝是否雜物淤積？</td>
                     <td style="text-align:left;">
-                        <asp:Label ID="LBONA013" runat="server" /></td></tr>
+                        <asp:Label ID="LBONA013" runat="server" /><asp:Label ID="LBONA013D" runat="server" /></td></tr>
                 <tr class="tr-title">
                     <td>三、邊坡保護設施 </td>
                     <td><asp:Label ID="LBONA014" runat="server" /></td>
@@ -250,13 +243,13 @@
                 </tr>
                 <tr><td class="td-padding" colspan="4">1.是否外凸變形？</td>
                     <td style="text-align:left;">
-                        <asp:Label ID="LBONA015" runat="server" /></td></tr>
+                        <asp:Label ID="LBONA015" runat="server" /><asp:Label ID="LBONA015D" runat="server" /></td></tr>
                 <tr><td class="td-padding" colspan="4">2.是否龜裂？</td>
                     <td style="text-align:left;">
-                        <asp:Label ID="LBONA016" runat="server" /></td></tr>
+                        <asp:Label ID="LBONA016" runat="server" /><asp:Label ID="LBONA016D" runat="server" /></td></tr>
                 <tr><td class="td-padding" colspan="4">3.排水孔是否堵塞？</td>
                     <td style="text-align:left;">
-                        <asp:Label ID="LBONA017" runat="server" /></td></tr>
+                        <asp:Label ID="LBONA017" runat="server" /><asp:Label ID="LBONA017D" runat="server" /></td></tr>
                 <tr class="tr-title">
                     <td>四、抽水設施</td>
                     <td><asp:Label ID="LBONA018" runat="server" /></td>
@@ -265,10 +258,10 @@
                 </tr>
                 <tr><td class="td-padding" colspan="4">1.是否功能正常？</td>
                     <td style="text-align:left;">
-                        <asp:Label ID="LBONA019" runat="server" /></td></tr>
+                        <asp:Label ID="LBONA019" runat="server" /><asp:Label ID="LBONA019D" runat="server" /></td></tr>
                 <tr><td class="td-padding" colspan="4">2.是否有定期維修保養檢查及記錄？</td>
                     <td style="text-align:left;">
-                        <asp:Label ID="LBONA020" runat="server" /></td></tr>
+                        <asp:Label ID="LBONA020" runat="server" /><asp:Label ID="LBONA020D" runat="server" /></td></tr>
                 <tr class="tr-title">
                     <td>五、其他</td>
                     <td></td>
@@ -278,11 +271,18 @@
                 <tr><td class="td-padding" colspan="4">1.是否需要專業技師現場指導</td>
                     <td style="text-align:left;">
                         <asp:Label ID="LBONA021" runat="server" />
-                        <asp:Label ID="TXTONA022" runat="server" Width="150px" MaxLength="50" /></td></tr>
+                        <asp:Label ID="TXTONA022" runat="server" MaxLength="50" /></td></tr>
                 <tr><td class="td-padding" colspan="4">2.設施淤積、堵塞與龜裂…等異常徵兆是否規劃進行改善?</td>
                     <td style="text-align:left;">
                         <asp:Label ID="LBONA023" runat="server" />
-                        <asp:Label ID="TXTONA024" runat="server" width="120px"></asp:Label></td></tr>
+                        <asp:Label ID="TXTONA024" runat="server"><asp:Label ID="TXTONA024D" runat="server" /></asp:Label></td></tr>
+                <tr>
+                    <td>六、建議事項</td>
+                    <td colspan="4">
+                        <asp:Label ID="TXTONA026" runat="server" TextMode="MultiLine"  onkeyup="textcount(this,'TXTONA026_count','250');" MaxLength="250" style="width:100%; height:80px; vertical-align:middle;" />
+                        <asp:Label ID="TXTONA026_count" runat="server" Text="(0/500)" ForeColor="Red" Visible="false" /></td>
+                </tr>
+
                 <tr><td>檢查人員</td>
                     <td colspan="4"><asp:Label ID="TXTONA025" runat="server" Width="100%" MaxLength="100" /></td>
                 </tr>
@@ -293,11 +293,11 @@
 
                 <tr><td class="bgcolor" colspan="2">審查結果</td>
                     <td class="bgcolor2" style="line-height:40px;" colspan="3">
-                        <asp:radiobutton ID="CHKRRa" runat="server" Text="准" value="1" GroupName="CHKRR" />
+                        <asp:radiobutton ID="CHKRRa" runat="server" Text="准" value="1" GroupName="CHKRR" />、
                         <asp:radiobutton ID="CHKRRb" runat="server" Text="駁：" value="0" GroupName="CHKRR" />
                         <asp:TextBox ID="CHK" runat="server" Width="70px" Visible="False" />
                         <asp:Label ID="LBRR" runat="server" Visible="false" />
-                        <asp:TextBox ID="ResultsExplain" runat="server" Width="300px" />
+                        <asp:TextBox ID="ResultsExplain" runat="server" Width="580px" />
                         <asp:Label ID="LBResultsExplain" runat="server" Width="300px" /><br/>
                         <asp:Panel ID="ReViewUL" runat="server">
                         上傳公文：
@@ -346,44 +346,16 @@
             </div>--%>
 
             <div class="footer">
-                 <p><span class="span1">臺北市政府工務局大地工程處</span><br/>
-                           <span class="span2">110臺北市信義區松德路300號3樓 　服務專線(02)27591109   臺北市民當家熱線1999</span><br/>
-                            <span class="span2">建議使用IE11(含)以上，Chrome或Firefox版本瀏覽器 資料更新：<asp:Label ID="ToDay" runat="server" Text=""/>　來訪人數：<asp:Label ID="Visitor" runat="server" Text=""/> </span><br/>
-                           <span class="span2">客服電話：02-27593001#3718 許先生 本系統由多維空間資訊有限公司開發維護 TEL:(02)27929328</span></p>
+                <p><span class="span1">臺北市政府工務局大地工程處</span><br/>
+                    <span class="span2">110臺北市信義區松德路300號3樓 　服務專線(02)27591109   臺北市民當家熱線1999</span><br/>
+                    <span class="span2">建議使用IE11(含)以上，Chrome或Firefox版本瀏覽器　<b>資料更新：</b><asp:Label ID="ToDay" runat="server" Text=""/>　<b>來訪人數：</b><asp:Label ID="Visitor" runat="server" Text=""/> </span><br/>
+                    <span class="span2"><b>客服電話：</b>02-27929328 陳小姐　<b>信箱：</b>tcge7@geovector.com.tw　本系統由多維空間資訊有限公司開發維護 TEL：(02)27929328</span><br/>
+			        <span class="span2">※為維護系統服務品質，本平台訂於每周三凌晨AM 4:00-6:30 進行系統維護更新，更新期間偶有瞬斷情形，敬請使用者避開該時段使用。謝謝！</span></p>
             </div>
 
         </div>
 
         <asp:Literal ID="error_msg" runat="server"></asp:Literal>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         <script src="../js/jquery-3.1.1.min.js"></script>

@@ -1,25 +1,9 @@
-﻿/*  Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.IO;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 public partial class SWCDOC_OnlineApply001 : System.Web.UI.Page
@@ -72,6 +56,8 @@ public partial class SWCDOC_OnlineApply001 : System.Web.UI.Page
 
     private void Data2Page(string rCaseId, string rONA000)
     {
+        string ssONLINEAPPLY = Session["ONLINEAPPLY"] + "";
+
         GBClass001 SBApp = new GBClass001();
 
         string tDATALOCK = "";
@@ -125,7 +111,12 @@ public partial class SWCDOC_OnlineApply001 : System.Web.UI.Page
                     string rONA01022 = readerOA1["ONA01022"] + "";
                     string rONA01023 = readerOA1["ONA01023"] + "";
                     string rONA01024 = readerOA1["ONA01024"] + "";
+                    if (rONA01024 != "")
+                        rONA01024 = Convert.ToDateTime(readerOA1["ONA01024"]).ToString("MM-dd") + "";
                     string rONA01025 = readerOA1["ONA01025"] + "";
+                    string rONA01026 = readerOA1["ONA01026"] + "";
+                    string rONA01027 = readerOA1["ONA01027"] + "";
+                    string rONA01028 = readerOA1["ONA01028"] + "";
 
                     string tReviewResults = readerOA1["ReviewResults"] + "";
                     string tResultsExplain = readerOA1["ResultsExplain"] + "";
@@ -160,28 +151,32 @@ public partial class SWCDOC_OnlineApply001 : System.Web.UI.Page
                     TXTONA006.Text = rONA01006;
                     TXTONA007.Text = rONA01007;
                     LBONA008.Text = rONA01008;
-                    LBONA009.Text = rONA01009;
-                    LBONA010.Text = rONA01010;
+                    LBONA009.Text = rONA01009 == "是" ? rONA01009 +"，"+ readerOA1["ONA01009aD"] + "":rONA01009 + "，" + readerOA1["ONA01009bD"] + "";
+                    LBONA010.Text = rONA01010 == "是" ? rONA01010 + "，" + readerOA1["ONA01010aD"] + "" : rONA01010 + "，" + readerOA1["ONA01010bD"] + "";
                     LBONA011.Text = rONA01011;
-                    LBONA012.Text = rONA01012;
-                    LBONA013.Text = rONA01013;
+                    LBONA012.Text = rONA01012 == "是" ? rONA01012 + "，" + readerOA1["ONA01012aD"] + "" : rONA01012 + "，" + readerOA1["ONA01012bD"] + "";
+                    LBONA013.Text = rONA01013 == "是" ? rONA01013 + "，" + readerOA1["ONA01013aD"] + "" : rONA01013 + "，" + readerOA1["ONA01013bD"] + "";
                     LBONA014.Text = rONA01014;
-                    LBONA015.Text = rONA01015;
-                    LBONA016.Text = rONA01016;
-                    LBONA017.Text = rONA01017;
+                    LBONA015.Text = rONA01015 == "是" ? rONA01015 + "，" + readerOA1["ONA01015aD"] + "" : rONA01015 + "，" + readerOA1["ONA01015bD"] + "";
+                    LBONA016.Text = rONA01016 == "是" ? rONA01016 + "，" + readerOA1["ONA01016aD"] + "" : rONA01016 + "，" + readerOA1["ONA01016bD"] + "";
+                    LBONA017.Text = rONA01017 == "是" ? rONA01017 + "，" + readerOA1["ONA01017aD"] + "" : rONA01017 == "否" ? rONA01017 + "，" + readerOA1["ONA01017bD"] + "": rONA01017;
                     LBONA018.Text = rONA01018;
-                    LBONA019.Text = rONA01019;
-                    LBONA020.Text = rONA01020;
+                    LBONA019.Text = rONA01019 == "是" ? rONA01019 + "，" + readerOA1["ONA01019aD"] + "" : rONA01019 + "，" + readerOA1["ONA01019bD"] + "";
+                    LBONA020.Text = rONA01020 == "是" ? rONA01020 + "，" + readerOA1["ONA01020aD"] + "" : rONA01020 + "，" + readerOA1["ONA01020bD"] + "";
                     LBONA021.Text = rONA01021;
-                    LBONA023.Text = rONA01023;
+                    LBONA023.Text = rONA01023 == "否" ? rONA01023 + "，" + readerOA1["ONA01023bD"] + "" : rONA01023;
                     if (rONA01021 == "是" && rONA01022.Trim() != "") { TXTONA022.Text = "，說明：" + rONA01022; }
-                    if (rONA01023 == "是" && rONA01024.Trim() != "") { TXTONA022.Text = "， 規劃於" + rONA01024 + "改善完成"; }
-                    TXTONA024.Text = SBApp.DateView(rONA01024, "00");
+                    if (rONA01023 == "是" && rONA01024.Trim() != "") { TXTONA024.Text += "， 規劃於" + rONA01024 + "改善完成"; }
+                    //TXTONA024.Text = SBApp.DateView(rONA01024, "00");
                     TXTONA025.Text = rONA01025;
+                    TXTONA026.Text = rONA01026;
+                    TXTONA027.Text = rONA01027;
+                    TXTONA028.Text = rONA01028;
 
                     if (tReviewResults == "1") { CHKRRa.Checked = true; LBRR.Text = "審查結果：准予通過"; }
                     if (tReviewResults == "0") { CHKRRb.Checked = true; LBRR.Text = "審查結果：駁回"; }
                     if (tResultsExplain.Trim() != "") { LBResultsExplain.Text = "：" + tResultsExplain; }
+                    if (tReviewResults == "1" && DataLock2 == "Y") { OutPdf.Visible = true; }
 
                     ResultsExplain.Text = tResultsExplain;
                     TXTReviewDoc.Text = tReviewDoc;
@@ -204,7 +199,7 @@ public partial class SWCDOC_OnlineApply001 : System.Web.UI.Page
                         {
                             string v = Request.QueryString["SWCNO"] + "";
 
-                            string tempLinkPateh = SwcUpLoadFilePath + v + "/" + strFileName;
+                            string tempLinkPateh = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/SwcCaseFile/" + v + "/" + strFileName;
                             FileLinkObj.Text = strFileName;
                             FileLinkObj.NavigateUrl = tempLinkPateh;
                             FileLinkObj.Visible = true;
@@ -219,20 +214,28 @@ public partial class SWCDOC_OnlineApply001 : System.Web.UI.Page
         if (ssUserType == "03" && DataLock2 != "Y")
         {
             LBResultsExplain.Visible = false;
-            ReviewResults.Visible = true;
-            DataLock.Visible = true;
-            SaveCase.Visible = true;
+            //ReviewResults.Visible = true;
+            ReviewResults.Visible = false;
+            //DataLock.Visible = true;
+            DataLock.Visible = false;
+            //SaveCase.Visible = true;
+            SaveCase.Visible = false;
         }
         if (DataLock2 == "Y")
         {
             ReViewUL.Visible = false;
             ResultsExplain.Visible = false;
-            ReviewResults.Visible = true;
+            //ReviewResults.Visible = true;
+            ReviewResults.Visible = false;
             LBRR.Visible = true;
             CHKRRa.Visible = false;
             CHKRRb.Visible = false;
             DataLock.Visible = false;
             SaveCase.Visible = false;
+        }
+        if (ssONLINEAPPLY != "Y" && DataLock2 != "Y")
+        {
+            ReviewResults.Visible = false;
         }
     }
 
@@ -697,5 +700,13 @@ public partial class SWCDOC_OnlineApply001 : System.Web.UI.Page
 
         }
 
+    }
+    protected void OutPdf_Click(object sender, ImageClickEventArgs e)
+    {
+        string rSWCNO = Request.QueryString["SWCNO"] + "";
+        string rOLANO = Request.QueryString["OACode"] + "";
+        string rSWCNO02 = TXTSWC002.Text + "";
+
+        Response.Redirect("../SwcReport/PdfSwcOLA01.aspx?SWCNO02=" + rSWCNO02 + "&OLANO=" + rOLANO);
     }
 }

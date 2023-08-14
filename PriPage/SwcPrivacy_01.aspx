@@ -1,21 +1,4 @@
-﻿<!--
-    Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
--->
-
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="SwcPrivacy_01.aspx.cs" Inherits="PriPage_Privacy_01" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="SwcPrivacy_01.aspx.cs" Inherits="PriPage_Privacy_01" %>
 
 <!DOCTYPE html>
 
@@ -41,7 +24,7 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     
     <link rel="stylesheet" type="text/css" href="../css/reset.css"/>
-    <link rel="stylesheet" type="text/css" href="../css/all.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/all.css?202005130332"/>
     <link rel="stylesheet" type="text/css" href="../css/textstyle.css"/>
     
     <script src="../js/jquery-3.1.1.min.js"></script>
@@ -59,8 +42,8 @@
                     <ul>
                         <li><a href="../sysFile/系統操作手冊.pdf" title="系統操作手冊" target="_blank">系統操作手冊</a></li>
                         <li>|</li>
-                        <li><a href="http://tcgeswc.taipei.gov.tw/index_new.aspx" title="水土保持計畫查詢系統" target="_blank">水土保持計畫查詢系統 </a></li>
-                        <asp:Panel ID="GoTslm" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="http://172.28.100.55/TSLM" title="坡地管理資料庫" target="_blank">坡地管理資料庫</a></li></asp:Panel>
+                        <li><a href="https://swc.taipei/swcinfo/" title="水土保持計畫查詢系統" target="_blank">水土保持計畫查詢系統 </a></li>
+                        <asp:Panel ID="GoTslm" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="https://tslm.swc.taipei/tslmwork/" title="坡地管理資料庫" target="_blank">坡地管理資料庫</a></li></asp:Panel>
                         <asp:Panel ID="TitleLink00" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="SWCBase001.aspx" title="帳號管理">帳號管理</a></li></asp:Panel>
                         <asp:Panel ID="LogOutLink" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="SWC000.aspx?ACT=LogOut" title="登出">登出</a></li></asp:Panel>
                     </ul>
@@ -82,7 +65,7 @@
           	<p class="firstindent">親愛的使用者，臺北市政府水土保持申請書件管理平台網站(以下簡稱本平台)非常重視並尊重使用者的隱私權。為了幫助您瞭解本平台如何收集、應用及保護您的個人資訊，請詳細閱讀以下本平台隱私權暨資訊安全保護政策，本政策將幫助您了解，在您使用本平台以及其延伸服務網站所提供的服務時，我們收集、運用及保護使用者個人資料的政策與原則。</p><br>
            	<p>若您為未滿二十歲之未成年人，則應請您的父母或監護人閱讀、了解以下說明。</p><br>
             <p class="title16blk">適用範圍</p>
-            <p class="firstindent">以下的隱私權保護政策，適用於您在本平台以及其延伸服務網站（以tcgeswc.taipei.gov.tw網域為原則）活動時，所涉及的個人資料收集、運用與保護。但不適用於經由本平台搜尋連結之其他網站，當您在這些網站進行活動時，關於個人資料的保護，適用各該網站的隱私權保護政策。</p><br>
+            <p class="firstindent">以下的隱私權保護政策，適用於您在本平台以及其延伸服務網站（以swc.taipei網域為原則）活動時，所涉及的個人資料收集、運用與保護。但不適用於經由本平台搜尋連結之其他網站，當您在這些網站進行活動時，關於個人資料的保護，適用各該網站的隱私權保護政策。</p><br>
             <p class="title16blk">個人資料收集方式</p>
               <p class="firstindent">我們會透過以下幾種管道收集使用者個人資料： </p><br>
 				<p class="allindent2em_no1">1.　註冊會員：當您於本平台註冊成為具承辦/監造技師身分之會員時，我們必須請您提供更多資訊，包含姓名、電子郵件、身分證字號、通訊地址、技師證書編號、執業機構、及相關證明文件等。</p>

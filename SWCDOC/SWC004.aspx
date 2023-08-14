@@ -1,21 +1,4 @@
-﻿<!--
-    Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
--->
-
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="SWC004.aspx.cs" Inherits="SWCDOC_SWC003" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="SWC004.aspx.cs" Inherits="SWCDOC_SWC003" %>
 
 <!DOCTYPE html>
 
@@ -45,8 +28,8 @@
             <ul>
                 <li><a href="../sysFile/系統操作手冊.pdf" title="系統操作手冊" target="_blank">系統操作手冊</a></li>
                 <li>|</li>
-                <li><a href="http://tcgeswc.taipei.gov.tw/index_new.aspx" title="水土保持計畫查詢系統" target="_blank">水土保持計畫查詢系統 </a></li>
-                <asp:Panel ID="GoTslm" runat="server" Visible="true"><li>|&nbsp&nbsp&nbsp&nbsp<a href="http://172.28.100.55/TSLM" title="坡地管理資料庫" target="_blank">坡地管理資料庫</a></li></asp:Panel>
+                <li><a href="https://swc.taipei/swcinfo/" title="臺北市山坡地保育利用資訊查詢系統" target="_blank">臺北市山坡地保育利用資訊查詢系統 </a></li>
+                <asp:Panel ID="GoTslm" runat="server" Visible="true"><li>|&nbsp&nbsp&nbsp&nbsp<a href="http://tslm.swc.taipei/tslmwork/" title="坡地管理資料庫" target="_blank">坡地管理資料庫</a></li></asp:Panel>
                 <asp:Panel ID="TitleLink00" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="SWCBase001.aspx" title="帳號管理">帳號管理</a></li></asp:Panel>
                 <li>|</li>
                 <li><a href="SWC000.aspx?ACT=LogOut" title="登出">登出</a></li>
@@ -76,10 +59,9 @@
                     <%--<h2 class="detailsBar_title_basic ">基本資料<img src="../images/btn/btn-close.png" alt="" class="open"/></h2>--%>
                     <div class="detailsGrid_wrap">
                         <table class="detailsGrid_greenCR">
-                        <tr><td style="background: #e0ffff;">水保局編號</td>
+                        <tr><td style="background: #e0ffff;">案件編號</td>
                             <td style="background: #e0ffff;">
-                                <asp:Label ID="LBSWC002" runat="server"/>
-                                <asp:Label ID="LBSWC000" runat="server" Visible="false"/></td>
+                                <asp:Label ID="LBSWC000" runat="server"/></td>
                             <td rowspan="22" class="innerBR">
                                 變更設計：<br/>
                                 <asp:GridView ID="GVSWCCHG" runat="server" CssClass="innerBR_file" AutoGenerateColumns="False"
@@ -87,7 +69,11 @@
                                     <Columns>
                                         <asp:HyperLinkField DataNavigateUrlFields="SWC002Link" DataTextField="SWC002" HeaderText="變更設計" Target="_blank" />
                                     </Columns>
-                                </asp:GridView></td></tr>
+                                </asp:GridView>
+								<asp:Button ID="CopyCase" runat="server" Text="新增變更設計" Visible="false" CssClass="addchangbtn" OnClick="CopyCase_Click" /></td></tr>
+                        <tr><td style="background: #e0ffff;">水保局編號</td>
+                            <td style="background: #e0ffff;">
+                                <asp:Label ID="LBSWC002" runat="server"/></td></tr>
                         <tr><td style="background: #e0ffff;">案件狀態</td>
                             <td style="background: #e0ffff;"><asp:Label ID="LBSWC004" runat="server"/></td></tr>
                         <tr><td style="background: #e0ffff;">書件名稱</td>
@@ -108,20 +94,11 @@
                                         <asp:HiddenField ID="Lock206" runat="server" Value='<%# Bind("OLA005") %>'  />
                                     </ItemTemplate>
                                 </asp:TemplateField>
-
-
-                                    <asp:TemplateField Visible="false">
-                                        <ItemTemplate>
-                                            <asp:Button ID="ButtonDEL206" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="刪除" OnClientClick="return confirm('資料刪除後無法復原，確認是否刪除這筆資料?')" OnClick="ButtonDEL206_Click" />
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                  <%--  <asp:TemplateField Visible="false">
-                                        <ItemTemplate>
-                                            <asp:HiddenField ID="Lock202" runat="server" Value='<%# Bind("OLA005") %>'  />
-                                        </ItemTemplate>
-                                    </asp:TemplateField>--%>
-
-
+                                <asp:TemplateField Visible="false">
+                                    <ItemTemplate>
+                                        <asp:Button ID="ButtonDEL206" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="刪除" OnClientClick="return confirm('資料刪除後無法復原，確認是否刪除這筆資料?')" OnClick="ButtonDEL206_Click" />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                             </Columns>
                         </asp:GridView></td></tr>
                             
@@ -140,27 +117,39 @@
                                         <asp:HiddenField ID="Lock204" runat="server" Value='<%# Bind("OLA005") %>'  />
                                     </ItemTemplate>
                                 </asp:TemplateField>
-
-
-                                    <asp:TemplateField Visible="true">
-                                        <ItemTemplate>
-                                            <asp:Button ID="ButtonDEL204" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="刪除" OnClientClick="return confirm('資料刪除後無法復原，確認是否刪除這筆資料?')"  />
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                  <%--  <asp:TemplateField Visible="false">
-                                        <ItemTemplate>
-                                            <asp:HiddenField ID="Lock202" runat="server" Value='<%# Bind("OLA005") %>'  />
-                                        </ItemTemplate>
-                                    </asp:TemplateField>--%>
-
-
+                                <asp:TemplateField Visible="true">
+                                    <ItemTemplate>
+                                        <asp:Button ID="ButtonDEL204" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="刪除" OnClientClick="return confirm('資料刪除後無法復原，確認是否刪除這筆資料?')"  />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                            </Columns>
+                        </asp:GridView>
+                    </td></tr>
+					
+					<tr><td>復工申報</td>
+                    <td><asp:ImageButton ID="DTL_02_04_1_Link" runat="server" title="復工申報" ImageUrl="../images/btn/btn_ap11.png" OnClick="DTL_02_04_1_Link_Click" />
+                        <asp:GridView ID="SWCOLA204_1" runat="server" CssClass="greenCR" AutoGenerateColumns="False"
+                            OnRowDataBound="SWCOLA204_1_RowDataBound" >
+                            <Columns>
+                                <asp:BoundField DataField="OLA001" HeaderText="復工申報編號" />
+                                <asp:BoundField DataField="OLA002" HeaderText="預定復工日期" />
+                                <asp:BoundField DataField="OLA003" HeaderText="預定完工日期" />
+                                <asp:TemplateField ShowHeader="False">
+                                    <ItemTemplate>
+                                        <asp:Button ID="ButtonOLA204_1" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="詳情" OnClick="ButtonOLA204_1_Click" />
+                                        <asp:HiddenField ID="Lock204_1" runat="server" Value='<%# Bind("OLA005") %>'  />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField Visible="true">
+                                    <ItemTemplate>
+                                        <asp:Button ID="ButtonDEL204_1" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="刪除" OnClientClick="return confirm('資料刪除後無法復原，確認是否刪除這筆資料?')"  />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                             </Columns>
                         </asp:GridView>
 
                     </td></tr>
-
-
-
+					
                     <tr><td>工期展延</td>
                     <td><asp:ImageButton ID="DTL_02_07_Link" runat="server" title="工期展延" ImageUrl="../images/btn/btn_ap06.png" OnClick="DTL_02_07_Link_Click" />
                         <asp:GridView ID="SWCOLA207" runat="server" CssClass="greenCR" AutoGenerateColumns="False"
@@ -176,26 +165,14 @@
                                         <asp:HiddenField ID="Lock207" runat="server" Value='<%# Bind("OLA005") %>'  />
                                     </ItemTemplate>
                                 </asp:TemplateField>
-
-
-                                    <asp:TemplateField Visible="true">
-                                        <ItemTemplate>
-                                            <asp:Button ID="ButtonDEL207" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="刪除" OnClientClick="return confirm('資料刪除後無法復原，確認是否刪除這筆資料?')" OnClick="ButtonDEL207_Click"  />
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                  <%--  <asp:TemplateField Visible="false">
-                                        <ItemTemplate>
-                                            <asp:HiddenField ID="Lock202" runat="server" Value='<%# Bind("OLA005") %>'  />
-                                        </ItemTemplate>
-                                    </asp:TemplateField>--%>
-
-
+                                <asp:TemplateField Visible="true">
+                                    <ItemTemplate>
+                                        <asp:Button ID="ButtonDEL207" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="刪除" OnClientClick="return confirm('資料刪除後無法復原，確認是否刪除這筆資料?')" OnClick="ButtonDEL207_Click"  />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                             </Columns>
                         </asp:GridView>
-
                     </td></tr>
-
-
 
 
                     <tr><td>設施安全自主檢查表</td>
@@ -213,25 +190,16 @@
                                         <asp:HiddenField ID="Lock201" runat="server" Value='<%# Bind("OLA005") %>'  />
                                     </ItemTemplate>
                                 </asp:TemplateField>
-
-
-                                    <asp:TemplateField Visible="true">
-                                        <ItemTemplate>
-                                            <asp:Button ID="ButtonDEL201" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="刪除" OnClientClick="return confirm('資料刪除後無法復原，確認是否刪除這筆資料?')" OnClick="ButtonDEL201_Click" />
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                  <%--  <asp:TemplateField Visible="false">
-                                        <ItemTemplate>
-                                            <asp:HiddenField ID="Lock202" runat="server" Value='<%# Bind("OLA005") %>'  />
-                                        </ItemTemplate>
-                                    </asp:TemplateField>--%>
-
-
+                                <asp:TemplateField Visible="true">
+                                    <ItemTemplate>
+                                        <asp:Button ID="ButtonDEL201" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="刪除" OnClientClick="return confirm('資料刪除後無法復原，確認是否刪除這筆資料?')" OnClick="ButtonDEL201_Click" />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                             </Columns>
                         </asp:GridView>
 
                     </td></tr>
-                             <tr><td>暫停審查</td>
+                    <tr><td>暫停審查</td>
                     <td><asp:ImageButton ID="DTL_02_02_Link" runat="server" title="暫停審查" ImageUrl="../images/btn/btn_ap02.png" OnClick="DTL_02_02_Link_Click" />
                         <asp:GridView ID="SWCOLA202" runat="server" CssClass="greenCR" AutoGenerateColumns="False"
                             OnRowDataBound="SWCOLA202_RowDataBound">
@@ -246,31 +214,21 @@
                                         <asp:HiddenField ID="Lock202" runat="server" Value='<%# Bind("OLA005") %>'  />
                                     </ItemTemplate>
                                 </asp:TemplateField>
-
-
-                                    <asp:TemplateField Visible="true">
-                                        <ItemTemplate>
-                                            <asp:Button ID="ButtonDEL202" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="刪除" OnClientClick="return confirm('資料刪除後無法復原，確認是否刪除這筆資料?')"  />
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                  <%--  <asp:TemplateField Visible="false">
-                                        <ItemTemplate>
-                                            <asp:HiddenField ID="Lock202" runat="server" Value='<%# Bind("OLA005") %>'  />
-                                        </ItemTemplate>
-                                    </asp:TemplateField>--%>
-
-
+                                <asp:TemplateField Visible="true">
+                                    <ItemTemplate>
+                                        <asp:Button ID="ButtonDEL202" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="刪除" OnClientClick="return confirm('資料刪除後無法復原，確認是否刪除這筆資料?')"  />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                             </Columns>
                         </asp:GridView>
-
                     </td></tr>
-                             <tr><td>開工/復工展延</td>
-                    <td><asp:ImageButton ID="DTL_02_03_Link" runat="server" title="開工/復工展延" ImageUrl="../images/btn/btn_ap04.png" OnClick="DTL_02_03_Link_Click" />
+                    <tr><td>開工展延</td>
+                    <td><asp:ImageButton ID="DTL_02_03_Link" runat="server" title="開工展延" ImageUrl="../images/btn/btn_ap04.png" OnClick="DTL_02_03_Link_Click" />
                         <asp:GridView ID="SWCOLA203" runat="server" CssClass="greenCR" AutoGenerateColumns="False"
                             OnRowDataBound="SWCOLA203_RowDataBound">
                             <Columns>
                                 <asp:BoundField DataField="OLA001" HeaderText="展延編號" />
-                                <asp:BoundField DataField="OLA002" HeaderText="原定開工/復工期限" />
+                                <asp:BoundField DataField="OLA002" HeaderText="原定開工期限" />
                                 <asp:BoundField DataField="OLA003" HeaderText="預定展延期限" />
                                 <asp:BoundField DataField="OLA004" HeaderText="展延理由" />
                                 <asp:TemplateField ShowHeader="False">
@@ -279,27 +237,38 @@
                                             <asp:HiddenField ID="Lock203" runat="server" Value='<%# Bind("OLA005") %>'  />
                                     </ItemTemplate>
                                 </asp:TemplateField>
-
-
-                                    <asp:TemplateField Visible="true">
-                                        <ItemTemplate>
-                                            <asp:Button ID="ButtonDEL203" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="刪除" OnClientClick="return confirm('資料刪除後無法復原，確認是否刪除這筆資料?')"  />
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                  <%--  <asp:TemplateField Visible="false">
-                                        <ItemTemplate>
-                                            <asp:HiddenField ID="Lock202" runat="server" Value='<%# Bind("OLA005") %>'  />
-                                        </ItemTemplate>
-                                    </asp:TemplateField>--%>
-
-
+                                <asp:TemplateField Visible="true">
+                                    <ItemTemplate>
+                                        <asp:Button ID="ButtonDEL203" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="刪除" OnClientClick="return confirm('資料刪除後無法復原，確認是否刪除這筆資料?')"  />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                             </Columns>
                         </asp:GridView>
-
                     </td></tr>
-
-
-
+					
+					<tr><td>復工展延</td>
+                    <td><asp:ImageButton ID="DTL_02_03_1_Link" runat="server" title="復工展延" ImageUrl="../images/btn/btn_ap10.png" OnClick="DTL_02_03_1_Link_Click" />
+                        <asp:GridView ID="SWCOLA203_1" runat="server" CssClass="greenCR" AutoGenerateColumns="False"
+                            OnRowDataBound="SWCOLA203_1_RowDataBound">
+                            <Columns>
+                                <asp:BoundField DataField="OLA001" HeaderText="展延編號" />
+                                <asp:BoundField DataField="OLA002" HeaderText="原定復工期限" />
+                                <asp:BoundField DataField="OLA003" HeaderText="預定展延期限" />
+                                <asp:BoundField DataField="OLA004" HeaderText="展延理由" />
+                                <asp:TemplateField ShowHeader="False">
+                                    <ItemTemplate>
+                                        <asp:Button ID="ButtonOLA203_1" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="詳情" OnClick="ButtonOLA203_1_Click" />
+                                            <asp:HiddenField ID="Lock203_1" runat="server" Value='<%# Bind("OLA005") %>'  />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField Visible="true">
+                                    <ItemTemplate>
+                                        <asp:Button ID="ButtonDEL203_1" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="刪除" OnClientClick="return confirm('資料刪除後無法復原，確認是否刪除這筆資料?')"  />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                            </Columns>
+                        </asp:GridView>
+                    </td></tr>
 
 
                     <tr><td>設施調整報備</td>
@@ -316,23 +285,13 @@
                                             <asp:HiddenField ID="Lock205" runat="server" Value='<%# Bind("OLA005") %>'  />
                                     </ItemTemplate>
                                 </asp:TemplateField>
-
-
-                                    <asp:TemplateField Visible="true">
-                                        <ItemTemplate>
-                                            <asp:Button ID="ButtonDEL205" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="刪除" OnClientClick="return confirm('資料刪除後無法復原，確認是否刪除這筆資料?')"  />
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                  <%--  <asp:TemplateField Visible="false">
-                                        <ItemTemplate>
-                                            <asp:HiddenField ID="Lock202" runat="server" Value='<%# Bind("OLA005") %>'  />
-                                        </ItemTemplate>
-                                    </asp:TemplateField>--%>
-
-
+                                <asp:TemplateField Visible="true">
+                                    <ItemTemplate>
+                                        <asp:Button ID="ButtonDEL205" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="刪除" OnClientClick="return confirm('資料刪除後無法復原，確認是否刪除這筆資料?')"  />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                             </Columns>
                         </asp:GridView>
-
                     </td></tr>
 
 
@@ -354,20 +313,11 @@
                                             <asp:HiddenField ID="Lock208" runat="server" Value='<%# Bind("OLA005") %>'  />
                                     </ItemTemplate>
                                 </asp:TemplateField>
-
-
-                                    <asp:TemplateField Visible="true">
-                                        <ItemTemplate>
-                                            <asp:Button ID="ButtonDEL208" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="刪除" OnClientClick="return confirm('資料刪除後無法復原，確認是否刪除這筆資料?')"  />
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                  <%--  <asp:TemplateField Visible="false">
-                                        <ItemTemplate>
-                                            <asp:HiddenField ID="Lock202" runat="server" Value='<%# Bind("OLA005") %>'  />
-                                        </ItemTemplate>
-                                    </asp:TemplateField>--%>
-
-
+                                <asp:TemplateField Visible="true">
+                                    <ItemTemplate>
+                                        <asp:Button ID="ButtonDEL208" runat="server" CommandArgument='<%# Eval("OLA001") %>' Text="刪除" OnClientClick="return confirm('資料刪除後無法復原，確認是否刪除這筆資料?')"  />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                             </Columns>
                         </asp:GridView>
 
@@ -415,10 +365,11 @@
             </div>--%>
 
             <div class="footer">
-                 <p><span class="span1">臺北市政府工務局大地工程處</span><br/>
-                           <span class="span2">110臺北市信義區松德路300號3樓 　服務專線(02)27591109   臺北市民當家熱線1999</span><br/>
-                            <span class="span2">建議使用IE11(含)以上，Chrome或Firefox版本瀏覽器 資料更新：<asp:Label ID="ToDay" runat="server" Text=""/>　來訪人數：<asp:Label ID="Visitor" runat="server" Text=""/> </span><br/>
-                           <span class="span2">客服電話：02-27593001#3718 許先生 本系統由多維空間資訊有限公司開發維護 TEL:(02)27929328</span></p>
+               <p><span class="span1">臺北市政府工務局大地工程處</span><br/>
+                    <span class="span2">110臺北市信義區松德路300號3樓 　服務專線(02)27591109   臺北市民當家熱線1999</span><br/>
+                    <span class="span2">建議使用IE11(含)以上，Chrome或Firefox版本瀏覽器　<b>資料更新：</b><asp:Label ID="ToDay" runat="server" Text=""/>　<b>來訪人數：</b><asp:Label ID="Visitor" runat="server" Text=""/> </span><br/>
+                    <span class="span2"><b>客服電話：</b>02-27929328 陳小姐　<b>信箱：</b>tcge7@geovector.com.tw　本系統由多維空間資訊有限公司開發維護 TEL：(02)27929328</span><br/>
+			        <span class="span2">※為維護系統服務品質，本平台訂於每周三凌晨AM 4:00-6:30 進行系統維護更新，更新期間偶有瞬斷情形，敬請使用者避開該時段使用。謝謝！</span></p>
             </div>
 
         </div>

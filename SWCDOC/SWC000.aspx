@@ -1,21 +1,4 @@
-﻿<!--
-    Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
--->
-
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="SWC000.aspx.cs" Inherits="SWCDOC_SWC000" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="SWC000.aspx.cs" Inherits="SWCDOC_SWC000" %>
 
 <!DOCTYPE html>
 
@@ -39,6 +22,11 @@
     <script src="../js/index.js"></script>
     <script type="text/javascript">
         function chkInput(jChkType) {
+            var Today = new Date();
+            if (Today.getFullYear() == '2019' && Today.getMonth() + 1 == '12' && Today.getDate() == '15' && Today.getHours() > 15 && Today.getHours() < 18 ) { alert('台北市政府將於12月15日14:30至12月15日18:30進行設備更新及備援作業演練，屆時網站服務在本段時間可能發生中斷情形，不便之處敬請見諒！'); return false; }
+            if (Today.getFullYear() == '2019' && Today.getMonth() + 1 == '11' && Today.getDate() == '16') { alert('台北市政府將於11月15日22:00至11月17日18:00進行設備更新及備援作業演練，屆時網站服務在本段時間可能發生中斷情形，不便之處敬請見諒！'); return false; }
+            if (Today.getFullYear() == '2019' && Today.getMonth() + 1 == '11' && Today.getDate() == '15' && Today.getHours() < 18) { alert('台北市政府將於11月30日09:00至11月30日17:00進行設備更新及備援作業演練，屆時網站服務在本段時間可能發生中斷情形，不便之處敬請見諒！'); return false; }
+
             var x = document.getElementById("loginChange");
             var jUserType = (x.options[x.selectedIndex].text);
 
@@ -63,7 +51,7 @@
                     }
                     break;
 
-                case "承辦/監造技師":
+                case "技師/各類委員":
                     document.getElementById('TXTID').value = jInputID.toUpperCase();
 
             }
@@ -78,12 +66,12 @@
     <div>
     
     <div class="wrap-b">
-      <div class="header header-b"><a href="SWC000.aspx" class="logo-b"></a>
+      <div class="header header-b"><a href="../default.aspx" class="logo-b"></a>
         <div class="header-menu-b clearfix">
           <ul>
             <li><a href="../sysFile/系統操作手冊.pdf" title="系統操作手冊" target="_blank">系統操作手冊</a></li>
             <li>|</li>
-            <li><a href="http://tcgeswc.taipei.gov.tw/index_new.aspx" title="臺北市水土保持計畫查詢系統" target="_blank">臺北市水土保持計畫查詢系統</a></li>
+            <li><a href="http://swc.taipei/swcinfo/" title="臺北市山坡地保育利用資訊查詢系統" target="_blank">臺北市山坡地保育利用資訊查詢系統 </a></li>
             <li>|</li>
             <li><a href="http://www.geo.gov.taipei/" title="臺北市政府工務局大地工程處" target="_blank">臺北市政府工務局大地工程處</a></li>
           </ul>
@@ -120,9 +108,10 @@
                 <div class="footer-b-green"></div>
                     <div class="footer-bb-brown">
                         <p><span class="span1">臺北市政府工務局大地工程處</span><br/>
-                           <span class="span2">110臺北市信義區松德路300號3樓 　服務專線(02)27591109   臺北市民當家熱線1999</span><br/>
-                            <span class="span2">建議使用IE11(含)以上，Chrome或Firefox版本瀏覽器 資料更新：<asp:Label ID="ToDay" runat="server" Text=""/>　來訪人數：<asp:Label ID="Visitor" runat="server" Text=""/> </span><br/>
-                           <span class="span2">客服電話：02-27593001#3718 許先生 本系統由多維空間資訊有限公司開發維護 TEL:(02)27929328</span></p>
+                    <span class="span2">110臺北市信義區松德路300號3樓 　服務專線(02)27591109   臺北市民當家熱線1999</span><br/>
+                    <span class="span2">建議使用IE11(含)以上，Chrome或Firefox版本瀏覽器　<b>資料更新：</b><asp:Label ID="ToDay" runat="server" Text=""/>　<b>來訪人數：</b><asp:Label ID="Visitor" runat="server" Text=""/> </span><br/>
+                    <span class="span2"><b>客服電話：</b>02-27929328 陳小姐　<b>信箱：</b>tcge7@geovector.com.tw　本系統由多維空間資訊有限公司開發維護 TEL：(02)27929328</span><br/>
+			        <span class="span2">※為維護系統服務品質，本平台訂於每周三凌晨AM 4:00-6:30 進行系統維護更新，更新期間偶有瞬斷情形，敬請使用者避開該時段使用。謝謝！</span></p>
                     </div>
                 </div>
                 
@@ -147,7 +136,8 @@
         <p>
             <asp:UpdatePanel ID="MarqueeMessageUpdatePanel" runat="server" RenderMode="Inline">
                 <ContentTemplate>
-                    <asp:Label ID="MarqueeMessageLabel" runat="server" Text="跑馬燈在這邊顯示" CssClass="newsp"></asp:Label> 
+                    <asp:Label ID="MarqueeMessageLabel" runat="server" Text="跑馬燈在這邊顯示" CssClass="newsp"></asp:Label> <br/>
+                    <asp:HyperLink ID="LinkFile" runat="server" Target="_blank" />
                     
                     <asp:Button ID="MarqueeMessageButton" runat="server" Text="X" CssClass="close-s" OnClientClick="MarqueeMessageDiv.style.display='none';document.getElementById('Marqueeclick').value='NoDtl';"/>
                     

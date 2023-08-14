@@ -1,21 +1,4 @@
-﻿/*  Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
@@ -37,7 +20,7 @@ public partial class PriPage_Privacy_01 : System.Web.UI.Page
         GBClass001 SBApp = new GBClass001();
 
         if (CheckPrivacy(ssUserType, ssUserID, ssUserPW)) {
-            Response.Redirect("../SWCDOC/SWC001.aspx");
+            Response.Redirect("../SWCDOC/HaloPage001.aspx");
         }
 
         //全區供用
@@ -60,7 +43,7 @@ public partial class PriPage_Privacy_01 : System.Web.UI.Page
     {
         bool tPrivacy = true;
 
-        if (ssUserType == "01") {
+        if (ssUserType == "01" || ssUserType == "07") {
             ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
             using (SqlConnection SWCConn = new SqlConnection(connectionString.ConnectionString))
             {
@@ -98,6 +81,6 @@ public partial class PriPage_Privacy_01 : System.Web.UI.Page
             objCmdUser.ExecuteNonQuery();
             objCmdUser.Dispose();
         }
-        Response.Redirect("../SWCDOC/SWC001.aspx");
+        Response.Redirect("../SWCDOC/HaloPage001.aspx");
     }
 }

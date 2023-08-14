@@ -1,21 +1,4 @@
-﻿<!--
-    Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
--->
-
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="SWC001.aspx.cs" Inherits="SWCDOC_SWC001" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="SWC001.aspx.cs" Inherits="SWCDOC_SWC001" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <!DOCTYPE html>
@@ -31,8 +14,8 @@
     <meta name="copyright" content="© 2017 臺北市水土保持申請書件管理平台">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge, chrome=1">
     <link rel="stylesheet" type="text/css" href="../css/reset.css"/>
-    <link rel="stylesheet" type="text/css" href="../css/all.css"/>
-     <link rel="stylesheet" type="text/css" href="../css/iris.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/all.css?202208020212"/>
+     <link rel="stylesheet" type="text/css" href="../css/iris.css?202103230553"/>
     <script type="text/javascript">
         function SearchChg(e1)
         {
@@ -99,7 +82,7 @@
     
     <div class="wrap-s">
         <div class="header-wrap-s">
-         <div class="header header-s clearfix"><a href="SWC001.aspx" class="logo-s"></a></div>
+         <div class="header header-s clearfix"><a href="HaloPage001.aspx" class="logo-s"></a>
 
 
              <div>
@@ -107,34 +90,55 @@
                 <ul>
                     <li><a href="../sysFile/系統操作手冊.pdf" title="系統操作手冊" target="_blank">系統操作手冊</a></li>
                     <li>|</li>
-                    <li><a href="http://tcgeswc.taipei.gov.tw/index_new.aspx" title="水土保持計畫查詢系統" target="_blank">水土保持計畫查詢系統 </a></li>
-                    <asp:Panel ID="GoTslm" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="http://172.28.100.55/TSLM" title="坡地管理資料庫" target="_blank">坡地管理資料庫</a></li></asp:Panel>
-                    <asp:Panel ID="TitleLink00" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="SWCBase001.aspx" title="帳號管理">帳號管理</a></li></asp:Panel>
-                    <asp:Panel ID="GOVMG" runat="server" Visible="false"><li class="system">|&nbsp&nbsp&nbsp&nbsp<a href="../SWCTCGOV/SWCGOV001.aspx" title="系統管理">系統管理</a><ul><li><a href="../SWCTCGOV/SWCGOV001.aspx">防災事件通知</a></li><li><a href="../SWCTCGOV/SWCGOV011.aspx">公佈欄</a></li></ul></li></asp:Panel>
+                    <li><a href="https://swc.taipei/swcinfo/" title="臺北市山坡地保育利用資訊查詢系統" target="_blank">臺北市山坡地保育利用資訊查詢系統 </a></li>
+                    <asp:Panel ID="GoTslm" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp<a href="https://tslm.swc.taipei/tslmwork/" title="坡地管理資料庫" target="_blank">坡地管理資料庫</a></li></asp:Panel>
+                    <asp:Panel ID="TitleLink00" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp<a href="SWCBase001.aspx" title="帳號管理">帳號管理</a></li></asp:Panel>
+                    <asp:Panel ID="TitleLink01" runat="server" Visible="false"><li class="none">|&nbsp&nbsp<a href="BasicInfo/BasPg001.aspx" title="權限管理">權限管理</a></li></asp:Panel>
+                    <asp:Panel ID="UserBoard00" runat="server" Visible="false"><li class="none">|&nbsp&nbsp<a href="UserBoard.aspx" title="留言板">留言板</a></li></asp:Panel>
+                    <asp:Panel ID="GOVMG" runat="server" Visible="false">
+						<li class="flip">|&nbsp&nbsp&nbsp<a href="#" title="系統管理">系統管理+</a>
+							<ul class="openlist" style="display: none;">
+								<%--<li><a href="http://tgeo.swc.taipei/">審查/檢查行事曆</a></li>--%>
+								<li><a href="../SWCTCGOV/SWCGOV001.aspx">防災事件通知</a></li>
+								<li><a href="../SWCTCGOV/SWCGOV011.aspx">公佈欄</a></li>
+								<li><a href="../SWCDOC/UserBoardList.aspx">留言版</a></li>
+								<li><a href="http://tgeo.swc.taipei/">T-GEO空間地理資訊平台</a></li>
+							</ul>
+						</li>
+					</asp:Panel>
                     <li>|</li>
                     <li><a href="SWC000.aspx?ACT=LogOut" title="登出">登出</a></li>
                 </ul>
             </div>
-        </div>
+        </div></div>
 
             <div class="header-s-green">
                 <div class="header-s-green-nameWrap">
                     <span><asp:Literal ID="TextUserName" runat="server">大雷包，您好</asp:Literal></span>
+            <asp:Panel ID="ChgUserType" runat="server" Visible="false">
+                    <span style="margin-right:0.8em;">身分別：
+                        <asp:DropDownList ID="DDLChange" AutoPostBack="true" runat="server" OnSelectedIndexChanged="DDLChange_SelectedIndexChanged">
+                            <asp:ListItem Value="技師">技師</asp:ListItem>
+                            <asp:ListItem Value="公會">公會</asp:ListItem>
+                        </asp:DropDownList>
+                    </span>
+            </asp:Panel>
                 </div>
             </div>
 
-      </div>
+      </div>  
 
             <div class="contentFooter">
                 <div class="content-s content-s-inquire">
                     <div class="inquireForm date">
-                        <span>行政審查案件編號：</span>
+                        <span>水保局編號：</span>
                         <asp:TextBox ID="TXTS001" runat="server" MaxLength="20"/>
                         <span>書件類別：</span>
                         <asp:CheckBox ID="CHKS002a" runat="server" Text="水土保持計畫" />
                         <asp:CheckBox ID="CHKS002b" runat="server" Text="簡易水保" />
                         <asp:CheckBox ID="CHKSHTYPE" runat="server" Text="案件變更申請" onclick="SearchChg(this);" Visible="false" Style="margin-left:26%; font-weight:bolder;color:#0000ff;"/>
-                        <br/>
+                        <asp:Button ID="BTNSHTYPE" runat="server" Text="案件變更申請" OnClick="BTNSHTYPE_Click" Visible="false" Style="margin-left:26%; font-weight:bolder;color:#0000ff;"/>
+						<br/>
                         <span>書件名稱：</span>
                         <asp:TextBox ID="TXTS003" runat="server" Width="500" />
                         <span>地籍：</span>
@@ -151,20 +155,21 @@
                         <span>審查單位：</span>
                         <asp:DropDownList ID="DDLQQ01" runat="server" Height="25px" /><br/>
                         <span>狀態：</span>
-                        <asp:CheckBox ID="CHKS003m" runat="server" Text="退補件" />
-                        <asp:CheckBox ID="CHKS003a" runat="server" Text="受理中" />
-                        <asp:CheckBox ID="CHKS003b" runat="server" Text="審查中" />
-                        <asp:CheckBox ID="CHKS003n" runat="server" Text="暫停審查" />
-                        <asp:CheckBox ID="CHKS003c" runat="server" Text="已核定" />
-                        <asp:CheckBox ID="CHKS003d" runat="server" Text="施工中" />
-                        <asp:CheckBox ID="CHKS003e" runat="server" Text="停工中" />
-                        <asp:CheckBox ID="CHKS003f" runat="server" Text="已完工" />
-                        <asp:CheckBox ID="CHKS003g" runat="server" Text="廢止" />
-                        <asp:CheckBox ID="CHKS003h" runat="server" Text="撤銷" />
-                        <asp:CheckBox ID="CHKS003i" runat="server" Text="失效" />
-                        <asp:CheckBox ID="CHKS003j" runat="server" Text="不予受理" />
-                        <asp:CheckBox ID="CHKS003k" runat="server" Text="不予核定" />
-                        <asp:CheckBox ID="CHKS003l" runat="server" Text="已變更" />
+                        <asp:CheckBox ID="CheckBox1" runat="server" Text="申請中" />&nbsp;&nbsp;
+                        <asp:CheckBox ID="CHKS003m" runat="server" Text="退補件" />&nbsp;&nbsp;
+                        <asp:CheckBox ID="CHKS003a" runat="server" Text="受理中" />&nbsp;&nbsp;
+                        <asp:CheckBox ID="CHKS003b" runat="server" Text="審查中" />&nbsp;&nbsp;
+                        <asp:CheckBox ID="CHKS003n" runat="server" Text="暫停審查" />&nbsp;&nbsp;
+                        <asp:CheckBox ID="CHKS003c" runat="server" Text="已核定" />&nbsp;&nbsp;
+                        <asp:CheckBox ID="CHKS003d" runat="server" Text="施工中" />&nbsp;&nbsp;
+                        <asp:CheckBox ID="CHKS003e" runat="server" Text="停工中" />&nbsp;&nbsp;
+                        <asp:CheckBox ID="CHKS003f" runat="server" Text="已完工" />&nbsp;&nbsp;
+                        <asp:CheckBox ID="CHKS003g" runat="server" Text="廢止" />&nbsp;&nbsp;
+                        <asp:CheckBox ID="CHKS003h" runat="server" Text="撤銷" />&nbsp;&nbsp;
+                        <asp:CheckBox ID="CHKS003i" runat="server" Text="失效" />&nbsp;&nbsp;
+                        <asp:CheckBox ID="CHKS003j" runat="server" Text="不予受理" />&nbsp;&nbsp;<br />
+                        <asp:CheckBox ID="CHKS003k" runat="server" Text="不予核定" />&nbsp;&nbsp;
+                        <asp:CheckBox ID="CHKS003l" runat="server" Text="已變更" />&nbsp;&nbsp;
                         <br/>
                         核定日期：
                         <asp:TextBox ID="TXTS005" runat="server" width="120px" Style="margin-right: 0px;"></asp:TextBox>
@@ -192,10 +197,11 @@
 
             <div class="inquireGrid">
               <div class="inquireGrid-menu">
-                <h3>查詢到件數:<asp:Label ID="CaseCount" runat="server" Text="" />筆</h3>
+                <h3>查詢到件數：<asp:Label ID="CaseCount" runat="server" Text="" />筆</h3>
                   <asp:ImageButton ID="NewSwc" runat="server" OnClick="NewSwc_Click" title="新增案件" ImageUrl="../images/btn/btn-addCase.png" />
                   <asp:ImageButton ID="WriteExcel" runat="server" OnClick="WriteExcel_Click" title="輸出Excel" ImageUrl="../images/btn/btn-excel.png" OnClientClick="return confirm('確認是否要輸出Excel？')"  />
                   <asp:ImageButton ID="WriteOds" runat="server" OnClick="WriteOds_Click" title="輸出ods" ImageUrl="../images/btn/btn-ods.png" />
+				  <div class="lookCD" runat="server" id="ToCalendar"><a href="../SWCRD/FPage003.aspx">查看行事曆</a></div>
                   <asp:HyperLink ID="OdsPointDtl3Date" runat="server" NavigateUrl="~/SwcReport/OpenDocXls001.aspx" ImageUrl="~/images/btn/btn-rep.png" ToolTip="匯出施工檢查檢核半年報表" Visible="false" />
               </div>
 
@@ -206,8 +212,8 @@
                     AutoGenerateColumns="false">
                     <Columns>
                         <asp:BoundField DataField="" HeaderText="" SortExpression=""></asp:BoundField>
-                        <asp:BoundField DataField="SWC000" HeaderText="流水號" SortExpression="SWC000" ItemStyle-Width="200px"/>
-                        <asp:BoundField DataField="SWC002" HeaderText="行政審查案件編號" SortExpression="SWC002" ItemStyle-Width="170px"/>
+                        <asp:BoundField DataField="SWC000" HeaderText="案件編號" SortExpression="SWC000" ItemStyle-Width="200px"/>
+                        <asp:BoundField DataField="SWC002" HeaderText="水保局編號" SortExpression="SWC002" ItemStyle-Width="170px"/>
                         <asp:BoundField DataField="SWC004" HeaderText="案件狀態" SortExpression="SWC004" ItemStyle-Width="130px"/>
                         <asp:BoundField DataField="SWC005" HeaderText="水土保持申請書件名稱" SortExpression="SWC005"  ItemStyle-Width="350px"/>
                         <asp:BoundField DataField="SWC088" HeaderText="審查期限" SortExpression="SWC088" ItemStyle-Width="120px"/>
@@ -238,15 +244,15 @@
             <asp:Panel ID="List02" runat="server">
 
                <div> <h3 class="wrap">查詢到件數:<asp:Label ID="ReqCount" runat="server" Text="" />筆</h3> </div>
-            
+             <br>
                 <asp:GridView ID="GVReqList" runat="server" DataSourceID="SqlDataSourceReq" CssClass="changerequest AutoNewLine" PagerStyle-CssClass="pgr"
                     OnRowCommand="GVReqList_RowCommand" OnPageIndexChanging="GVSWCList_PageIndexChanging" OnSorting="GVSWCList_Sorting"
                     EmptyDataText="沒有符合查詢條件的資料" AllowPaging="true" PageSize="20" AllowSorting="True"
                     AutoGenerateColumns="false">
                     <Columns>
                         <asp:BoundField DataField="" HeaderText="" SortExpression=""></asp:BoundField>
-                        <asp:BoundField DataField="SWC000" HeaderText="流水號" SortExpression="SWC000" ItemStyle-Width="200px"/>
-                        <asp:BoundField DataField="SWC002" HeaderText="行政審查案件編號" SortExpression="SWC002" ItemStyle-Width="190px"/>
+                        <asp:BoundField DataField="SWC000" HeaderText="案件編號" SortExpression="SWC000" ItemStyle-Width="200px"/>
+                        <asp:BoundField DataField="SWC002" HeaderText="水保局編號" SortExpression="SWC002" ItemStyle-Width="190px"/>
                         <asp:BoundField DataField="SWC004" HeaderText="案件狀態" SortExpression="SWC004" ItemStyle-Width="140px"/>
                         <asp:BoundField DataField="SWC005" HeaderText="水土保持申請書件名稱" SortExpression="SWC005"  ItemStyle-Width="350px"/>
                         <asp:BoundField DataField="SWC013" HeaderText="義務人" SortExpression="SWC013"  ItemStyle-Width="180px"/>    
@@ -284,8 +290,9 @@
             <div class="footer">
                  <p><span class="span1">臺北市政府工務局大地工程處</span><br/>
                     <span class="span2">110臺北市信義區松德路300號3樓 　服務專線(02)27591109   臺北市民當家熱線1999</span><br/>
-                    <span class="span2">建議使用IE11(含)以上，Chrome或Firefox版本瀏覽器 資料更新：<asp:Label ID="ToDay" runat="server" Text=""/>　來訪人數：<asp:Label ID="Visitor" runat="server" Text=""/> </span><br/>
-                    <span class="span2">客服電話：02-27593001#3718 許先生 本系統由多維空間資訊有限公司開發維護 TEL:(02)27929328</span></p>
+                    <span class="span2">建議使用IE11(含)以上，Chrome或Firefox版本瀏覽器　<b>資料更新：</b><asp:Label ID="ToDay" runat="server" Text=""/>　<b>來訪人數：</b><asp:Label ID="Visitor" runat="server" Text=""/> </span><br/>
+                    <span class="span2"><b>客服電話：</b>02-27929328 陳小姐　<b>信箱：</b>tcge7@geovector.com.tw　本系統由多維空間資訊有限公司開發維護 TEL：(02)27929328</span><br/>
+			        <span class="span2">※為維護系統服務品質，本平台訂於每周三凌晨AM 4:00-6:30 進行系統維護更新，更新期間偶有瞬斷情形，敬請使用者避開該時段使用。謝謝！</span></p>
             </div>
 
 
@@ -316,6 +323,17 @@
         <script src="../js/jquery-3.1.1.min.js"></script>
         <script src="../js/inner.js"></script>
         <script src="../js/allhref.js"></script>
+		
+		<script>
+			$(document).keypress(function(e)
+			{
+				if(e.keyCode === 13)
+				{
+					document.getElementById("ExeQSel").click();
+					return false;
+				}
+			});
+		</script>
         
         <script type="text/javascript">
             if (document.getElementById('CHKSHTYPE').checked) { SwcArea02.style.display = 'none'; } else { SwcArea02.style.display = ''; }

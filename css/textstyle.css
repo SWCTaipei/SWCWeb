@@ -1,0 +1,17 @@
+.title16blk {
+  font-size:16px;
+  font-weight:bold;
+}
+
+.firstindent {
+  text-indent:2em;
+}
+
+.allindent2em_no1 {
+  margin-left:4em;
+  text-indent:-2em;
+}
+
+.Indentation{
+ margin-left:4em;
+	}

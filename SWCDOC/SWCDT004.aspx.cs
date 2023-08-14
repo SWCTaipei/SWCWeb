@@ -1,23 +1,7 @@
-﻿/*  Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
@@ -41,11 +25,10 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
         string ssUserType = Session["UserType"] + "";
 
         GBClass001 SBApp = new GBClass001();
+        Class20 C20 = new Class20();
 
         if (rCaseId == "" || ssUserID=="")
-        {
             Response.Redirect("SWC001.aspx");
-        }
 
         switch (ssUserType)
         {
@@ -59,14 +42,16 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
 
         if (!IsPostBack)
         {
+            C20.swcLogRC("SWCDT004", "自主檢查表", "詳情", "瀏覽", rCaseId + "," + rDTLId);
             GenerateDropDownList();
+			GV2Page(rCaseId, rDTLId);
             Data2Page(rCaseId, rDTLId);
+			
+			if(ssUserType == "08") DataLock.Visible = false;
         }
         
         //全區供用
-
         SBApp.ViewRecord("颱風豪雨設施自主檢查表", "update", "");
-
         ToDay.Text = DateTime.Now.ToString("yyyy.M.d");
         Visitor.Text = SBApp.GetVisitorsCount();
 
@@ -209,7 +194,9 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
                     string tDTLD082 = readeDTL["DTLD082"] + "";
                     string tDTLD083 = readeDTL["DTLD083"] + "";
                     string tDTLD084 = readeDTL["DTLD084"] + "";
+                    string tDTLD085 = readeDTL["DTLD085"] + "";
 
+                    string tDENO = readeDTL["DENo"] + "";
                     string tDATALOCK = readeDTL["DATALOCK"] + "";
 
                     LBSWC000.Text = v;
@@ -299,6 +286,8 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
                     TXTDTL082.Text = tDTLD082;
                     TXTDTL083.Text = tDTLD083;
                     TXTDTL084.Text = tDTLD084;
+                    if (tDTLD085=="") { tDTLD085 = tDENO; }
+                    DDLDTL085.SelectedValue= tDTLD085;
 
                     //點擊放大圖片類處理
                     string[] arrayFileName2 = new string[] { tDTLD080, tDTLD082, tDTLD084 };
@@ -314,7 +303,7 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
                         }
                         else
                         {
-                            string tempImgPateh = SwcUpLoadFilePath + v + "/" + strFileName;
+                            string tempImgPateh = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/SwcCaseFile/" + v + "/" + strFileName + "?ts=" + System.DateTime.Now.Millisecond;
                             ImgFileObj.ImageUrl = tempImgPateh + "?ts=" + DateTime.Now.Millisecond;
                             ImgFileObj.NavigateUrl = tempImgPateh + "?ts=" + DateTime.Now.Millisecond;
                         }
@@ -334,7 +323,7 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
                         }
                         else
                         {
-                            string tempImgPateh = SwcUpLoadFilePath + v + "/" + strFileName;
+                            string tempImgPateh = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/SwcCaseFile/" + v + "/" + strFileName + "?ts=" + System.DateTime.Now.Millisecond;
                             ImgFileObj.Attributes.Add("src", tempImgPateh + "?ts=" + DateTime.Now.Millisecond);
                         }
                     }
@@ -397,9 +386,35 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
         DDLDTL004.DataBind();
 
         TXTDTL079.Text = "(一)水土保持義務人：" + System.Environment.NewLine + "(二)承辦監造技師：" + System.Environment.NewLine + "(三)施工廠商：";
+
+        string DisEventSql = " select * from DisasterEvent order by id desc ";
+
+        ConnectionStringSettings connectionStringSwc = ConfigurationManager.ConnectionStrings["SWCConnStr"];
+        using (SqlConnection SwcConn = new SqlConnection(connectionStringSwc.ConnectionString))
+        {
+            SwcConn.Open();
+
+            SqlDataReader readeDE;
+            SqlCommand objCmdDE = new SqlCommand(DisEventSql, SwcConn);
+            readeDE = objCmdDE.ExecuteReader();
+
+            DDLDTL085.Items.Clear();
+            this.DDLDTL085.Items.Add(new ListItem("", ""));
+            while (readeDE.Read())
+            {
+                string tmpNo = readeDE["DENo"] + "";
+                string tmpName = readeDE["DEName"] + "";
+
+                this.DDLDTL085.Items.Add(new ListItem( tmpName, tmpNo));
+            }
+        }
+
+        //DDLDTL085
     }
     protected void SaveCase_Click(object sender, EventArgs e)
     {
+        Class20 C20 = new Class20();
+
         string rCaseId = Request.QueryString["SWCNO"] + "";
         string ssUserID = Session["ID"] + "";
 
@@ -489,6 +504,7 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
         string sDTLD082 = TXTDTL082.Text + "";
         string sDTLD083 = TXTDTL083.Text + "";
         string sDTLD084 = TXTDTL084.Text + "";
+        string sDTLD085 = DDLDTL085.SelectedValue + "";
 
 
         if (sDTLD077.Length > 800) { sDTLD077 = sDTLD077.Substring(0, 800); }
@@ -608,6 +624,8 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
             sEXESQLSTR = sEXESQLSTR + " DTLD082 ='" + sDTLD082 + "', ";
             sEXESQLSTR = sEXESQLSTR + " DTLD083 ='" + sDTLD083 + "', ";
             sEXESQLSTR = sEXESQLSTR + " DTLD084 ='" + sDTLD084 + "', ";
+            sEXESQLSTR = sEXESQLSTR + " DTLD085 ='" + sDTLD085 + "', ";
+            //sEXESQLSTR = sEXESQLSTR + " DENo ='" + sDTLD085 + "', ";
 
             sEXESQLSTR = sEXESQLSTR + " saveuser = '" + ssUserID + "', ";
             sEXESQLSTR = sEXESQLSTR + " savedate = getdate() ";
@@ -618,17 +636,19 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
             sEXESQLUPD = sEXESQLUPD + " Upd02 = 'Y', ";
             sEXESQLUPD = sEXESQLUPD + " Savdate02 = getdate() ";
             sEXESQLUPD = sEXESQLUPD + " Where Key01 = '" + sSWC000 + "'";
-
+            C20.swcLogRC("SWCDT004", "自主檢查表", "詳情", "存檔", sSWC000 + "," + sDTLD000);
             SqlCommand objCmdUpd = new SqlCommand(sEXESQLSTR + sEXESQLUPD, SwcConn);
             objCmdUpd.ExecuteNonQuery();
             objCmdUpd.Dispose();
 
             //上傳檔案…
             UpLoadTempFileMoveChk(sSWC000);
+			//存image列表
+			SAVE_IMAGE_LIST(sSWC000,sDTLD000);
 
             string vCaseID = Request.QueryString["SWCNO"] + "";
             //Response.Redirect("SWC002.aspx?CaseId=" + vCaseID);
-            Response.Write("<script>alert('資料已存檔'); location.href='SWC002.aspx?CaseId=" + sSWC000 + "'; </script>");
+            Response.Write("<script>alert('資料已存檔'); location.href='SWC003.aspx?SWCNO=" + sSWC000 + "'; </script>");
         }
     }
     private void UpLoadTempFileMoveChk(string CaseId)
@@ -640,8 +660,8 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
         string csUpLoadField = "TXTDTL080";
         TextBox csUpLoadAppoj = TXTDTL080;
 
-        string TempFolderPath = ConfigurationManager.AppSettings["SwcFileTemp"];
-        string SwcCaseFolderPath = ConfigurationManager.AppSettings["SwcFilePath"];
+        string TempFolderPath = ConfigurationManager.AppSettings["SwcFileTemp20"];
+        string SwcCaseFolderPath = ConfigurationManager.AppSettings["SwcFilePath20"];
 
         folderExists = Directory.Exists(SwcCaseFolderPath);
         if (folderExists == false)
@@ -697,6 +717,7 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
 
             switch (ChkType)
             {
+                case "PIC3":
                 case "PIC2":
                 case "PIC":
                     List<string> allowedExtextsion01 = new List<string> { ".jpg", ".png" };
@@ -729,7 +750,7 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
             }
 
             // 檢查 Server 上該資料夾是否存在，不存在就自動建立
-            string serverDir = ConfigurationManager.AppSettings["SwcFileTemp"] + CaseId;
+            string serverDir = ConfigurationManager.AppSettings["SwcFilePath20"] + CaseId;
 
             if (Directory.Exists(serverDir) == false) Directory.CreateDirectory(serverDir);
 
@@ -762,24 +783,31 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
             {
                 UpLoadBar.SaveAs(serverFilePath);
                 //error_msg.Text = "檔案上傳成功";
-
+				string thUrl = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/SwcCaseFile/" + CaseId + "/" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
+				
                 switch (ChkType)
                 {
+					case "PIC3":
+                        UpLoadLink.ImageUrl = SwcFileName;
+                        UpLoadLink.NavigateUrl = thUrl;
+						IMAGE_TO_LIST("2", SwcFileName);
+                        break;
+						
                     case "PIC":
-                        UpLoadView.Attributes.Add("src", "..\\UpLoadFiles\\temp\\" + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond);
+                        UpLoadView.Attributes.Add("src", ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/SwcCaseFile/" + CaseId + "/" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond);
                         //UpLoadView.ImageUrl = "..\\UpLoadFiles\\temp\\" + CaseId +"\\"+ geohfilename;
 
                         imagestitch(UpLoadView, serverDir + "\\" + SwcFileName, 320, 180);
                         break;
 
                     case "PIC2":
-                        UpLoadLink.ImageUrl = "..\\UpLoadFiles\\temp\\" + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
-                        UpLoadLink.NavigateUrl = "..\\UpLoadFiles\\temp\\" + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
+                        UpLoadLink.ImageUrl = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/SwcCaseFile/" + CaseId + "/" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
+                        UpLoadLink.NavigateUrl = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/SwcCaseFile/" + CaseId + "/" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
                         break;
 
                     case "DOC":
                         UpLoadLink.Text = SwcFileName;
-                        UpLoadLink.NavigateUrl = "..\\UpLoadFiles\\temp\\" + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
+                        UpLoadLink.NavigateUrl = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/SwcCaseFile/" + CaseId + "/" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
                         UpLoadLink.Visible = true;
                         break;
 
@@ -827,8 +855,8 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
         ConnERR.Close();
 
         //刪實體檔
-        string TempFolderPath = ConfigurationManager.AppSettings["SwcFileTemp"];
-        string SwcCaseFolderPath = ConfigurationManager.AppSettings["SwcFilePath"];
+        string TempFolderPath = ConfigurationManager.AppSettings["SwcFileTemp20"];
+        string SwcCaseFolderPath = ConfigurationManager.AppSettings["SwcFilePath20"];
 
         string DelFileName = ImgText.Text;
         string TempFileFullPath = TempFolderPath + csCaseID + "\\" + ImgText.Text;
@@ -905,7 +933,7 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
     protected void GoHomePage_Click(object sender, EventArgs e)
     {
         string vCaseID = Request.QueryString["SWCNO"] + "";
-        Response.Redirect("SWC002.aspx?CaseId=" + vCaseID);
+        Response.Redirect("SWC003.aspx?SWCNO=" + vCaseID);
     }
 
     protected void TXTDTL080_fileuploadok_Click(object sender, EventArgs e)
@@ -936,6 +964,8 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
     }
     protected void DataLock_Click(object sender, EventArgs e)
     {
+        Class20 C20 = new Class20();
+
         string sSWC000 = LBSWC000.Text;
         string sDTLD000 = LBDTL001.Text + "";
 
@@ -952,13 +982,39 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
             strSQLRV = strSQLRV + " where SWC000 = '" + sSWC000 + "' ";
             strSQLRV = strSQLRV + "   and DTLD000 = '" + sDTLD000 + "' ";
 
+            string tmpDENo = "";
+
             SqlDataReader readeSwc;
             SqlCommand objCmdSwc = new SqlCommand(strSQLRV, SwcConn);
             readeSwc = objCmdSwc.ExecuteReader();
 
+            while (readeSwc.Read())
+            {
+                tmpDENo = readeSwc["DENo"] + "";
+            }
+
             if (!readeSwc.HasRows)
             {
                 sEXESQLSTR = sEXESQLSTR + " INSERT INTO SWCDTL04 (SWC000,DTLD000) VALUES ('" + sSWC000 + "','" + sDTLD000 + "');";
+
+            }
+            else
+            {
+                if (tmpDENo != "")
+                {
+                    string UpdDESql = " update DisasterEvent set DEINPUTCOUNT=(select count(*) as dC from SWCDTL04 where DTLD085 = '" + tmpDENo + "' and DATALOCK = 'Y') Where DENo = '" + tmpDENo + "';";
+
+                    ConnectionStringSettings connectionStringDE = ConfigurationManager.ConnectionStrings["SWCConnStr"];
+                    using (SqlConnection SwcConnDE = new SqlConnection(connectionStringDE.ConnectionString))
+                    {
+                        SwcConnDE.Open();
+
+                        SqlCommand objCmdUpdDE = new SqlCommand(UpdDESql, SwcConnDE);
+                        objCmdUpdDE.ExecuteNonQuery();
+                        objCmdUpdDE.Dispose();
+                    }
+                }
+
             }
             readeSwc.Close();
             objCmdSwc.Dispose();
@@ -967,7 +1023,7 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
             sEXESQLSTR = sEXESQLSTR + "  DATALOCK = 'Y' ";
             sEXESQLSTR = sEXESQLSTR + " Where SWC000 = '" + sSWC000 + "'";
             sEXESQLSTR = sEXESQLSTR + "   and DTLD000 = '" + sDTLD000 + "'";
-
+            C20.swcLogRC("SWCDT004", "自主檢查表", "詳情", "送出", sSWC000 + "," + sDTLD000);
             SqlCommand objCmdUpd = new SqlCommand(sEXESQLSTR, SwcConn);
             objCmdUpd.ExecuteNonQuery();
             objCmdUpd.Dispose();
@@ -975,6 +1031,7 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
 
         SendMailNotice(sSWC000);
         SaveCase_Click(sender, e);
+
 
     }
     private void SendMailNotice(string gSWC000)
@@ -994,6 +1051,8 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
         string[] arrayJobTitle = ChkJobTitle.Split(new string[] { ";;" }, StringSplitOptions.None);
         string[] arrayUserMail = ChkMail.Split(new string[] { ";;" }, StringSplitOptions.None);
         string[] arrayMBGROUP = ChkMBGROUP.Split(new string[] { ";;" }, StringSplitOptions.None);
+		
+		//送出提醒名單：股長、管理者、承辦人員、施純民(ge-10759)、章姿隆(ge-10706)
 
         ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
         using (SqlConnection SwcConn = new SqlConnection(connectionString.ConnectionString))
@@ -1019,9 +1078,6 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
                 string tSWC024ID = readeSwc["SWC024ID"] + "";
                 string tSWC108 = readeSwc["SWC108"] + "";
 
-                //寄件名單, 注意：ge-40523	陳世豪，寫死，必需寄！
-                //寄件名單, 注意：ge-10754	施柏宇，寫死，必需寄！
-
                 string SentMailGroup = "";
                 for (int i = 1; i < arrayUserId.Length; i++)
                 {
@@ -1031,7 +1087,7 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
                     string aUserMail = arrayUserMail[i];
                     string aMBGROUP = arrayMBGROUP[i];
 
-                    if (aJobTitle.Trim() == "科長" || aJobTitle.Trim() == "正工" || aJobTitle.Trim() == "股長" || aMBGROUP.Trim() == "系統管理員" || aUserName.Trim() == tSWC025.Trim() || aUserId == "ge-40523" || aUserId.Trim() == "ge-10754")
+                    if (aJobTitle.Trim() == "股長" || aMBGROUP.Trim() == "系統管理員" || aUserName.Trim() == tSWC025.Trim() || aUserId == "ge-10759" || aUserId == "ge-10706")
                     {
                         SentMailGroup = SentMailGroup + ";;" + aUserMail;
 
@@ -1042,7 +1098,7 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
                         ssMailBody01 = ssMailBody01 + "「臺北市水土保持書件管理平台」系統管理員 敬上<br><br><br>";
                         ssMailBody01 = ssMailBody01 + "＜此封信為系統自動發送，請勿直接回信，若有任何問題請洽臺北市政府工務局大地工程處＞";
 
-                        bool MailTo01 = SBApp.Mail_Send(arraySentMail01, ssMailSub01, ssMailBody01);
+                        bool MailTo01 = SBApp.Mail_Send_dp(arraySentMail01, ssMailSub01, ssMailBody01);
                     }
                 }
 
@@ -1062,13 +1118,13 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
                 ssMailBody02 = ssMailBody02 + "「臺北市水土保持書件管理平台」系統管理員 敬上<br><br><br>";
                 ssMailBody02 = ssMailBody02 + "＜此封信為系統自動發送，請勿直接回信，若有任何問題請洽臺北市政府工務局大地工程處＞";
                 
-                bool MailTo02a = SBApp.Mail_Send(arraySentMail02a, ssMailSub02, ssMailBody02);
-                bool MailTo02b = SBApp.Mail_Send(arraySentMail02b, ssMailSub02, ssMailBody02);
+                bool MailTo02a = SBApp.Mail_Send_dp(arraySentMail02a, ssMailSub02, ssMailBody02);
+                bool MailTo02b = SBApp.Mail_Send_dp(arraySentMail02b, ssMailSub02, ssMailBody02);
 
                 string ssMailBody03 = "您好，【" + tSWC005 + "】已新增颱風防災自主檢查表，請至臺北市水土保持申請書件管理平台上瀏覽。";
                 
-                SBApp.SendSMS(tSWC013TEL, ssMailBody03);
-
+                string[] arraySWC013TEL = tSWC013TEL.Split(new string[] { ";" }, StringSplitOptions.None);
+				SBApp.SendSMS_Arr(arraySWC013TEL, ssMailBody03);
             }
 
             readeSwc.Close();
@@ -1078,9 +1134,20 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
 
     protected void TXTDTL084_fileuploadok_Click(object sender, EventArgs e)
     {
+		//目前最大NO
+		string no_now = "";
+		//目前最大NO+1(最新的)
+		string no_new = "01";
+		if(GVIMAGE.Rows.Count > 0)
+		{
+			no_now = GVIMAGE.Rows[GVIMAGE.Rows.Count-1].Cells[0].Text;
+			no_new = "0" + (Convert.ToInt32(GVIMAGE.Rows[GVIMAGE.Rows.Count-1].Cells[0].Text) + 1).ToString();
+			no_new = no_new.Substring(no_new.Length-2,2);
+		}
+		
         string rDTLNO = LBDTL001.Text + "";
         error_msg.Text = "";
-        FileUpLoadApp("PIC2", TXTDTL084_fileupload, TXTDTL084, "TXTDTL084", "_" + rDTLNO + "_sign", null, HyperLink084);
+        FileUpLoadApp("PIC3", TXTDTL084_fileupload, TXTDTL084, "TXTDTL084", "_" + rDTLNO + "_04" + no_new + "_sign", null, HyperLink084);
     }
 
     protected void TXTDTL084_fileuploaddel_Click(object sender, EventArgs e)
@@ -1088,4 +1155,216 @@ public partial class SWCDOC_SWCDT004 : System.Web.UI.Page
         error_msg.Text = "";
         DeleteUpLoadFile("PIC", TXTDTL084, null, HyperLink084, "DTLD084", "TXTDTL084", 320, 180);
     }
+	
+	private void GV2Page(string v, string v2)
+    {
+		string sqlStr = " select * from SWCDTL04_IMAGE where SWC000=@SWC000 and DTLD000=@DTLD000 order by NO; ";
+		
+		DataTable tbIMAGE = (DataTable)ViewState["SwcIMAGE"];
+
+		if (tbIMAGE == null)
+		{
+			DataTable GVTBIMAGE = new DataTable();
+		
+			GVTBIMAGE.Columns.Add(new DataColumn("NO", typeof(string)));
+			GVTBIMAGE.Columns.Add(new DataColumn("IDENTITY", typeof(string)));
+			GVTBIMAGE.Columns.Add(new DataColumn("NAME", typeof(string)));
+			GVTBIMAGE.Columns.Add(new DataColumn("IMAGENAME", typeof(string)));
+		
+			ViewState["SwcIMAGE"] = GVTBIMAGE;
+			tbIMAGE = (DataTable)ViewState["SwcIMAGE"];
+		}
+		
+		ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
+        using (SqlConnection SwcConn = new SqlConnection(connectionString.ConnectionString))
+        {
+            SwcConn.Open();
+			
+			using (var cmd = SwcConn.CreateCommand())
+            {
+                cmd.CommandText = sqlStr;
+                #region.設定值
+                cmd.Parameters.Add(new SqlParameter("@SWC000", v));
+                cmd.Parameters.Add(new SqlParameter("@DTLD000", v2));
+                #endregion
+                cmd.ExecuteNonQuery();
+				using (SqlDataReader readerSWC = cmd.ExecuteReader())
+                {
+                    if (readerSWC.HasRows)
+                        while (readerSWC.Read())
+                        {
+							DataRow GVTBIMAGERow = tbIMAGE.NewRow();
+			
+							GVTBIMAGERow["NO"] = readerSWC["NO"] + "";
+							GVTBIMAGERow["IDENTITY"] = readerSWC["IDENTITY"] + "";
+							GVTBIMAGERow["NAME"] = readerSWC["NAME"] + "";
+							GVTBIMAGERow["IMAGENAME"] = readerSWC["IMAGENAME"] + "";
+			
+							tbIMAGE.Rows.Add(GVTBIMAGERow);
+			
+							//Store the DataTable in ViewState
+							ViewState["SwcIMAGE"] = tbIMAGE;
+			
+							GVIMAGE.DataSource = tbIMAGE;
+							GVIMAGE.DataBind();
+                        }
+                    readerSWC.Close();
+                }
+                cmd.Cancel();
+            }
+        }
+	}
+	protected void GVIMAGE_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        string rCaseId = Request.QueryString["SWCNO"] + "";
+        switch (e.Row.RowType)
+        {
+            case DataControlRowType.Header:
+                break;
+            case DataControlRowType.DataRow:
+                //HyperLink Hyper = new HyperLink();
+                //Hyper.Text = e.Row.Cells[3].Text;
+				//Hyper.Target = "_blank";
+                //Hyper.NavigateUrl = ConfigurationManager.AppSettings["SwcFileUrl"] + "SWCDOC/UpLoadFiles/SwcCaseFile/" + rCaseId + "/" + e.Row.Cells[3].Text;
+                //e.Row.Cells[3].Controls.Add(Hyper);
+				
+				HyperLink hl = (HyperLink)e.Row.FindControl("link"); 
+				if (hl != null) 
+				{
+					hl.NavigateUrl = ConfigurationManager.AppSettings["SwcFileUrl"] + "SWCDOC/UpLoadFiles/SwcCaseFile/" + rCaseId + "/" + hl.Text;
+				}
+                break;
+        }
+    }
+	//加入清單 p1=>簽名(1)上傳(2) p2=>上傳檔名
+	private void IMAGE_TO_LIST(string p1, string p2)
+    {
+		string rCaseId = Request.QueryString["SWCNO"] + "";
+		string rDTLNO = LBDTL001.Text + "";
+		
+		//目前最大NO
+		string no_now = "";
+		//目前最大NO+1(最新的)
+		string no_new = "01";
+		if(GVIMAGE.Rows.Count > 0)
+		{
+			no_now = GVIMAGE.Rows[GVIMAGE.Rows.Count-1].Cells[0].Text;
+			no_new = "0" + (Convert.ToInt32(GVIMAGE.Rows[GVIMAGE.Rows.Count-1].Cells[0].Text) + 1).ToString();
+			no_new = no_new.Substring(no_new.Length-2,2);
+		}
+		
+		string SwcFileName = "";
+		
+		//手寫簽名
+		if(p1 == "1")
+		{
+			//上傳檔案
+			string serverDir = ConfigurationManager.AppSettings["SwcFilePath20"] + rCaseId;
+			
+			if (Directory.Exists(serverDir) == false) Directory.CreateDirectory(serverDir);
+			
+			SwcFileName = rCaseId + "_" + rDTLNO + "_04"+no_new+"_sign.png";
+			
+			string serverFilePath = Path.Combine(serverDir, SwcFileName);
+			
+			
+			//---------------------------------------
+			string dir = serverDir;
+			bool dirExists = Directory.Exists(dir);
+			if (!dirExists)
+			    Directory.CreateDirectory(dir);
+			string SavePath = serverFilePath;
+			var bytes = Convert.FromBase64String(hfImageData.Text.Replace("data:image/png;base64,",""));
+			using (var imageFile = new FileStream(SavePath, FileMode.Create))
+			{
+			    imageFile.Write(bytes, 0, bytes.Length);
+			    imageFile.Flush();
+			}
+			//---------------------------------------
+			
+			string thUrl = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/SwcCaseFile/" + rCaseId + "/" + SwcFileName;
+			
+			
+		}
+		//上傳檔案
+		else
+		{
+			SwcFileName = p2;
+		}
+		//加入清單
+		DataTable tbIMAGE = (DataTable)ViewState["SwcIMAGE"];
+		DataRow GVTBIMAGERow = tbIMAGE.NewRow();
+		
+		GVTBIMAGERow["NO"] = no_new;
+		GVTBIMAGERow["IDENTITY"] = DDL_Sign.SelectedValue;
+		GVTBIMAGERow["NAME"] = TB_Sign.Text;
+		GVTBIMAGERow["IMAGENAME"] = SwcFileName;
+		
+		tbIMAGE.Rows.Add(GVTBIMAGERow);
+		
+		//Store the DataTable in ViewState
+		ViewState["SwcIMAGE"] = tbIMAGE;
+		
+		GVIMAGE.DataSource = tbIMAGE;
+		GVIMAGE.DataBind();
+	}
+	protected void btn2_Click(object sender, EventArgs e)
+    {
+        IMAGE_TO_LIST("1","");
+    }
+	protected void GVIMAGE_RowDeleting(object sender, GridViewDeleteEventArgs e)
+	{
+		int index = Convert.ToInt32(e.RowIndex);
+		DataTable tbIMAGE = (DataTable)ViewState["SwcIMAGE"];
+		tbIMAGE.Rows[index].Delete();
+		ViewState["SwcIMAGE"] = tbIMAGE;
+		GVIMAGE.DataSource = tbIMAGE;
+		GVIMAGE.DataBind();
+	}
+	protected void SAVE_IMAGE_LIST(string sSWC000, string ssDTL000)
+	{
+		string sqlstr = " delete SWCDTL04_IMAGE where SWC000=@SWC000 and DTLD000=@DTLD000;";
+		ConnectionStringSettings connectionStringSwc = ConfigurationManager.ConnectionStrings["SWCConnStr"];
+		using (SqlConnection SwcConn = new SqlConnection(connectionStringSwc.ConnectionString))
+		{
+			SwcConn.Open();
+			
+			using (var cmd = SwcConn.CreateCommand())
+			{
+				cmd.CommandText = sqlstr;
+				#region.設定值
+				cmd.Parameters.Add(new SqlParameter("@SWC000", sSWC000));
+				cmd.Parameters.Add(new SqlParameter("@DTLD000", ssDTL000));
+				#endregion
+				cmd.ExecuteNonQuery();
+				cmd.Cancel();
+			}
+		}
+		
+		DataTable tbIMAGE = (DataTable)ViewState["SwcIMAGE"];
+		for(int i = 0; i < tbIMAGE.Rows.Count; i++)
+		{
+			sqlstr = " insert into SWCDTL04_IMAGE(SWC000,DTLD000,NO,[IDENTITY],NAME,IMAGENAME) values (@SWC000,@DTLD000,@NO,@IDENTITY,@NAME,@IMAGENAME); ";
+			
+			using (SqlConnection SwcConn = new SqlConnection(connectionStringSwc.ConnectionString))
+			{
+				SwcConn.Open();
+				
+				using (var cmd = SwcConn.CreateCommand())
+				{
+					cmd.CommandText = sqlstr;
+					#region.設定值
+					cmd.Parameters.Add(new SqlParameter("@SWC000", sSWC000));
+					cmd.Parameters.Add(new SqlParameter("@DTLD000", ssDTL000));
+					cmd.Parameters.Add(new SqlParameter("@NO", tbIMAGE.Rows[i].ItemArray[0]));
+					cmd.Parameters.Add(new SqlParameter("@IDENTITY", tbIMAGE.Rows[i].ItemArray[1]));
+					cmd.Parameters.Add(new SqlParameter("@NAME", tbIMAGE.Rows[i].ItemArray[2]));
+					cmd.Parameters.Add(new SqlParameter("@IMAGENAME", tbIMAGE.Rows[i].ItemArray[3]));
+					#endregion
+					cmd.ExecuteNonQuery();
+					cmd.Cancel();
+				}
+			}
+		}
+	}
 }

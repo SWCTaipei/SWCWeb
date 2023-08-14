@@ -1,21 +1,4 @@
-﻿<!--
-    Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
--->
-
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="SWC002.aspx.cs" Inherits="SWCDOC_SWC002" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="SWC002.aspx.cs" Inherits="SWCDOC_SWC002" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <!DOCTYPE html>
@@ -32,8 +15,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge, chrome=1"/>
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" type="text/css" href="../css/reset.css" />
-    <link rel="stylesheet" type="text/css" href="../css/all.css" />
+    <link rel="stylesheet" type="text/css" href="../css/all.css?202109300333" />
     <link rel="stylesheet" type="text/css" href="../css/iris.css" />
+	<link href="../css/search.css" rel="stylesheet">
     <script type="text/javascript">
         function textcount(txtobj, labobj, txtcount) { 
             var textboxtemp = txtobj;
@@ -45,7 +29,7 @@
             var ttval = textboxtemp.value.length;
             if (ttval > parseInt(txtcount)) {
                 window.event.keyCode = null;
-                textboxtemp.innerText = textboxtemp.value.substring(0, parseInt(txtcount));
+                textboxtemp.innerText = textboxtemp.value.substring(0, parseInt(txtcount)); 
                 ttval = textboxtemp.value.length;
                 labeltemp.innerText = "(" + ttval + "/" + txtcount + ")";
             }
@@ -61,6 +45,9 @@
             }
         }
         function chkInput(jChkType) {
+            document.getElementById('SaveCase').style.display = "none";
+            document.getElementById('SendMsg').style.display = "";
+
             jCHKValue01 = document.getElementById("TXTSWC005").value;
             jCHKValue02 = document.getElementById("DDLSWC007").value;
             jCHKValue04 = document.getElementById("TXTSWC015").value;
@@ -80,43 +67,62 @@
             
             if (jCHKValue01.trim() == '') {
                 alert('請輸入書件名稱');
+                document.getElementById('SaveCase').style.display = "";
+                document.getElementById('SendMsg').style.display = "none";
                 document.getElementById("TXTSWC005").focus();
                 return false;
             }
             if (jCHKValue02.trim() == '') {
                 alert('請輸入書件類別');
+                document.getElementById('SaveCase').style.display = "";
+                document.getElementById('SendMsg').style.display = "none";
                 document.getElementById("DDLSWC007").focus();
                 return false;
             } if (document.getElementById("GVCadastral")) { } else {
                 alert('請輸入地籍');
+                document.getElementById('SaveCase').style.display = "";
+                document.getElementById('SendMsg').style.display = "none";
+                return false;
+            } if (document.getElementById("GVPEOPLE")) { } else {
+                alert('請輸入義務人資訊');
+                document.getElementById('SaveCase').style.display = "";
+                document.getElementById('SendMsg').style.display = "none";
                 return false;
             }
-            if (jCHKValue13.trim() == '') {
-                alert('請輸入義務人');
-                document.getElementById("TXTSWC013").focus();
-                return false;
-            }
-            if (jCHKValue13ID.trim() == '') {
-                alert('請輸入義務人身份證字號');
-                document.getElementById("TXTSWC013").focus();
-                return false;
-            }
+            //if (jCHKValue13.trim() == '') {
+            //    alert('請輸入義務人');
+            //    document.getElementById('SaveCase').style.display = "";
+            //    document.getElementById('SendMsg').style.display = "none";
+            //    document.getElementById("TXTSWC013").focus();
+            //    return false;
+            //}
+            //if (jCHKValue13ID.trim() == '') {
+            //    alert('請輸入義務人身份證字號');
+            //    document.getElementById('SaveCase').style.display = "";
+            //    document.getElementById('SendMsg').style.display = "none";
+            //    document.getElementById("TXTSWC013").focus();
+            //    return false;
+            //}
             //if (jCHKValue13ID.trim().length != 10) {
             //    alert('請輸入義務人身份證字號');
             //    document.getElementById("TXTSWC013").focus();
             //    return false;
             //}
-            if (jCHKValue13TEL.trim() == '' || jCHKValue13TEL.substr(0, 2) != '09' || jCHKValue13TEL.length != 10)
-            {
-                alert('手機格式錯誤，請輸入正確之義務人(代表人)手機號碼');
-                document.getElementById("TXTSWC013TEL").focus();
-                return false;
-            }
-            if (jCHKValue14.trim() == '') {
-                alert('請輸入義務人地址');
-                document.getElementById("TXTSWC014").focus();
-                return false;
-            }
+            //if (jCHKValue13TEL.trim() == '' || jCHKValue13TEL.substr(0, 2) != '09' || jCHKValue13TEL.length != 10)
+            //{
+            //    alert('手機格式錯誤，請輸入正確之義務人(代表人)手機號碼');
+            //    document.getElementById('SaveCase').style.display = "";
+            //    document.getElementById('SendMsg').style.display = "none";
+            //    document.getElementById("TXTSWC013TEL").focus();
+            //    return false;
+            //}
+            //if (jCHKValue14.trim() == '') {
+            //    alert('請輸入義務人地址');
+            //    document.getElementById('SaveCase').style.display = "";
+            //    document.getElementById('SendMsg').style.display = "none";
+            //    document.getElementById("TXTSWC014").focus();
+            //    return false;
+            //}
             //if (!checkID(jCHKValue13ID)) {
             //    alert('請輸入合法身份證號碼');
             //    document.getElementById("TXTSWC013ID").focus();
@@ -124,16 +130,22 @@
             //}
             if (jCHKValue04.trim() == '') {
                 alert('請輸入聯絡人');
+                document.getElementById('SaveCase').style.display = "";
+                document.getElementById('SendMsg').style.display = "none";
                 document.getElementById("TXTSWC015").focus();
                 return false;
             }
             if (jCHKValue05.trim() == '') {
                 alert('請輸入聯絡人手機');
+                document.getElementById('SaveCase').style.display = "";
+                document.getElementById('SendMsg').style.display = "none";
                 document.getElementById("TXTSWC016").focus();
                 return false;
             }
             if (jCHKValue108.trim() == '') {
                 alert('請輸入聯絡人E-mail');
+                document.getElementById('SaveCase').style.display = "";
+                document.getElementById('SendMsg').style.display = "none";
                 document.getElementById("TXTSWC108").focus();
                 return false;
             } else
@@ -141,42 +153,58 @@
                 if (jCHKValue108chk.trim() == jCHKValue108.trim())
                 {
                     alert('聯絡人E-mail與技師 E-mail相同，請重新輸入聯絡人E-mail');
+                    document.getElementById('SaveCase').style.display = "";
+                    document.getElementById('SendMsg').style.display = "none";
                     document.getElementById("TXTSWC108").focus();
                     return false;
                 }
             }
-
-            if (jCHKValue23.trim() != '') {
-                if (isNaN(jCHKValue23)) {
+            
+            if (jCHKValue23.trim() == '') {
+                alert('請輸入計畫面積(公頃)');
+                document.getElementById('SaveCase').style.display = "";
+                document.getElementById('SendMsg').style.display = "none";
+                return false;
+            }
+            else {
+                if (isNaN(jCHKValue23)) { 
                     alert('計畫面積(公頃) 請輸入正確數字');
+                    document.getElementById('SaveCase').style.display = "";
+                    document.getElementById('SendMsg').style.display = "none";
                     document.getElementById("TXTSWC023").focus();
                     return false;
                 }
             }
-            if (isNaN(jCHKValue27))
+            if (isNaN(jCHKValue27) || jCHKValue27.trim()=="")
             {
                 alert('座標X請輸入數字');
+                document.getElementById('SaveCase').style.display = "";
+                document.getElementById('SendMsg').style.display = "none";
                 document.getElementById("TXTSWC027").focus();
                 return false;
             }
-            if (isNaN(jCHKValue28)) {
+            if (isNaN(jCHKValue28) || jCHKValue28.trim() == "") {
                 alert('座標Y請輸入數字');
+                document.getElementById('SaveCase').style.display = "";
+                document.getElementById('SendMsg').style.display = "none";
                 document.getElementById("TXTSWC028").focus();
                 return false;
             }
             if (jCHKValue27 != '' || jCHKValue27 !='') {
-                if (jCHKValue27 >= 295190 && jCHKValue27 <= 317350 && jCHKValue28 >= 2761450 && jCHKValue28 <= 2789250)
+                if (jCHKValue27 >= 296020 && jCHKValue27 <= 318180 && jCHKValue28 >= 2761246 && jCHKValue28 <= 2789046)
                 { } else
                 {
                     alert('座標位置不在臺北市，請重新輸入，謝謝!!');
+                    document.getElementById('SaveCase').style.display = "";
+                    document.getElementById('SendMsg').style.display = "none";
                     document.getElementById("TXTSWC027").focus();
                     return false;
                 }
             }
-
-            if (rr) { rr = ChkLength(jCHKValue13, 100, '義務人'); } 
-            if (rr) { rr = ChkLength(jCHKValue14, 255, '義務人地址'); }
-            return rr;
+            //document.getElementById('SaveCase').disabled = false;
+            //if (rr) { rr = ChkLength(jCHKValue13, 100, '義務人'); } 
+            //if (rr) { rr = ChkLength(jCHKValue14, 255, '義務人地址'); }
+            return true;
         }
         function chknull(jTxtBox) {
             var jChkValue = document.getElementById(jTxtBox).value;
@@ -186,6 +214,9 @@
                 alert('請先上傳計畫申請書');
                 return false;
             }
+        }
+        function UpLoadChk(ObjId) {
+            if (document.getElementById(ObjId).value == '') { alert('請選擇檔案'); return false; } else { return ChkFileSize(ObjId, '500', '.pdf'); }
         }
         function chknull2() {
             var x1 = document.getElementById("DDLDistrict");
@@ -221,6 +252,16 @@
                 return false;
             }
         }
+		function chkObligorData()
+		{
+			jCHKPhone = document.getElementById("TXTSWCPPHONE").value;
+			if (jCHKPhone.substr(0, 2) != '09' || jCHKPhone.length != 10)
+            {
+                alert('手機格式錯誤，請輸入正確之義務人(代表人)手機號碼');
+                document.getElementById("TXTSWCPPHONE").focus();
+                return false;
+            }
+		}
     </script>
 </head>
 <body>
@@ -237,8 +278,8 @@
                     <ul>
                         <li><a href="../sysFile/系統操作手冊.pdf" title="系統操作手冊" target="_blank">系統操作手冊</a></li>
                         <li>|</li>
-                        <li><a href="http://tcgeswc.taipei.gov.tw/index_new.aspx" title="水土保持計畫查詢系統" target="_blank">水土保持計畫查詢系統 </a></li>
-                        <asp:Panel ID="GoTslm" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="http://172.28.100.55/TSLM" title="坡地管理資料庫" target="_blank">坡地管理資料庫</a></li></asp:Panel>
+                        <li><a href="https://swc.taipei/swcinfo" title="臺北市山坡地保育利用資訊查詢系統" target="_blank">臺北市山坡地保育利用資訊查詢系統 </a></li>
+                        <asp:Panel ID="GoTslm" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="https://tslm.swc.taipei/tslmwork" title="坡地管理資料庫" target="_blank">坡地管理資料庫</a></li></asp:Panel>
                         <asp:Panel ID="TitleLink00" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="SWCBase001.aspx" title="帳號管理">帳號管理</a></li></asp:Panel>
                         <li>|</li>
                         <li><a href="SWC000.aspx?ACT=LogOut" title="登出">登出</a></li>
@@ -258,8 +299,6 @@
             <div class="detailsMenu"><img src="../images/title/title-edit.png" alt=""/>
                 <div class="detailsMenu-btn">
                     <asp:ImageButton ID="SwcList" runat="server" OnClick="SwcList_Click" title="返回總表" ImageUrl="../images/btn/btn-back.png" />
-                    <%--<a href="details_edit.html"><img src="images/btn/btn-edit.png" alt=""/></a>
-                    <a href="details_edit.html"><img src="images/btn/btn-change.png" alt=""/></a>--%>
                 </div>
             </div>
 
@@ -269,45 +308,55 @@
                 <h2 class="detailsBar_title_basic">基本資料<img src="../images/btn/btn-close.png" alt="" class="open"/></h2>
                 <div class="detailsGrid_wrap">
                     <table class="detailsGrid_skyblue">
+                    <tr><td style="background: #d9d9d9;">案件編號</td>
+                        <td class="detailsGrid_gray">
+                            <asp:Label ID="LBSWC000" runat="server" /></td>
+                        
+                        </tr>
                     <tr><td style="background: #d9d9d9;">水保局編號</td>
                         <td class="detailsGrid_gray">
-                            <asp:Label ID="LBSWC002" runat="server"/>
-                            <asp:Label ID="LBSWC000" runat="server"/>
-                            <asp:Label ID="TempSwc000" runat="server" /></td>
-                        <td rowspan="18" class="innerBR" style="vertical-align: top;">
-                            
-                                <asp:GridView ID="GVSWCCHG" runat="server" CssClass="aa" AutoGenerateColumns="False"
+                            <asp:Label ID="LBSWC002" runat="server"/></td>
+                        </tr>
+
+                    <tr><td style="background: #d9d9d9;">案件狀態</td>
+                        <td class="detailsGrid_gray"><asp:Label ID="LBSWC004" runat="server"/></td></tr>
+					<tr>
+					  <td>變更設計</td>
+					  <td>
+					    <asp:GridView ID="GVSWCCHG" runat="server" CssClass="aa" AutoGenerateColumns="False"
                                     ShowHeader="false">
                                     <Columns>
                                         <asp:HyperLinkField DataNavigateUrlFields="SWC002Link" DataTextField="SWC002" HeaderText="變更設計" Target="_blank" />
                                     </Columns>
                                 </asp:GridView>
-                                </td>
-                        </tr>
-
-                    <tr><td style="background: #d9d9d9;">案件狀態</td>
-                        <td class="detailsGrid_gray"><asp:Label ID="LBSWC004" runat="server"/></td></tr>
+					  </td>
+					</tr>
                     <tr><td>書件名稱<span style="color: red;font-family:cursive;">＊</span></td>
                         <td><asp:TextBox ID="TXTSWC005" runat="server" width="100%" Height="100px" TextMode="MultiLine" onkeyup="textcount(this,'TXTSWC005_count','512');" />
                             <asp:Label ID="TXTSWC005_count" runat="server" Text="(0/512)" ForeColor="Red"></asp:Label></td></tr>
                     <tr><td>書件類別<span style="color: red;font-family:cursive;">＊</span></td>
                         <td><asp:DropDownList ID="DDLSWC007" runat="server" Height="25px"/>
-                            <asp:Label ID="LBSWC007" runat="server"></asp:Label></td></tr>
+                            <asp:Label ID="LBSWC007" runat="server"></asp:Label>
+                            <asp:Label ID="LBSWC012" runat="server" Visible="false"></asp:Label>
+                        </td></tr>
+                    <tr><td>毗鄰土地</td>
+                        <td><asp:TextBox ID="TBSWC120" runat="server" Height="25px" Width="230px" MaxLength="15" onkeyup="value=value.replace(/[\W]/g,'')" placeholder="UA9910905001，若沒有則無須填寫" /><br>
+                            <span class="red">※ 若有毗鄰土地同時申請案件，請於本欄填入該案水保局編號（EX:UA9910905001），若沒有則無須填寫。</span>
+						</td></tr>
+                        
+
                         <tr><td>地籍<span style="color: red;font-family:cursive;">＊</span></td>
                             <td style="line-height:2;"><asp:DropDownList ID="DDLDistrict" runat="server" Height="25px" AutoPostBack="true" OnSelectedIndexChanged="DDLDistrict_SelectedIndexChanged"/>區
                                 <asp:DropDownList ID="DDLSection" runat="server" Height="25px" AutoPostBack="true" OnSelectedIndexChanged="DDLSection_SelectedIndexChanged"/>段
                                 <asp:DropDownList ID="DDLSection2" runat="server" Height="25px" AutoPostBack="true" OnSelectedIndexChanged="DDLSection2_SelectedIndexChanged"/>小段
                                 <asp:TextBox ID="TXTNumber" runat="server" Height="25px" MaxLength="8" />地號
-                                <br/>
-                                使用分區：<asp:DropDownList ID="DDLCA01" runat="server" Height="25px"/>
-                                可利用限度：<asp:DropDownList ID="DDLCA02" runat="server" Height="25px"/><br/>
-                                林地類別：<asp:DropDownList ID="DDLCA03" runat="server" Height="25px"/>
-                                地質敏感區：<asp:DropDownList ID="DDLCA04" runat="server" Height="25px"/>
+
+                                <%--使用分區：--%><asp:DropDownList ID="DDLCA01" runat="server" Height="25px" style="display:none"/>
                                 <asp:Button ID="ADDLIST01" runat="server" Text="加入清單" Height="26px" OnClientClick="return chknull2();" OnClick="ADDLIST01_Click" />
                                
                                 <asp:TextBox ID="CDNO" runat="server" Text="0" Visible="false"/>
-                                <asp:GridView ID="GVCadastral" runat="server" CssClass="detailsGrid_skyblue_innerTable" AutoGenerateColumns="False"
-                                    OnRowCommand="GVCadastral_RowCommand" PageSize="5" AllowPaging="True"
+                                <asp:GridView ID="GVCadastral" runat="server" CssClass="detailsGrid_skyblue_innerTable w-100" AutoGenerateColumns="False"
+                                    OnRowCommand="GVCadastral_RowCommand" PageSize="100" AllowPaging="True" OnRowDataBound="GVCadastral_RowDataBound"
                                     OnPageIndexChanged="GVCadastral_PageIndexChanged" OnPageIndexChanging="GVCadastral_PageIndexChanging">
                                     <Columns>
                                         <asp:BoundField DataField="序號" HeaderText="序號" />
@@ -315,10 +364,14 @@
                                         <asp:BoundField DataField="段" HeaderText="段" />
                                         <asp:BoundField DataField="小段" HeaderText="小段" />
                                         <asp:BoundField DataField="地號" HeaderText="地號" />
-                                        <asp:BoundField DataField="土地使用分區" HeaderText="使用分區" />
+                                        <asp:BoundField DataField="山坡地範圍" HeaderText="山坡地範圍" />
+                                        <asp:BoundField DataField="水保計畫申請紀錄" HeaderText="水保計畫申請紀錄" />
+                                        <asp:BoundField DataField="水土保持法違規紀錄" HeaderText="水土保持法違規紀錄" />
                                         <asp:BoundField DataField="土地可利用限度" HeaderText="可利用限度" />
+                                        <asp:BoundField DataField="陽明山國家公園範圍" HeaderText="陽明山國家公園範圍" />
                                         <asp:BoundField DataField="林地類別" HeaderText="林地類別" />
                                         <asp:BoundField DataField="地質敏感區" HeaderText="地質敏感區" />
+                                        <asp:BoundField DataField="土地使用分區" HeaderText="使用分區" />
                                         <asp:TemplateField Visible="true">
                                             <ItemTemplate>
                                                 <asp:Button runat="server" CommandArgument="<%#Container.DataItemIndex %>" CommandName="delfile001" Text="刪除" OnClientClick="return confirm('確認刪除這筆資料?')"  />
@@ -326,39 +379,98 @@
                                         </asp:TemplateField>
                                     </Columns>
                                 </asp:GridView>
+								<asp:Panel ID="P_Message" runat="server" Visible="false">
+									<span class="red">※ 如地號狹長或面積過小地號可能導致系統誤判，如有疑問請電洽本處審查管理科。</span>
+								</asp:Panel>
 
                             </td>
                         </tr>
+                        <%--<tr>
+                            <td>毗鄰案件編號</td>
+                            <td><input type="text" value="TT9910902034" /></td>
+                        </tr>--%>
 
-                    <tr><td>義務人<span style="color: red;font-family:cursive;">＊</span></td>
+                    <tr style="display:none;"><td>義務人<span style="color: red;font-family:cursive;">＊</span></td>
                         <td><asp:TextBox ID="TXTSWC013" runat="server" width="100%" Height="100px" TextMode="MultiLine" onkeyup="textcount(this,'TXTSWC013_count','100');" MaxLength="100" />
                             <asp:Label ID="TXTSWC013_count" runat="server" Text="(0/100)" ForeColor="Red"></asp:Label><br/>
-                            <span> 範例：王大明、陳小華（用、分開）</span></td></tr>
-                    <tr><td>義務人身份證字號<span style="color: red;font-family:cursive;">＊</span></td>
+                            <span class="gray">（範例：王大明、陳小華，請用、分開）</span></td></tr>
+                    <tr style="display:none;"><td>義務人身份證字號<span style="color: red;font-family:cursive;">＊</span></td>
                         <td><asp:TextBox ID="TXTSWC013ID" runat="server" MaxLength="10" /></td></tr>
-                    <tr><td>義務人手機<span style="color: red;font-family:cursive;">＊</span></td>
+                    <tr style="display:none;"><td>義務人手機<span style="color: red;font-family:cursive;">＊</span></td>
                         <td><asp:TextBox ID="TXTSWC013TEL" runat="server" MaxLength="10" /></td></tr>
-                    <tr><td>義務人地址<span style="color: red;font-family:cursive;">＊</span></td>
+                    <tr style="display:none;"><td>義務人地址<span style="color: red;font-family:cursive;">＊</span></td>
                         <td><asp:TextBox ID="TXTSWC014" runat="server" width="100%" Height="100px" TextMode="MultiLine" onkeyup="textcount(this,'TXTSWC014_count','255');" MaxLength="255" />
                             <asp:Label ID="TXTSWC014_count" runat="server" Text="(0/255)" ForeColor="Red"></asp:Label></td></tr>
-                    <tr><td>聯絡人<span style="color: red;font-family:cursive;">＊</span></td>
+                    <tr><td>義務人資訊<span style="color: red;font-family:cursive;">＊</span></td>
+						<td>
+							<table class="bold">
+								<tbody>
+									<tr>
+										<th>姓名</th>
+										<td><asp:TextBox ID="TXTSWCPNAME" runat="server" /></td>
+										<th>身分證字號/統一編號</th>
+										<td><asp:TextBox ID="TXTSWCPID" runat="server" MaxLength="20" /></td>
+									</tr>
+									<tr>
+										<th>手機</th>
+										<td colspan="3"><asp:TextBox ID="TXTSWCPPHONE" runat="server" MaxLength="20" /></td>
+									</tr>
+									<tr>
+										<th style="vertical-align:middle;">地址</th>
+										<td colspan="3">
+											<asp:TextBox ID="TXTSWCPCODE" runat="server" width="60px" Enabled="false" />
+											<asp:DropDownList ID="DDLSWCPCITY" AutoPostBack="true" OnSelectedIndexChanged="DDLSWCPCITY_SelectedIndexChanged" runat="server" width="80px" />
+											<asp:DropDownList ID="DDLSWCPAREA" AutoPostBack="true" OnSelectedIndexChanged="DDLSWCPAREA_SelectedIndexChanged" runat="server" width="80px" />
+											<asp:TextBox ID="TXTSWCPADDRESS" runat="server" width="400px" />
+										</td>
+										
+									</tr>
+								</tbody>
+							</table>
+							<br>
+							<asp:Button ID="AddAddress" runat="server" Text="加入清單" Height="26px" OnClientClick="return chkObligorData('')" OnClick="AddAddress_Click" />
+							<asp:TextBox ID="AddNO" runat="server" Text="0" Visible="false"/>
+							<br>							
+							<asp:GridView ID="GVPEOPLE" runat="server" AutoGenerateColumns="False" CssClass="detailsGrid_skyblue_innerTable w-100" OnRowCommand="GVPEOPLE_RowCommand" >
+                                <Columns>
+                                    <asp:BoundField DataField="序號" HeaderText="序號" />
+                                    <asp:BoundField DataField="姓名" HeaderText="姓名" />
+                                    <asp:BoundField DataField="身分證字號" HeaderText="身分證字號/統一編號" />
+                                    <asp:BoundField DataField="手機" HeaderText="手機" />
+                                    <asp:BoundField DataField="地址ZipCode" HeaderText="地址" Visible="false" />
+                                    <asp:BoundField DataField="地址City" HeaderText="地址" Visible="false" />
+                                    <asp:BoundField DataField="地址District" HeaderText="地址" Visible="false" />
+                                    <asp:BoundField DataField="地址Address" HeaderText="地址" Visible="false" />
+                                    <asp:BoundField DataField="地址" HeaderText="地址" />
+                                    <asp:TemplateField Visible="true">
+                                        <ItemTemplate>
+                                            <asp:Button runat="server" CommandArgument="<%#Container.DataItemIndex %>" CommandName="delfile001" Text="刪除" OnClientClick="return confirm('確認刪除這筆資料?')"  />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                </Columns>
+                            </asp:GridView>
+						</td>
+                    </tr>
+					
+					<tr><td>聯絡人<span style="color: red;font-family:cursive;">＊</span></td>
                         <td><asp:TextBox ID="TXTSWC015" runat="server" width="100%" onkeyup="textcount(this,'TXTSWC015_count','50');" MaxLength="50" />
                             <asp:Label ID="TXTSWC015_count" runat="server" Text="(0/50)" ForeColor="Red"/></td></tr>
                     <tr><td>聯絡人手機<span style="color: red;font-family:cursive;">＊</span></td>
                         <td><asp:TextBox ID="TXTSWC016" runat="server" width="100%" onkeyup="textcount(this,'TXTSWC016_count','50');" MaxLength="50" />
-                            <asp:Label ID="TXTSWC016_count" runat="server" Text="(0/50)" ForeColor="Red"/><span>範例：0928123456  分隔請用 ";"</span></td></tr>
+                            <asp:Label ID="TXTSWC016_count" runat="server" Text="(0/50)" ForeColor="Red"/><br><span class="gray">（範例：0928123456  分隔請用 ";"）</span></td></tr>
                     <tr><td>聯絡人E-mail<span style="color: red;font-family:cursive;">＊</span></td>
                         <td><asp:TextBox ID="TXTSWC108" runat="server" width="100%" onkeyup="textcount(this,'TXTSWC108_count','200');" MaxLength="200" />
                             <asp:Label ID="TXTSWC108_count" runat="server" Text="(0/200)" ForeColor="Red"/>
                             <span style="display:none;"><asp:TextBox ID="TXTSWC108_chk" runat="server" width="100%" /></span>
+							<br/><span style="color:red;">※ 以一組電子信箱地址為限</span>
                         </td></tr>
                     <tr><td>目的事業主管機關</td>
                         <td><asp:DropDownList ID="DDLSWC017" runat="server" Height="25px"/>　
                             其他：
                             <asp:TextBox ID="TXTSWC018" runat="server" width="30%" onkeyup="textcount(this,'TXTSWC018_count','50');" MaxLength="50" />
                             <asp:Label ID="TXTSWC018_count" runat="server" Text="(0/50)" ForeColor="Red"></asp:Label></td></tr>
-                    <tr><td>計畫面積(公頃)</td>
-                        <td><asp:TextBox ID="TXTSWC023" runat="server" CssClass="wordright" Width="200px" onkeyup="chknumber(this);" MaxLength="10" />
+                    <tr><td>計畫面積(公頃)<span style="color: red;font-family:cursive;">＊</span></td>
+                        <td><asp:TextBox ID="TXTSWC023" runat="server" CssClass="wordright" Width="100px" onkeyup="chknumber(this);" MaxLength="10" />
                             <span style="margin-left:7px;">公頃</span></td></tr>
                     <tr><td style="background: #d9d9d9;">承辦技師</td>
                         <td class="detailsGrid_gray">
@@ -366,20 +478,25 @@
                             <asp:Label ID="LBSWC021ID" runat="server" Visible="false" /></td></tr>
                     <tr><td style="background: #d9d9d9;">承辦人員</td>
                         <td class="detailsGrid_gray"><asp:Label ID="LBSWC025" runat="server" /></td></tr>
-                    <tr><td>座標</td>
+                    <tr><td>承辦建築師</td>
+                        <td><asp:DropDownList ID="DDLSWC134" runat="server" CssClass="select" /></td></tr>
+					<tr><td>座標</td>
                         <td>X：<asp:TextBox ID="TXTSWC027" runat="server" onkeyup="chknumber(this);" MaxLength="6" Width="80"/> &nbsp;&nbsp;
                             Y：<asp:TextBox ID="TXTSWC028" runat="server" onkeyup="chknumber(this);" MaxLength="7" Width="80" />
-                            <br/><span>範例：X：300580 Y：2778810（請輸入67座標系）</span></td></tr>
+                            <br/><span style="color:red;">※ 請輸入TWD-97座標系，範例：X：301410 Y：2778606</span></td></tr>
                     <tr><td>計畫申請書</td>
-                        <td style="line-height: 2;"><asp:TextBox ID="TXTFILES001" runat="server" Width="70px" style="display:none;" />
+                        <td><asp:TextBox ID="TXTFILES001" runat="server" Width="70px" style="display:none;" />
                             <asp:FileUpload ID="TXTFILES001_fileupload" runat="server" />
-                            <asp:Button ID="TXTFILES001_fileuploadok" runat="server" Text="上傳檔案" OnClick="TXTFILES001_fileuploadok_Click" />
+                            <asp:Button ID="TXTFILES001_fileuploadok" runat="server" Text="上傳檔案" OnClientClick="return UpLoadChk('TXTFILES001_fileupload');" OnClick="TXTFILES001_fileuploadok_Click" />
                             <asp:Button ID="BTNFILES001" runat="server" CssClass="wordttb" Text="X" OnClientClick="return confirm('確認刪除這筆資料?')" OnClick="BTNFILES001_Click"  />
-                            <br/><span style="color:red;">※ 上傳格式限定為PDF檔案大小請於150mb以內</span>
+                            
                             <asp:Label ID="Files001No" runat="server" Text="0" Visible="false"/>
+                            <asp:TextBox ID="TBuploadNtc" runat="server" Text="0" style="display:none;" />
                             <br/> <%--多筆上傳--%>                            
                             <asp:HyperLink ID="Link001" runat="server" CssClass="word" Target="_blank"/><br/>
                             <asp:Button ID="AddFile001" runat="server" Text="加入清單" CssClass="wordttb" OnClick="AddFile001_Click" OnClientClick="return chknull('TXTFILES001');" Height="26px" />
+							<br/><span style="color:red;">※ 上傳格式限定為PDF，檔案大小請於500mb以內</span>
+							<br/><span style="color:red;">※ 上傳檔案請勿使用+、空格、/、\、?、%、#、&、=、!...等特殊符號(包含全形符號)</span>
                             <%--<asp:GridView ID="GridView1" runat="server" CssClass="detailsGrid_skyblue_innerTable detailsGrid_skyblue_innerTable_lastCenter" AutoGenerateColumns="False"
                                OnRowCommand="SWCFILES001_RowCommand"  >--%>
                             <asp:GridView ID="SWCFILES001" runat="server" CssClass="detailsGrid_skyblue_innerTable detailsGrid_skyblue_innerTable_lastCenter" AutoGenerateColumns="False"
@@ -394,11 +511,218 @@
                                     </asp:TemplateField>
                                 </Columns>
                             </asp:GridView></td></tr>
-                    </table>
+					<tr><td>環評報告書/免環評證明文件<span style="color: red;font-family:cursive;">＊</span></td>
+                        <td><asp:FileUpload ID="TXTSWC138_fileupload" runat="server" CssClass="wordtt" />
+							<asp:Button ID="TXTSWC138_fileuploadok" runat="server" Text="上傳檔案" OnClick="TXTSWC138_fileuploadok_Click" />
+							<asp:TextBox ID="TXTSWC138" runat="server" CssClass="word" Width="20px" Visible="False"/>
+							<asp:Button ID="TXTSWC138_fileclean" runat="server" CssClass="wordttb" Text="X" OnClientClick="return confirm('刪除後無法復原，請再次確認是否要刪除!!!')" OnClick="TXTSWC138_fileclean_Click" />
+							<br/><span style="color:red;">※ 上傳格式限定為PDF、JPG，檔案大小請於500mb以內</span>
+							<br/><span style="color:red;">※ 上傳檔案請勿使用+、空格、/、\、?、%、#、&、=、!...等特殊符號(包含全形符號)</span>
+							<asp:HyperLink ID="Link138" runat="server" CssClass="word" Target="_blank"/></td></tr>
+                    <tr><td>水保設施項目</td>
+                        <td>
+                            <asp:Panel ID="SDIAREA" runat="server" Visible="false">
+                             <span class="step">step1</span>
+						     <table class="swcfacility">   
+                              <tr>
+                                <th>水土保持設施類別</th> 
+                                <td><asp:DropDownList ID="DDLSIC01" runat="server" style="height:25px;" AutoPostBack="true" OnSelectedIndexChanged="DDLSIC01_SelectedIndexChanged" />
+								    </td>
+                             </tr>
+                             <tr>
+                                <th>設施名稱<br />（位置或編號）</th>
+                                <td><asp:TextBox ID="TXTSDI004" runat="server" style="height:25px;" MaxLength="200"/></td>
+                            </tr>
+                            <tr>
+                                <th>設施型式</th>
+                                <td><asp:DropDownList ID="DDLSIC02" runat="server"  style="height:25px; margin-top:0.5em;" AutoPostBack="true" OnSelectedIndexChanged="DDLSIC02_SelectedIndexChanged" />
+                                    <asp:TextBox ID="TXTSDI002" runat="server" Visible="false"/></td>
+							</tr>
+                            <tr>
+                                <th>數量</th>
+                                <td><asp:TextBox ID="TXTSDI006" runat="server" style="margin-top:0.5em; width:70px; height:25px;" Enabled="false" onkeyup="return chknumber(this,value)" />
+                                <asp:Label ID="AA" runat="server" Visible="false">~</asp:Label>
+								<asp:TextBox ID="TXTSDI006_1" runat="server" style="margin-top:0.5em; width:70px; height:25px;" Enabled="false" Visible="false" onkeyup="return chknumber(this,value)" />
+								<asp:TextBox ID="TXTSDI006D" runat="server" style="margin-top:0.5em; width:70px; height:25px;" Enabled="false" Visible="false" />
+                                <asp:TextBox ID="TXTSDI009" runat="server" style="margin-top:0.5em; width:70px; height:25px;" Visible="false" />
+                                <asp:Label ID="LBSDI007" runat="server"/>&nbsp;
+                                <span style="color:#A3A3A3; margin-top:0.5em; display:inline-block;">※ 本欄位限輸入數值格式，若要輸入非數字格式「設施形式」請選擇「其他」類別。</span></td>
+                            </tr>
+                           </table>
+
+                                <span class="step">step2</span>
+                                <table class="swcfacility">   
+                                  <tr>
+                                    <th><span>檢核項目&nbsp;</span></th>
+                                    <td><asp:DropDownList ID="DDLSIC05" runat="server" style="height:25px;margin-top:0.5em;" AutoPostBack="true" OnSelectedIndexChanged="DDLSIC05_SelectedIndexChanged" />
+                                        <asp:TextBox ID="TXTSIC05" runat="server" Visible="false"/>
+										&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <asp:CheckBox ID="CHKSDI019" runat="server" Text="屬漸變設施" CssClass="checkbox" OnCheckedChanged="CHKSDI019_CheckedChanged" AutoPostBack="true"/>
+                                        </td>
+                                 </tr>
+                               
+                                <tr>
+                                    <th>尺寸<b><br />（斷面積-W*H）</b></th>
+                                    <td><asp:Label ID="LBSDI010" runat="server"/>
+                               
+                             
+                                    <asp:Panel ID="ThreeArea" runat="server">
+                                        <asp:TextBox ID="TXTSDI012" runat="server" placeholder="" style="margin-top:0.5em;  width:40px; height:25px;" Enabled="false" onkeyup="return chknumber(this,value)" /><asp:Label ID="A1" runat="server">~</asp:Label><asp:TextBox ID="TXTSDI012_1" runat="server" placeholder="" style="margin-top:0.5em;  width:40px; height:25px;" Enabled="false" onkeyup="return chknumber(this,value)" /> &nbsp;X&nbsp;
+                                        <asp:TextBox ID="TXTSDI013" runat="server" placeholder="" style="margin-top:0.5em;  width:40px; height:25px;" Enabled="false" onkeyup="return chknumber(this,value)" /><asp:Label ID="B1" runat="server">~</asp:Label><asp:TextBox ID="TXTSDI013_1" runat="server" placeholder="" style="margin-top:0.5em;  width:40px; height:25px;" Enabled="false" onkeyup="return chknumber(this,value)" /> &nbsp;X&nbsp;
+                                        <asp:TextBox ID="TXTSDI014" runat="server" placeholder="" style="margin-top:0.5em;  width:40px; height:25px;" Enabled="false" onkeyup="return chknumber(this,value)" /><asp:Label ID="C1" runat="server">~</asp:Label><asp:TextBox ID="TXTSDI014_1" runat="server" placeholder="" style="margin-top:0.5em;  width:40px; height:25px;" Enabled="false" onkeyup="return chknumber(this,value)" />
+                                    </asp:Panel>
+							 
+                                <asp:TextBox ID="TXTSDI012D" runat="server" style="margin-top:0.5em; width:600px; height:25px;" Visible="false" />
+                                <asp:TextBox ID="TXTSDI011" runat="server" style="margin-top:0.5em; width:70px; height:25px;" Visible="false" />
+                                <asp:TextBox ID="TXTSDI016" runat="server" style="margin-top:0.5em; width:70px; height:25px;" Visible="false" />
+                                <asp:Label ID="LBSDI015" runat="server" />
+                                <span style="color:#A3A3A3; margin-top:0.5em; display:inline-block;">※ 本欄位限輸入小數點第二位。</span><br>
+							    <span style="color:#A3A3A3; margin-top:0.5em; display:inline-block;">※ 本欄位限輸入數值格式，若要輸入非數字格式「設施形式」請選擇「其他」類別。</span>
+                                </td>
+                               </tr>
+                               </table>
+                                <span class="step">step3</span> 
+                                 <asp:Button ID="BTNADDSDI" runat="server" Text="加入清單" CssClass="wordttb" OnClick="BTNADDSDI_Click" Height="26px" />
+                                
+                      
+                                <asp:TextBox ID="TXTSDINI" runat="server" Text="0" style="margin-top:0.5em; width:70px; height:25px;" Visible="false" />
+                        </asp:Panel>
+                            <br />
+                                <asp:GridView ID="SDIList" runat="server" CssClass="segtable AutoNewLine" AutoGenerateColumns="False" Height="50"
+                                     OnRowCommand="SDIList_RowCommand">
+                                    <Columns>
+                                        
+                                        <asp:BoundField DataField="SDIFD003" HeaderText="水土保持設施類別" HeaderStyle-Width="20%" />
+                                        <asp:BoundField DataField="SDIFD004" HeaderText="設施名稱<br>（位置或編號）" HeaderStyle-Width="17%" HtmlEncode="false" />
+                                        <asp:BoundField DataField="SDIFD019" HeaderText="漸變設施" HeaderStyle-Width="10%" />
+										<asp:BoundField DataField="SDIFD005" HeaderText="設施型式" HeaderStyle-Width="12%" />
+                                        <asp:BoundField DataField="SDIFD006D" HeaderText="數量" HeaderStyle-Width="13%" />
+                                        <asp:BoundField DataField="SDIFD008" HeaderText="檢核項目"/>
+                                        <asp:BoundField DataField="SDIFD012D" HeaderText="尺寸" HeaderStyle-Width="16%" />
+
+                                        <asp:TemplateField Visible="true" >
+                                            <ItemTemplate>
+                                                <asp:Button runat="server" CommandArgument="<%#Container.DataItemIndex %>" CommandName="SDIDEL" Text="刪除" OnClientClick="return confirm('確認刪除這筆資料?')" />
+                                                <asp:HiddenField ID="HDSDI001" runat="server" Value='<%# Eval("SDIFD001") %>' />
+                                                <asp:HiddenField ID="HDSDINI" runat="server" Value='<%# Container.DataItemIndex %>' />
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                    </Columns>
+                                </asp:GridView></td></tr>
+                        </table>
+                </div>
+            </asp:Panel>
+                 
+            <asp:Panel ID="Area06" runat="server" CssClass="none">
+                <h2 class="detailsBar_title_accept openh2" style="background:#bce2e8">檔案交換區<img src="../images/btn/btn-close.png" alt="" class="open"/></h2>
+                
+                <div class="detailsGrid_wrap close" style="display: block;">
+                <table class="filechange" style="border:1px solid #000000;"><tbody>
+                <tr><td><div style="text-align:left; font-size:14pt;">修正本上傳區</div>
+                    <table class="filebase"><tbody>
+                    <tr><th>序號</th>
+                        <th style="width:480px;">修正本上傳</th>
+                        <th>連結</th>
+                        <th style="width:13%">上傳人</th>
+                        <th style="width:15%">上傳日期</th>
+                        </tr>
+                    <tr><td>第一次修正本</td>
+                                <td><asp:FileUpload ID="SFFile01_FileUpload" runat="server" style="height:25px;" />
+                                    <asp:Button ID="Btn_UPSFile01" runat="server" Text="上傳檔案" style="height:25px;" OnClick="Btn_UPSFile_Click" />
+                                    <asp:Button ID="Btn_DelSFile01" runat="server" Text="x" ToolTip="刪除上傳檔案" OnClientClick="return confirm('刪除後無法復原，請再次確認是否要刪除!!!')" style="height:25px;" OnClick="Btn_DelSFile_Click" />
+                                    <asp:TextBox ID="TXTSFile01" runat="server" Width="70px" Visible="False" /></td>
+                        <td style="color:blue; text-decoration:underline;">
+                            <asp:HyperLink ID="SFLINK01" runat="server" Target="_blank"/></td>
+                        <td><asp:Label ID="LBUPLOADU01" runat="server"/></td>
+                        <td><asp:Label ID="LBUPLOADD01" runat="server"/></td>
+                    </tr>
+                            <tr>
+                                <td>第二次修正本</td>
+                                <td><asp:FileUpload ID="SFFile02_FileUpload" runat="server" style="height:25px;" />
+                                    <asp:Button ID="Btn_UPSFile02" runat="server" Text="上傳檔案" style="height:25px;" OnClick="Btn_UPSFile_Click" />
+                                    <asp:Button ID="Btn_DelSFile02" runat="server" Text="x" ToolTip="刪除上傳檔案" OnClientClick="return confirm('刪除後無法復原，請再次確認是否要刪除!!!')" style="height:25px;" OnClick="Btn_DelSFile_Click" />
+                                    <asp:TextBox ID="TXTSFile02" runat="server" Width="70px" Visible="False" /></td>
+                                <td style="color:blue;text-decoration:underline;">
+                                    <asp:HyperLink ID="SFLINK02" runat="server" Target="_blank"/></td>
+                                <td><asp:Label ID="LBUPLOADU02" runat="server"/></td>
+                                <td><asp:Label ID="LBUPLOADD02" runat="server"/></td>
+                            </tr>
+                            <tr><td>第三次修正本</td>
+                                <td><asp:FileUpload ID="SFFile03_FileUpload" runat="server" style="height:25px;" />
+                                    <asp:Button ID="Btn_UPSFile03" runat="server" Text="上傳檔案" style="height:25px;" OnClick="Btn_UPSFile_Click" />
+                                    <asp:Button ID="Btn_DelSFile03" runat="server" Text="x" ToolTip="刪除上傳檔案" OnClientClick="return confirm('刪除後無法復原，請再次確認是否要刪除!!!')" style="height:25px;" OnClick="Btn_DelSFile_Click" />
+                                    <asp:TextBox ID="TXTSFile03" runat="server" Width="70px" Visible="False" /></td>
+                                <td style="color:blue">
+                                    <asp:HyperLink ID="SFLINK03" runat="server" Target="_blank"/></td>
+                                <td><asp:Label ID="LBUPLOADU03" runat="server"/></td>
+                                <td><asp:Label ID="LBUPLOADD03" runat="server"/></td>
+                            </tr>
+                            <tr><td>第四次修正本</td>
+                                <td><asp:FileUpload ID="SFFile06_FileUpload" runat="server" style="height:25px;" />
+                                    <asp:Button ID="Btn_UPSFile06" runat="server" Text="上傳檔案" style="height:25px;" OnClick="Btn_UPSFile_Click" />
+                                    <asp:Button ID="Btn_DelSFile06" runat="server" Text="x" ToolTip="刪除上傳檔案" OnClientClick="return confirm('刪除後無法復原，請再次確認是否要刪除!!!')" style="height:25px;" OnClick="Btn_DelSFile_Click" />
+                                    <asp:TextBox ID="TXTSFile06" runat="server" Width="70px" Visible="False" /></td>
+                                <td style="color:blue">
+                                    <asp:HyperLink ID="SFLINK06" runat="server" Target="_blank"/></td>
+                                <td><asp:Label ID="LBUPLOADU06" runat="server"/></td>
+                                <td><asp:Label ID="LBUPLOADD06" runat="server"/></td>
+                            </tr>
+                            <tr><td>第五次修正本</td>
+                                <td><asp:FileUpload ID="SFFile07_FileUpload" runat="server" style="height:25px;" />
+                                    <asp:Button ID="Btn_UPSFile07" runat="server" Text="上傳檔案" style="height:25px;" OnClick="Btn_UPSFile_Click" />
+                                    <asp:Button ID="Btn_DelSFile07" runat="server" Text="x" ToolTip="刪除上傳檔案" OnClientClick="return confirm('刪除後無法復原，請再次確認是否要刪除!!!')" style="height:25px;" OnClick="Btn_DelSFile_Click" />
+                                    <asp:TextBox ID="TXTSFile07" runat="server" Width="70px" Visible="False" /></td>
+                                <td style="color:blue">
+                                    <asp:HyperLink ID="SFLINK07" runat="server" Target="_blank"/></td>
+                                <td><asp:Label ID="LBUPLOADU07" runat="server"/></td>
+                                <td><asp:Label ID="LBUPLOADD07" runat="server"/></td>
+                            </tr>
+                        </tbody></table>
+                        <span style="color:red; margin-top:0.5em; display:inline-block;">※ 上傳格式限定為PDF，檔案大小請於150mb以內</span>
+                    </td>
+                </tr>
+
+                 <tr>
+                    <td>
+                        <div style="text-align:left; font-size:14pt; margin-top:1em;">相關檔案交換區</div>
+                        <table class="filebase">
+                            <tbody><tr>
+                                <th>序號</th>
+                                <th style="width:480px;">相關檔案上傳</th>
+                                <th>連結</th>
+                                <th style="width:13%">上傳人</th>
+                                <th style="width:15%">上傳日期</th>
+                            </tr>
+                            <tr><td>01</td>
+                                <td><asp:FileUpload ID="SFFile04_FileUpload" runat="server" style="height:25px;" />
+                                    <asp:Button ID="Btn_UPSFile04" runat="server" Text="上傳檔案" style="height:25px;" OnClick="Btn_UPSFile_Click" />
+                                    <asp:Button ID="Btn_DelSFile04" runat="server" Text="x" ToolTip="刪除上傳檔案" OnClientClick="return confirm('刪除後無法復原，請再次確認是否要刪除!!!')" style="height:25px;" OnClick="Btn_DelSFile_Click" />
+                                    <asp:TextBox ID="TXTSFile04" runat="server" Width="70px" Visible="False" /></td>
+                                <td style="color:blue; text-decoration:underline;">
+                                    <asp:HyperLink ID="SFLINK04" runat="server" Target="_blank"/></td>
+                                <td><asp:Label ID="LBUPLOADU04" runat="server"/></td>
+                                <td><asp:Label ID="LBUPLOADD04" runat="server"/></td>
+                            </tr>
+                            <tr><td>02</td>
+                                <td><asp:FileUpload ID="SFFile05_FileUpload" runat="server" style="height:25px;" />
+                                    <asp:Button ID="Btn_UPSFile05" runat="server" Text="上傳檔案" style="height:25px;" OnClick="Btn_UPSFile_Click" />
+                                    <asp:Button ID="Btn_DelSFile05" runat="server" Text="x" ToolTip="刪除上傳檔案" OnClientClick="return confirm('刪除後無法復原，請再次確認是否要刪除!!!')" style="height:25px;" OnClick="Btn_DelSFile_Click" />
+                                    <asp:TextBox ID="TXTSFile05" runat="server" Width="70px" Visible="False" /></td>
+                                <td style="color:blue; text-decoration:underline;">
+                                    <asp:HyperLink ID="SFLINK05" runat="server" Target="_blank"/></td>
+                                <td><asp:Label ID="LBUPLOADU05" runat="server"/></td>
+                                <td><asp:Label ID="LBUPLOADD05" runat="server"/></td>
+                            </tr>
+                        </tbody></table>
+                        <span style="color:red;margin-top:0.5em; display:inline-block;">※ 上傳格式限定為PDF、JPG、PNG，檔案大小請於50mb以內</span>
+                    </td>
+                </tr>
+                 
+            </tbody></table>
                 </div>
             </asp:Panel>
 
-            <asp:Panel ID="Area02" runat="server">
+            <asp:Panel ID="Area02" runat="server" CssClass="none">
                 <h2 class="detailsBar_title_accept">受理<img src="../images/btn/btn-close.png" alt="" class="open"/></h2>
                 <div class="detailsGrid_wrap">
                     <table class="detailsGrid_purple">
@@ -413,8 +737,34 @@
                     <tr><td>第二次退補件說明</td>
                         <td class="detailsGrid_gray">
                             <asp:Label ID="LBSWC105" runat="server"/></td></tr>
-                    <tr><td>審查費金額</td>
-                        <td class="detailsGrid_gray"><asp:Label ID="LBSWC035" runat="server"/></td></tr>
+                    <tr><td class="middle">審查費金額</td>
+                        <td class="detailsGrid_gray"><asp:Label ID="LBSWC035" runat="server" Visible="false"/>
+                                            <asp:GridView ID="GVPay01" runat="server" AutoGenerateColumns="False" CssClass="constructionPurple" DataSourceID="SqlDataSource01">
+                                                <Columns>
+                                                    <asp:BoundField DataField="FD004" HeaderText="繳費單號" />
+                                                    <asp:BoundField DataField="FD002" HeaderText="繳款期限" />
+                                                    <asp:BoundField DataField="FD003" HeaderText="應納金額" />
+                                                    <asp:BoundField DataField="CPI004" HeaderText="繳費日期" />
+                                                    <asp:TemplateField ShowHeader="False">
+                                                        <ItemTemplate>
+                                                            <asp:Button ID="btnPrint" runat="server" CommandArgument='<%#Container.DataItemIndex %>' OnClick="btnPrint01_Click" Text="列印繳費單" />
+                                                            <asp:Label ID="LBCSMSG" runat="server" Text='<%# Bind("FD006") %>' Visible="false" />
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField Visible="false">
+                                                        <ItemTemplate>
+                                                            <asp:HiddenField ID="HDKID" runat="server" Value='<%# Bind("FD001") %>' />
+                                                            <asp:HiddenField ID="HDACT" runat="server" Value='<%# Bind("FD005") %>' />
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                </Columns>
+                                            </asp:GridView>
+       <asp:SqlDataSource ID="SqlDataSource01" runat="server" ConnectionString="<%$ ConnectionStrings:SWCConnStr %>" OnSelected="SqlDataSource01_Selected"
+           SelectCommand=" select BillID as FD001,CONVERT(varchar(100), CPI002, 23) as FD002,CPI003 as FD003, BillID as FD004,CaseID3 as FD005,CPI006 as FD006,CPI007,CPI004 from tslm2.dbo.CasePaymentInfo where CaseType = '審查費' and CPI006='已列印' order by id; "></asp:SqlDataSource>
+
+                        <a href="https://smis.swcb.gov.tw/MainSys/WinInfo/WinCalCharge.aspx" target="_blank">試算連結</a>
+
+                        </td></tr>
                     <tr><td>審查費繳納期限</td>
                         <td class="detailsGrid_gray"><asp:Label ID="LBSWC031" runat="server"/></td></tr>
                     <tr><td>審查費繳納日期</td>
@@ -423,7 +773,7 @@
                 </div>
             </asp:Panel>
 
-            <asp:Panel ID="Area03" runat="server">
+            <asp:Panel ID="Area03" runat="server" CssClass="none">
                 <h2 class="detailsBar_title_review">審查<img src="../images/btn/btn-close.png" alt="" class="open"/></h2>
                 <div class="detailsGrid_wrap">
                     <table class="detailsGrid_green">
@@ -433,6 +783,26 @@
                         <td class="detailsGrid_gray">
                             <asp:Label ID="LBSWC022" runat="server"/>
                             <asp:Label ID="LBSWC022ID" runat="server" Visible="false" /></td></tr>
+                    <tr><td>審查小組</td>
+                        <td>召集人：
+                            <asp:DropDownList ID="DDLSA01" runat="server" style="height:25px;" />
+                            <asp:Label ID="LBSAOID" runat="server" style="height:25px;" Visible="false" /><br/><br/>
+                            委　員：
+                            <asp:DropDownList ID="DDLSA02" runat="server" style="height:25px;" />
+                            <asp:DropDownList ID="DDLSA03" runat="server" style="height:25px;" />
+                            <asp:DropDownList ID="DDLSA04" runat="server" style="height:25px;" />
+                            <asp:DropDownList ID="DDLSA05" runat="server" style="height:25px;" />
+                            <asp:DropDownList ID="DDLSA06" runat="server" style="height:25px;" />
+                            <asp:DropDownList ID="DDLSA07" runat="server" style="height:25px;" />
+                            <asp:DropDownList ID="DDLSA08" runat="server" style="height:25px;" />
+                            <asp:DropDownList ID="DDLSA09" runat="server" style="height:25px;" />
+                            <asp:DropDownList ID="DDLSA10" runat="server" style="height:25px;" /><br/><br/>
+                            審查會議日期：
+                            <asp:TextBox ID="TXTSWC113" runat="server" width="120px" autocomplete="off"></asp:TextBox>
+                            <asp:CalendarExtender ID="TXTSWC113_CalendarExtender" runat="server" TargetControlID="TXTSWC113" Format="yyyy-MM-dd"></asp:CalendarExtender>
+                            <asp:CheckBox ID="CHKSendMail01" runat="server" Text="於存檔後發信通知委員" />
+                        </td>
+                    </tr>
                     <tr><td>審查委員</td>
                         <td><asp:TextBox ID="TXTSWC087" runat="server" width="100%" Height="100px" TextMode="MultiLine" onkeyup="textcount(this,'TXTSWC087_count','255');" />
                             <asp:Label ID="TXTSWC087_count" runat="server" Text="(0/255)" ForeColor="Red"></asp:Label></td></tr>
@@ -443,7 +813,7 @@
                                 OnRowDataBound="SWCDTL01_RowDataBound"
                                     >
                                 <Columns>
-                                    <asp:BoundField DataField="DTLA001" HeaderText="審查表單編號"  />
+                                    <asp:BoundField DataField="DTLA001" HeaderText="審查表單編號" />
                                     <asp:BoundField DataField="DTLA002" HeaderText="審查日期" />
                                     <asp:BoundField DataField="DTLA003" HeaderText="補正期限" />
                                     <asp:BoundField DataField="DTLA004" HeaderText="主旨" />
@@ -500,9 +870,12 @@
                         <span style="color:red;">※ 上傳格式限定為PDF，檔案大小請於50mb以內</span><br/>
                         <asp:HyperLink ID="Link030" runat="server" CssClass="word" Target="_blank"/>
                         </td></tr>
-                <tr><td>公會建議核定日期</td>
-                    <td><asp:TextBox ID="TXTSWC109" runat="server" width="120px"></asp:TextBox>
-                            <asp:CalendarExtender ID="TXTSWC109_CalendarExtender" runat="server" TargetControlID="TXTSWC109" Format="yyyy-MM-dd"></asp:CalendarExtender></td></tr>
+                <tr><td>公會建議核定/不予核定<br>日期<</td>
+                    <td><asp:Label ID="TXTSWC109" runat="server" width="120px"></asp:Label>
+                            <asp:TextBox ID="TBSWC109o" runat="server" style="display:none;" /></td></tr>
+                <tr><td>建議核定補正期限<b/r>日期<</td>
+                    <td><asp:Label ID="LBSWC125" runat="server" width="120px"></asp:Label>
+                            <asp:TextBox ID="TBSWC125" runat="server" style="display:none;" /></td></tr>
                 <tr><td>審查單位查核表</td>
                     <td><asp:FileUpload ID="TXTSWC110_fileupload" runat="server" CssClass="wordtt" />
                         <asp:Button ID="TXTSWC110_fileuploadok" runat="server" Text="上傳檔案" OnClick="TXTSWC110_fileuploadok_Click" />
@@ -516,14 +889,41 @@
                 <tr><td style="background: #d9d9d9;">核定文號</td>
                     <td class="detailsGrid_gray"><asp:Label ID="LBSWC039" runat="server"/></td></tr>
                 <tr><td style="background: #d9d9d9;">保證金金額</td>
-                    <td class="detailsGrid_gray"><asp:Label ID="LBSWC040" runat="server"/></td></tr>
+                    <td class="detailsGrid_gray"><asp:Label ID="LBSWC040" runat="server" Visible="false"/>
+
+                                            <asp:GridView ID="GVPay02" runat="server" AutoGenerateColumns="False"  CssClass="greenPause" DataSourceID="SqlDataSource02">
+                                                <Columns>
+                                                    <asp:BoundField DataField="FD004" HeaderText="繳費單號" />
+                                                    <asp:BoundField DataField="FD002" HeaderText="繳款期限" />
+                                                    <asp:BoundField DataField="FD003" HeaderText="應納金額" />
+                                                    <asp:BoundField DataField="CPI004" HeaderText="繳費日期" />
+                                                    <asp:TemplateField ShowHeader="False">
+                                                        <ItemTemplate>
+                                                            <asp:Button ID="btnPrint" runat="server" CommandArgument='<%#Container.DataItemIndex %>' OnClick="btnPrint_Click" Text="列印繳費單" />
+                                                            <asp:Label ID="LBCSMSG" runat="server" Text='<%# Bind("FD006") %>' Visible="false" />
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField Visible="false">
+                                                        <ItemTemplate>
+                                                            <asp:HiddenField ID="HDKID" runat="server" Value='<%# Bind("FD001") %>' />
+                                                            <asp:HiddenField ID="HDACT" runat="server" Value='<%# Bind("FD005") %>' />
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                </Columns>
+                                            </asp:GridView>
+       <asp:SqlDataSource ID="SqlDataSource02" runat="server" ConnectionString="<%$ ConnectionStrings:SWCConnStr %>" OnSelected="SqlDataSource02_Selected"
+           SelectCommand=" select BillID as FD001,CONVERT(varchar(100), CPI002, 23) as FD002,CPI003 as FD003, BillID as FD004,CaseID3 as FD005,CPI006 as FD006,CPI007,CPI004 from tslm2.dbo.CasePaymentInfo where CaseType = '保證金' and CPI006='已列印' order by id; "></asp:SqlDataSource>
+
+                    
+                    <a href="https://tcgeswc.taipei.gov.tw/swcmoneyinfo.aspx#a" target="_blank">試算連結</a>
+                    </td></tr>
                 <tr><td style="background: #d9d9d9;">審查費核銷</td>
                     <td class="detailsGrid_gray"><asp:Label ID="LBSWC036" runat="server"/></td></tr>
                     </table>
                 </div>
             </asp:Panel>
 
-            <asp:Panel ID="Area04" runat="server">
+            <asp:Panel ID="Area04" runat="server" CssClass="none">
                 <h2 class="detailsBar_title_construction">施工<img src="../images/btn/btn-close.png" alt="" class="open"/></h2>
                 <div class="detailsGrid_wrap">
                     <table class="detailsGrid_purple2">
@@ -533,6 +933,8 @@
                         <td class="detailsGrid_gray"><asp:Label ID="LBSWC083" runat="server"/></td></tr>
                     <tr><td style="background: #d9d9d9;">保證金繳納</td>
                         <td class="detailsGrid_gray"><asp:Label ID="LBSWC041" runat="server"/></td></tr>
+                    <tr><td style="background: #d9d9d9;">目的事業主管機關核定完工期限</td>
+                        <td class="detailsGrid_gray"><asp:Label ID="LBSWC112" runat="server"/></td></tr>
                     <tr><td style="background: #d9d9d9;">施工許可證核發日期</td>
                         <td class="detailsGrid_gray"><asp:Label ID="LBSWC043" runat="server"/></td></tr>
                     <tr><td style="background: #d9d9d9;">施工許可證核發文號</td>
@@ -540,7 +942,7 @@
                     <tr><td>開工日期</td>
                         <td><asp:TextBox ID="TXTSWC051" runat="server" width="120px"></asp:TextBox>
                             <asp:CalendarExtender ID="TXTSWC051_CalendarExtender" runat="server" TargetControlID="TXTSWC051" Format="yyyy-MM-dd"></asp:CalendarExtender></td></tr>
-                    <tr><td style="background: #d9d9d9;">預定完工日期</td>
+                    <tr><td style="background: #d9d9d9;">核定完工日期</td>
                         <td class="detailsGrid_gray"><asp:Label ID="LBSWC052" runat="server"/></td></tr>
                     <tr><td style="background: #d9d9d9;">監造技師</td>
                         <td class="detailsGrid_gray">
@@ -562,9 +964,28 @@
                         <td class="detailsGrid_gray">
                             <asp:Label ID="LBSWC024" runat="server"/>
                             <asp:Label ID="LBSWC024ID" runat="server" Visible="false" /></td></tr>
+                        
+                    <tr><td>檢查委員</td>
+                        <td>委員：
+                            <asp:DropDownList ID="DDLSB01" runat="server" style="height:25px;" />
+                            <asp:DropDownList ID="DDLSB02" runat="server" style="height:25px;" /><br/><br/>
+                            施工檢查日期：
+                            <asp:TextBox ID="TXTSWC114" runat="server" width="120px" autocomplete="off"></asp:TextBox>
+                            <asp:CalendarExtender ID="TXTSWC114_CalendarExtender" runat="server" TargetControlID="TXTSWC114" Format="yyyy-MM-dd"></asp:CalendarExtender>
+                            <asp:CheckBox ID="CHKSendMail02" runat="server" Text="於存檔後發信通知委員" /><br/><br/>
+                            完工檢查日期：
+                            <asp:TextBox ID="TXTSWC115" runat="server" width="120px" autocomplete="off"></asp:TextBox>
+                            <asp:CalendarExtender ID="TXTSWC115_CalendarExtender" runat="server" TargetControlID="TXTSWC115" Format="yyyy-MM-dd"></asp:CalendarExtender>
+                            <asp:CheckBox ID="CHKSendMail03" runat="server" Text="於存檔後發信通知委員" />
+                        </td>
+                    </tr>
+
+
+
                     <tr><td>施工中監督檢查紀錄<%--<span>(鎖檢查單位(施工檢查紀錄表)、機關人員(施工抽查紀錄表)填)</span>--%></td>
                         <td><asp:Button ID="DT003" runat="server" Text="+ 施工檢查紀錄表" CssClass="detailsGrid_wrap_btn" OnClick="DT003_Click"/>
                             <asp:HyperLink ID="DT002" runat="server" Text="+ 水保抽查紀錄表" CssClass="detailsGrid_wrap_btn" Visible="false"/>
+                            <asp:Button ID="Button1" runat="server" Text="+ 輸出空白表單" CssClass="detailsGrid_wrap_btn" OnClick="Button1_Click"/>
                             <asp:GridView ID="SWCDTL0302" runat="server" CssClass="detailsGrid_purple2_innerTable" AutoGenerateColumns="False"
                                 OnRowDataBound="SWCDTL0302_RowDataBound">
                                 <Columns>
@@ -641,6 +1062,10 @@
                                     </asp:TemplateField>
                                 </Columns>
                             </asp:GridView></td></tr>
+                    <tr><td style="background: #d9d9d9;">空拍影像套疊</td>
+                        <td class="detailsGrid_gray">
+							<!--<asp:HyperLink ID="OutLink1" runat="server" target="_blank" NavigateUrl="https://data.geodac.tw/TCGEO/" Text="空拍影像套疊" />-->
+							<asp:LinkButton id="LB1" OnClick="LB1_Click" runat="server" Text="空拍影像套疊"></asp:LinkButton></td></tr>
                     <tr><td style="background: #d9d9d9;">核備圖說變更</td>
                         <td class="detailsGrid_gray">
                             <asp:HyperLink ID="Link106" runat="server" target="_blank" /></td></tr>
@@ -712,7 +1137,7 @@
                 </div>
             </asp:Panel>
 
-            <asp:Panel ID="Area05" runat="server">
+            <asp:Panel ID="Area05" runat="server" CssClass="none">
                 <h2 class="detailsBar_title_finish">完工後水土保持設施檢查<img src="../images/btn/btn-close.png" alt="" class="open"></h2>
                 <div class="detailsGrid_wrap">
                     <table class="detailsGrid_orange">
@@ -764,9 +1189,48 @@
                     </table>
                 </div>
             </asp:Panel>
+               
+
+                
+
+
+
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
            
                         <div class="checklist-btn">
+                            <asp:Label ID="SendMsg" runat="server" Text="資料傳送中..." Style="display:none;"></asp:Label>
                             <asp:Button ID="SaveCase" runat="server" Text="存檔" OnClientClick="return chkInput('');" OnClick="SaveCase_Click" />&nbsp&nbsp
                             <asp:Button ID="GoHomePage" runat="server" Text="返回總表" OnClick="GoHomePage_Click" />
                         </div>
@@ -784,10 +1248,11 @@
             </div>--%>
         
             <div class="footer">
-                 <p><span class="span1">臺北市政府工務局大地工程處</span><br/>
+                <p><span class="span1">臺北市政府工務局大地工程處</span><br/>
                     <span class="span2">110臺北市信義區松德路300號3樓 　服務專線(02)27591109   臺北市民當家熱線1999</span><br/>
-                    <span class="span2">建議使用IE11.0(含)以上，Chrome或Firefox版本瀏覽器 資料更新：<asp:Label ID="ToDay" runat="server" Text=""/>　來訪人數：<asp:Label ID="Visitor" runat="server" Text=""/> </span><br/>
-                    <span class="span2">客服電話：02-27593001#3718 許先生 本系統由多維空間資訊有限公司開發維護 TEL:(02)27929328</span></p>
+                    <span class="span2">建議使用IE11(含)以上，Chrome或Firefox版本瀏覽器　<b>資料更新：</b><asp:Label ID="ToDay" runat="server" Text=""/>　<b>來訪人數：</b><asp:Label ID="Visitor" runat="server" Text=""/> </span><br/>
+                    <span class="span2"><b>客服電話：</b>02-27929328 陳小姐　<b>信箱：</b>tcge7@geovector.com.tw　本系統由多維空間資訊有限公司開發維護 TEL：(02)27929328</span><br/>
+			        <span class="span2">※為維護系統服務品質，本平台訂於每周三凌晨AM 4:00-6:30 進行系統維護更新，更新期間偶有瞬斷情形，敬請使用者避開該時段使用。謝謝！</span></p>
             </div>
 
         </div>
@@ -798,7 +1263,24 @@
         <script src="../js/inner.js"></script>
         <script src="../js/BaseNorl.js"></script>
         <script src="../js/allhref.js"></script>
-
+        <script src="../js/NorJs.js"></script>
+		<script src="../js/search.js"></script>
+		<script>
+			$(function (){
+				$(".select").select2({
+					language: 'zh-TW',
+					width: '20%',
+					maximumInputLength: 10,
+					minimumInputLength: 0,
+					tags: false,
+					placeholder: "請選擇",
+					allowClear : true,
+				});
+			})
+		</script>
+        <script type="text/javascript">
+            document.getElementById("TBSWC109o").value = document.getElementById("SWC109").value;
+        </script>
     </div>
     </form>
 </body>

@@ -1,21 +1,4 @@
-﻿<!--
-    Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
--->
-
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="SWCGOV003.aspx.cs" Inherits="SWCDOC_SWCBase001" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="SWCGOV003.aspx.cs" Inherits="SWCDOC_SWCBase001" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <!DOCTYPE html>
@@ -33,6 +16,7 @@
 
     <link rel="stylesheet" type="text/css" href="../css/reset.css"/>
     <link rel="stylesheet" type="text/css" href="../css/all.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iris.css?202208250511"/>
      <link rel="stylesheet" type="text/css" href="css/min.css"/>
     
     <script type="text/javascript">
@@ -90,9 +74,19 @@
                     <ul>
                         <li><a href="../sysFile/系統操作手冊.pdf" title="系統操作手冊" target="_blank">系統操作手冊</a></li>
                         <li>|</li>
-                        <li><a href="http://tcgeswc.taipei.gov.tw/index_new.aspx" title="水土保持計畫查詢系統" target="_blank">水土保持計畫查詢系統 </a></li>
-                        <asp:Panel ID="GoTslm" runat="server" Visible="true"><li>|&nbsp&nbsp&nbsp&nbsp<a href="http://172.28.100.55/TSLM" title="坡地管理資料庫" target="_blank">坡地管理資料庫</a></li></asp:Panel>
-                        <asp:Panel ID="TitleLink01" runat="server" Visible="false" CssClass="last-divLi"><li>|&nbsp&nbsp&nbsp&nbsp<a href="SWC000.aspx?ACT=LogOut" title="登出">登出</a></li></asp:Panel>
+                        <li><a href="https://swc.taipei/swcinfo" title="臺北市山坡地保育利用資訊查詢系統" target="_blank">臺北市山坡地保育利用資訊查詢系統 </a></li>
+                        <asp:Panel ID="GoTslm" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="https://tslm.swc.taipei/tslmwork" title="坡地管理資料庫" target="_blank">坡地管理資料庫</a></li></asp:Panel>
+                        <asp:Panel ID="TitleLink00" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="../SWCDOC/SWCBase001.aspx" title="帳號管理">帳號管理</a></li></asp:Panel>
+                        <asp:Panel ID="GOVMG" runat="server" Visible="false"><li class="flip">|&nbsp&nbsp&nbsp&nbsp<a href="#" title="系統管理">系統管理+</a>
+					<ul class="openlist" style="display: none;">
+					  <li><a href="../SWCRD/FPage001ALL.aspx" target="_blank">審查/檢查行事曆</a></li>
+					  <li><a href="../SWCTCGOV/SWCGOV001.aspx">防災事件通知</a></li>
+					  <li><a href="../SWCTCGOV/SWCGOV011.aspx">公佈欄</a></li>
+					  <li><a href="../SWCDOC/UserBoardList.aspx">留言版</a></li>
+					  <li><a href="http://tgeo.swc.taipei/">T-GEO空間地理資訊平台</a></li>
+					</ul></li></asp:Panel>
+                    <li>|</li>
+                        <li><a href="../SWCDOC/SWC000.aspx?ACT=LogOut" title="登出">登出</a></li>
                     </ul>
                 </div>
             </div>
@@ -109,97 +103,73 @@
                 <div class="applyGrid">
                     <h2 class="detailsBar_title_basic">基本資料</h2>
           
-                    <table>
-                    <tr><td>流水號</td>
+                    <table class="ph-table">
+                    <tr><th>流水號</th>
                         <td><asp:Label ID="TXTDENO" runat="server" /></td></tr>
-                    <tr><td>通知事件<span style="color: red;font-family:cursive;">＊</span></td>
+                    <tr><th>通知事件<span style="color: red;font-family:cursive;">＊</span></th>
                         <td><asp:Label ID="DDLDETYPE" runat="server" /></td></tr>
-                    <tr><td>案件狀態<span style="color: red;font-family:cursive;">＊</span></td>
+                    <tr><th>行政區<span style="color: red;font-family:cursive;">＊</span></th>
+                        <td><asp:Label ID="LBDISTRICT" runat="server" /></td></tr>
+                    <tr><th style="vertical-align:middle">水土保持申請案件<span style="color: red;font-family:cursive;">＊</span></th>
+                        <td><span class="ittype">案件狀態</span><asp:Label ID="LBSWCSTATUS" runat="server" />
+							<span class="ittype">通知對象</span><asp:Label ID="LBSENDMBR" runat="server" />
+							<span class="ittype">通知管道</span><asp:Label ID="LBSENDFUN" runat="server" /></td></tr>
+					<tr><th style="vertical-align:middle">水土保持違規案件<span style="color: red;font-family:cursive;">＊</span></th>
+                        <td><span class="ittype2">案件狀態</span><asp:Label ID="LBSWCSTATUS_ILG" runat="server" />
+							<span class="ittype2">通知對象</span><asp:Label ID="LBSENDMBR_ILG" runat="server" />
+							<span class="ittype2">通知管道</span><asp:Label ID="LBSENDFUN_ILG" runat="server" /></td></tr>
+					<tr class="none"><th>案件狀態<span style="color: red;font-family:cursive;">＊</span></th>
                         <td><asp:Label ID="CHKSWCSTATUS" runat="server" RepeatColumns="3" /></td></tr>
-                    <tr><td>通知對象<span style="color: red;font-family:cursive;">＊</span></td>
+                    <tr><th>通知統計</th>
+                        <td><div style="display:none;">
+                            發送筆數：<asp:Label ID="St05" runat="server"/></div>
+                            <span class="PH_list">事件筆數：<asp:Label ID="St06" runat="server" /></span>
+                            <span class="PH_list">已送出：<asp:Label ID="St03" runat="server" /></span>
+                            <span class="PH_list">未送出：<asp:Label ID="St04" runat="server" /></span>
+                            <span class="PH_list">已整備完成：<asp:Label ID="St01" runat="server" /></span>
+                            <span class="PH_list">整備中：<asp:Label ID="St02" runat="server" /></span></td></tr>
+                    <tr class="none"><th>通知對象<span style="color: red;font-family:cursive;">＊</span></th>
                         <td><asp:Label ID="CHKSENDMBR" runat="server" RepeatColumns="3" /></td></tr>
-                    <tr><td>通知管道<span style="color: red;font-family:cursive;">＊</span></td>
+                    <tr class="none"><th>通知管道<span style="color: red;font-family:cursive;">＊</span></th>
                         <td><asp:Label ID="CHKSENDFUN" runat="server" RepeatColumns="3" /></td></tr>
-                    <tr><td>事件名稱<span style="color: red;font-family:cursive;">＊</span></td>
+                    <tr><th>事件名稱<span style="color: red;font-family:cursive;">＊</span></th>
                         <td><asp:Label ID="TXTDENAME" runat="server" MaxLength="50" style="width:200px;"/></td></tr>
-                    </table>
-                    <table class="cgPassn">
-                    <tr><td>通知內容<span style="color: red;font-family:cursive;">＊</span></td>
+                    <tr><th>通知內容<span style="color: red;font-family:cursive;">＊</span></th>
                         <td><asp:Label ID="TXTDENTTEXT" runat="server" TextMode="MultiLine" Height="100" Width="100%" onkeyup="textcount(this,'TXTDENTTEXT_count','300');" /></td></tr>
                         
-          </table>
-        </div>
+                    </table>
+                </div><br/>
+            <br />
+           
+                <div  class="skybluebtn">
+                    <asp:ImageButton ID="ShowRed" runat="server" OnClick="ShowRed_Click" title="未送出" ImageUrl="../images/btn/notsent-01.png" />
+                    
+                    <div style="margin-bottom:1em;"></div>
 
-            <br/>
-
-
-            
-   <div  class="skybluebtn"><a href=".html"><img src="img/btn/btn-81.png" /></a>
-      <div style="margin-bottom:1em;"></div>
-        <table class="ADDGridView AutoNewLine" cellpadding="0" style="border-collapse:collapse; width:100%; font-family:'微軟正黑體'">
-     <tr>
-       <td colspan="7" style="background-color:#a0d8ef;color:#000; font-size:19px; font-weight:bold;">發送詳情</td>    
-      </tr>
-      <tr>
-       <th>水保案件編號</th>
-       <th>案件名稱</th>
-       <th>義務人</th>
-       <th>變更技師</th>
-       <th>未送出</th>
-       <th>連結表單</th>
-      </tr>
-      <tr>
-       <td>DP1060405001</td>
-       <td>山竹颱風</td>
-       <td>陳小明</td>
-       <td>王包子</td>
-       <td><img src="../images/icon/red.png" width="42" height="42"/></td>
-       <td><input  type="button" value="連結表單" onclick="location.href=''">
-        </td>
-       </tr>
-       <tr>
-       <td>DP1060405001</td>
-       <td>山竹颱風</td>
-       <td>陳小明</td>
-       <td>王包子</td>
-       <td><img src="../images/icon/red.png" width="42" height="42" /></td>
-       <td><input type="submit" value="連結表單" onclick="location.href=''">
-        </td>
-       </tr>
-       <tr>
-       <td>DP1060405001</td>
-       <td>山竹颱風</td>
-       <td>陳小明</td>
-       <td>王包子</td>
-       <td><img src="../images/icon/red.png" width="42" height="42" /></td>
-       <td><input type="submit" value="連結表單" onclick="location.href=''">
-        </td>
-       </tr>
-       <tr>
-       <td>DP1060405001</td>
-       <td>山竹颱風</td>
-       <td>陳小明</td>
-       <td>王包子</td>
-       <td><img src="../images/icon/red.png" width="42" height="42" /></td>
-       <td><input type="submit" value="連結表單" onclick="location.href=''">
-        </td>
-       </tr>
-       <tr>
-       <td>DP1060405001</td>
-       <td>山竹颱風</td>
-       <td>陳小明</td>
-       <td>王包子</td>
-       <td><img src="../images/icon/red.png" width="42" height="42" /></td>
-       <td><input type="submit" value="連結表單" onclick="location.href=''">
-        </td>
-       </tr>
-      </table>
-      
-
- </div>
+                        <div class="TFtitle">發送詳情</div>
+                        <asp:GridView ID="SWCDTL04" runat="server" CssClass="TFbase AutoNewLine" AutoGenerateColumns="False" PagerStyle-CssClass="pgr"
+                            PageSize="20" AllowPaging="true"
+                            OnPageIndexChanging="SWCDTL04_PageIndexChanging" OnPageIndexChanged="SWCDTL04_PageIndexChanged" >
+                            <Columns>
+                                <asp:BoundField DataField="DTLD001" HeaderText="水保案件編號" />
+                                <asp:BoundField DataField="DTLD002" HeaderText="案件名稱" HeaderStyle-Width="35%"/>
+                                <asp:BoundField DataField="DTLD003" HeaderText="義務人" />
+                                <asp:BoundField DataField="DTLD004" HeaderText="監造技師" />
+                                <asp:ImageField DataImageUrlField="DTLD005" HeaderText="未送出" />
+                                <asp:TemplateField ShowHeader="False">
+                                    <ItemTemplate>
+                                        <asp:Button ID="ButtonDTL04" runat="server" CommandArgument='<%# Eval("DTLD001") %>' Text="連結表單" OnClick="ButtonDTL04_Click" />
+                                        <asp:HiddenField ID="HiddenField1" runat="server" Value='<%# Eval("DTLD006") %>' />
+                                        <asp:HiddenField ID="HiddenField2" runat="server" Value='<%# Eval("DTLD007") %>' />
+                                        <asp:HiddenField ID="HiddenField3" runat="server" Value='<%# Eval("DTLD005") %>' />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                            </Columns>
+                        </asp:GridView>
+                    </div>
 
 
-            <div class="checklist-btn">
+            <div class="btncenter">
                 <asp:Button ID="GoHomePage" runat="server" Text="返回瀏覽案件" OnClick="GoHomePage_Click" />
             </div>
         </div>
@@ -216,10 +186,11 @@
             </div>--%>
 
             <div class="footer">
-                 <p><span class="span1">臺北市政府工務局大地工程處</span><br/>
-                    <span class="span2">110臺北市信義區松德路300號3樓 　服務專線(02)27591109   臺北市民當家熱線1999</span><br/>
-                    <span class="span2">建議使用IE11(含)以上，Chrome或Firefox版本瀏覽器 資料更新：<asp:Label ID="ToDay" runat="server" Text=""/>　來訪人數：<asp:Label ID="Visitor" runat="server" Text=""/> </span><br/>
-                    <span class="span2">客服電話：02-27593001#3718 許先生 本系統由多維空間資訊有限公司開發維護 TEL:(02)27929328</span></p>
+                <p><span class="span1">臺北市政府工務局大地工程處</span><br/>
+                     <span class="span2">110臺北市信義區松德路300號3樓 　服務專線(02)27591109   臺北市民當家熱線1999</span><br/>
+                      <span class="span2">建議使用IE11(含)以上，Chrome或Firefox版本瀏覽器　<b>資料更新：</b><asp:Label ID="ToDay" runat="server" Text=""/>　<b>來訪人數：</b><asp:Label ID="Visitor" runat="server" Text=""/> </span><br/>
+                      <span class="span2"><b>客服電話：</b>02-27929328 陳小姐　<b>信箱：</b>tcge7@geovector.com.tw　本系統由多維空間資訊有限公司開發維護 TEL：(02)27929328</span><br/>
+			          <span class="span2">※為維護系統服務品質，本平台訂於每周三凌晨AM 4:00-6:30 進行系統維護更新，更新期間偶有瞬斷情形，敬請使用者避開該時段使用。謝謝！</span></p>
             </div>
 
         <asp:Literal ID="error_msg" runat="server"></asp:Literal>

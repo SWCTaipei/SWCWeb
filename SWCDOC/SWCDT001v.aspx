@@ -1,21 +1,4 @@
-﻿<!--
-    Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
--->
-
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="SWCDT001v.aspx.cs" Inherits="SWCDOC_SWCDT001" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="SWCDT001v.aspx.cs" Inherits="SWCDOC_SWCDT001" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <!DOCTYPE html>
@@ -32,6 +15,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge, chrome=1">
     <link rel="stylesheet" type="text/css" href="../css/reset.css"/>
     <link rel="stylesheet" type="text/css" href="../css/all.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iris.css"/>
     <script type="text/javascript">
         function textcount(txtobj, labobj, txtcount) {
             var textboxtemp = txtobj;
@@ -89,8 +73,8 @@
             <ul>
                 <li><a href="../sysFile/系統操作手冊.pdf" title="系統操作手冊" target="_blank">系統操作手冊</a></li>
                 <li>|</li>
-                <li><a href="http://tcgeswc.taipei.gov.tw/index_new.aspx" title="水土保持計畫查詢系統" target="_blank">水土保持計畫查詢系統 </a></li>
-                <asp:Panel ID="GoTslm" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="http://172.28.100.55/TSLM" title="坡地管理資料庫" target="_blank">坡地管理資料庫</a></li></asp:Panel>
+                <li><a href="https://swc.taipei/swcinfo/" title="臺北市山坡地保育利用資訊查詢系統" target="_blank">臺北市山坡地保育利用資訊查詢系統 </a></li>
+                <asp:Panel ID="GoTslm" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="https://tslm.swc.taipei/tslmwork/" title="坡地管理資料庫" target="_blank">坡地管理資料庫</a></li></asp:Panel>
                 <asp:Panel ID="TitleLink00" runat="server" Visible="false"><li>|&nbsp&nbsp&nbsp&nbsp<a href="SWCBase001.aspx" title="帳號管理">帳號管理</a></li></asp:Panel>
                 <li>|</li>
                 <li><a href="SWC000.aspx?ACT=LogOut" title="登出">登出</a></li>
@@ -109,6 +93,9 @@
         <div class="content-s">
             <div class="review form">
                 <h1>審查表單<br/><br/></h1>
+                 <div class="detailsMenu-btn">
+                    <asp:ImageButton ID="OutPdf" runat="server" title="輸出PDF" ImageUrl="../images/btn/icon_exportpdf.png" OnClick="OutPdf_Click" Visible="true" target="_blank" />
+                </div>
                 <table class="review-out">
                     <tr><td>審查表單編號</td>
                         <td><asp:Label ID="LBDTL001" runat="server"/>
@@ -128,6 +115,8 @@
                     <td><asp:Label ID="LBSWC005" runat="server"/></td></tr>
                 <tr><td>會議次別</td>
                     <td><asp:Label ID="DDLDTL006" runat="server" Height="25px"/></td></tr>
+				<tr><td>重新上傳原因</td>
+					<td><asp:Label ID="TXTDTL034" runat="server" width="100%" MaxLength="100" /></td></tr>
                 <tr><td>會議時間</td>
                     <td><asp:Label ID="TXTDTL007" runat="server" width="120px"></asp:Label></td></tr>
                 <tr><td>會議地點</td>
@@ -140,14 +129,8 @@
                     <td><asp:Label ID="TXTDTL011" runat="server" width="100%" MaxLength="20" /></td></tr>
                 <tr><td>記錄人員姓名</td>
                     <td><asp:Label ID="TXTDTL012" runat="server" width="100%" MaxLength="20" /></td></tr>
-                <tr><td>報告事項之案由及決定</td>
-                    <td><asp:Label ID="TXTDTL013" runat="server" /></td></tr>
-                <tr><td>討論事項之案由及決議</td>
-                    <td><asp:Label ID="TXTDTL014" runat="server"/></td></tr>
-                <tr><td>臨時動議之案由及決議</td>
-                    <td><asp:Label ID="TXTDTL015" runat="server" /></td></tr>
-                <tr><td>其他應行記載之事項</td>
-                    <td><asp:Label ID="TXTDTL016" runat="server" /></td></tr></table>
+                <tr><td>會議結論</td>
+                    <td><asp:Label ID="TXTDTL013" runat="server" /></td></tr></table>
 
                 <table class="review-imgUpload">
                 <tr><td>相關單位及人員簽名<br/><br/>
@@ -158,7 +141,19 @@
                 
                 <tr><td colspan="2"><asp:Label ID="LBSWC005_2" runat="server"/>審查意見</td></tr>
                 <tr><td colspan="2">審查意見<br/><br/>
-                        <asp:Label ID="TXTDTL019" runat="server" /></td></tr></table>
+                    <asp:Label ID="LBReView" runat="server" />
+                    <asp:GridView ID="GVReViewList" runat="server" CssClass="rvfrom AutoNewLine" AutoGenerateColumns="False">
+                            <Columns>
+                                <asp:BoundField DataField="DataId" HeaderText="序號" />
+                                <asp:BoundField DataField="ShortText" HeaderText="審查意見摘要" />
+                                <asp:BoundField DataField="SaveTime" HeaderText="存檔日期" />
+                                <asp:TemplateField ShowHeader="False">
+                                    <ItemTemplate>
+                                        <asp:Button ID="ButtonDTL01" runat="server" CommandArgument='<%# Eval("DataId") %>' Text="詳情" Visible="false" />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                            </Columns>
+                    </asp:GridView></td></tr></table>
 
                 <table class="review-excelUpload">
                 <tr><td style="width:250px;">查核表上傳</td>
@@ -253,10 +248,11 @@
             </div>--%>
 
             <div class="footer">
-                 <p><span class="span1">臺北市政府工務局大地工程處</span><br/>
-                           <span class="span2">110臺北市信義區松德路300號3樓 　服務專線(02)27591109   臺北市民當家熱線1999</span><br/>
-                            <span class="span2">建議使用IE11(含)以上，Chrome或Firefox版本瀏覽器 資料更新：<asp:Label ID="ToDay" runat="server" Text=""/>　來訪人數：<asp:Label ID="Visitor" runat="server" Text=""/> </span><br/>
-                           <span class="span2">客服電話：02-27593001#3718 許先生 本系統由多維空間資訊有限公司開發維護 TEL:(02)27929328</span></p>
+              <p><span class="span1">臺北市政府工務局大地工程處</span><br/>
+                    <span class="span2">110臺北市信義區松德路300號3樓 　服務專線(02)27591109   臺北市民當家熱線1999</span><br/>
+                    <span class="span2">建議使用IE11(含)以上，Chrome或Firefox版本瀏覽器　<b>資料更新：</b><asp:Label ID="ToDay" runat="server" Text=""/>　<b>來訪人數：</b><asp:Label ID="Visitor" runat="server" Text=""/> </span><br/>
+                    <span class="span2"><b>客服電話：</b>02-27929328 陳小姐　<b>信箱：</b>tcge7@geovector.com.tw　本系統由多維空間資訊有限公司開發維護 TEL：(02)27929328</span><br/>
+			        <span class="span2">※為維護系統服務品質，本平台訂於每周三凌晨AM 4:00-6:30 進行系統維護更新，更新期間偶有瞬斷情形，敬請使用者避開該時段使用。謝謝！</span></p>
             </div>
 
         </div>

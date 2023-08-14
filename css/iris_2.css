@@ -1,0 +1,15 @@
+﻿@charset "utf-8";
+/* CSS Document */
+
+img
+{
+height: auto;
+max-width: 100%;
+}
+
+.center{
+	max-width:1200px;
+	width:100%;
+	margin:0 auto;
+	text-align:center;
+}

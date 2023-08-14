@@ -1,23 +1,7 @@
-﻿/*  Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
@@ -40,6 +24,7 @@ public partial class SWCDOC_SWCDT006 : System.Web.UI.Page
 
         string ssJobTitle = Session["JobTitle"] + "";
         GBClass001 SBApp = new GBClass001();
+        Class20 C20 = new Class20();
 
         if (rCaseId == "")
         {
@@ -48,6 +33,7 @@ public partial class SWCDOC_SWCDT006 : System.Web.UI.Page
 
         if (!IsPostBack)
         {
+            C20.swcLogRC("SWCDT006v", "完工檢查紀錄表", "詳情", "瀏覽", rCaseId + "," + rDTLId);
             Data2Page(rCaseId, rDTLId);
         }
         
@@ -170,6 +156,8 @@ public partial class SWCDOC_SWCDT006 : System.Web.UI.Page
                     string tDTLF040 = readeDTL["DTLF040"] + "";
                     string tDTLF041 = readeDTL["DTLF041"] + "";
                     string tDTLF042 = readeDTL["DTLF042"] + "";
+                    string tDTLF043 = readeDTL["DTLF043"] + "";
+                    string tDTLF044 = readeDTL["DTLF044"] + "";
 
                     string tLOCKDATE = readeDTL["savedate"] + "";
 
@@ -198,10 +186,11 @@ public partial class SWCDOC_SWCDT006 : System.Web.UI.Page
                     TXTDTL040.Text = tDTLF040;
                     TXTDTL041.Text = tDTLF041;
                     TXTDTL042.Text = tDTLF042;
+                    SwcUpLoadFilePath = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/SwcCaseFile/";
 
-                    //檔案類處理
-                    string[] arrayFileNameLink = new string[] { tDTLF024, tDTLF042 };
-                    System.Web.UI.WebControls.HyperLink[] arrayLinkAppobj = new System.Web.UI.WebControls.HyperLink[] { Link024, Link042 };
+                    #region
+                    string[] arrayFileNameLink = new string[] { tDTLF024, tDTLF042, tDTLF043, tDTLF044 };
+                    System.Web.UI.WebControls.HyperLink[] arrayLinkAppobj = new System.Web.UI.WebControls.HyperLink[] { Link024, Link042, Link003, Link008 };
 
                     for (int i = 0; i < arrayFileNameLink.Length; i++)
                     {
@@ -209,18 +198,15 @@ public partial class SWCDOC_SWCDT006 : System.Web.UI.Page
                         System.Web.UI.WebControls.HyperLink FileLinkObj = arrayLinkAppobj[i];
 
                         FileLinkObj.Visible = false;
-                        if (strFileName == "")
+                        if (strFileName == "") { } else
                         {
-                        }
-                        else
-                        {
-                            string tempLinkPateh = SwcUpLoadFilePath + v + "/" + strFileName;
+                            string tempLinkPateh = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/SwcCaseFile/" + v + "/" + strFileName;
                             FileLinkObj.Text = strFileName;
                             FileLinkObj.NavigateUrl = tempLinkPateh;
                             FileLinkObj.Visible = true;
                         }
-
                     }
+                    #endregion
 
                     //點擊放大圖片類處理
                     string[] arrayFileName = new string[] { tDTLF029, tDTLF030, tDTLF032, tDTLF034, tDTLF036, tDTLF038, tDTLF040 };
@@ -243,8 +229,8 @@ public partial class SWCDOC_SWCDT006 : System.Web.UI.Page
                     }
                 }
             }
-
         }
+        SetDtlData(v, v2);
     }
     
     private void UpLoadTempFileMoveChk(string CaseId)
@@ -271,7 +257,6 @@ public partial class SWCDOC_SWCDT006 : System.Web.UI.Page
             Directory.CreateDirectory(SwcCaseFolderPath + CaseId);
         }
 
-
         for (int i = 0; i < arryUpLoadField.Length; i++)
         {
             csUpLoadField = arryUpLoadField[i];
@@ -292,11 +277,8 @@ public partial class SWCDOC_SWCDT006 : System.Web.UI.Page
                     }
                     File.Move(TempFilePath, SwcCaseFilePath);
                 }
-
             }
         }
-
-
     }
 
     private string GetDTLFID(string v)
@@ -337,7 +319,7 @@ public partial class SWCDOC_SWCDT006 : System.Web.UI.Page
     protected void GoHomePage_Click(object sender, EventArgs e)
     {
         string vCaseID = Request.QueryString["SWCNO"] + "";
-        Response.Redirect("SWC002.aspx?CaseId=" + vCaseID);
+        Response.Redirect("SWC003.aspx?SWCNO=" + vCaseID);
     }
 
     private void FileUpLoadApp(string ChkType, FileUpload UpLoadBar, TextBox UpLoadText, string UpLoadStr, string UpLoadType, System.Web.UI.WebControls.Image UpLoadView, HyperLink UpLoadLink)
@@ -480,6 +462,309 @@ public partial class SWCDOC_SWCDT006 : System.Web.UI.Page
 
             image.Dispose();
         }
+    }
+    private void SetDtlData(string rSWCNO, string v2)
+    {
+        GBClass001 SBApp = new GBClass001();
+        bool bb = true;
+
+        ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
+        //分段驗收核定項目
+        using (SqlConnection ItemConn = new SqlConnection(connectionString.ConnectionString))
+        {
+            ItemConn.Open();
+
+            int ni = 0;
+
+            string strSQLRV = "select * from SwcDocItem";
+            strSQLRV = strSQLRV + " Where SWC000 = '" + rSWCNO + "' ";
+            strSQLRV = strSQLRV + " order by SDI001 ";
+
+            SqlDataReader readerItem;
+            SqlCommand objCmdItem = new SqlCommand(strSQLRV, ItemConn);
+            readerItem = objCmdItem.ExecuteReader();
+
+            while (readerItem.Read())
+            {
+                bb = false;
+                string sSDI001 = readerItem["SDI001"] + "";
+                string sSDI002 = readerItem["SDI002"] + "";
+                string sSDI003 = readerItem["SDI003"] + "";
+                string sSDI004 = readerItem["SDI004"] + "";
+                string sSDI005 = readerItem["SDI005"] + "";
+                string sSDI006 = readerItem["SDI006"] + "";
+                string sSDI006_1 = readerItem["SDI006_1"] + "";
+                string sSDI006D = readerItem["SDI006D"] + "";
+                string sSDI007 = readerItem["SDI007"] + "";
+                string sSDI008 = readerItem["SDI008"] + "";
+                string sSDI009 = readerItem["SDI009"] + "";
+                string sSDI010 = readerItem["SDI010"] + "";
+                string sSDI011 = readerItem["SDI011"] + "";
+                string sSDI012 = readerItem["SDI012"] + "";
+                string sSDI012_1 = readerItem["SDI012_1"] + "";
+                string sSDI012D = readerItem["SDI012D"] + "";
+                string sSDI013 = readerItem["SDI013"] + "";
+                string sSDI013_1 = readerItem["SDI013_1"] + "";
+                string sSDI014 = readerItem["SDI014"] + "";
+                string sSDI014_1 = readerItem["SDI014_1"] + "";
+                string sSDI015 = readerItem["SDI015"] + "";
+                string sSDI016 = readerItem["SDI016"] + "";
+                string sSDI017 = readerItem["SDI017"] + "";
+                string sSDI018 = readerItem["SDI018"] + "";
+                string sSDI019 = readerItem["SDI019"] + "";
+
+                DataTable tbSDIVS = (DataTable)ViewState["SwcDocItem"];
+
+                if (tbSDIVS == null)
+                {
+                    DataTable SDITB = new DataTable();
+
+                    SDITB.Columns.Add(new DataColumn("SDIFDNI", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD001", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD002", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD003", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD004", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD005", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD006", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD006D", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD007", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD008", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD009", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD010", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD011", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD012", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD012_1", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD012D", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD013", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD013_1", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD014", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD014_1", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD015", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD016", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD017", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD018", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD019", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDICHK001", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDICHK001D", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDICHK002", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDICHK004", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDICHK004D", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDICHK005", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDICHK006", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDICHK007", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDICHK008", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDICHK009", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDICHK010", typeof(string)));
+
+                    ViewState["SwcDocItem"] = SDITB;
+                    tbSDIVS = (DataTable)ViewState["SwcDocItem"];
+                }
+                if (sSDI017 != "完成") sSDI017 = "未完成";
+
+                string sSIC002 = "-";
+                string sSIC007 = "-";
+
+                if (sSDI006D == "")
+                    if (sSDI019 == "是")
+                        //sSDI006D = sSDI006 + "~" + sSDI006_1 + sSDI007;
+						sSDI006D = sSDI006 + sSDI007;
+					else
+                        sSDI006D = sSDI006 + sSDI007;
+                else
+                    //if (sSDI019 == "是") { var a = sSDI006D.Split('~'); sSDI006D = a[0] + "~" + a[1]; }
+                    sSDI006D = sSDI006D;
+                //if (sSDI012D.Trim() == "")
+                if(sSDI005 == "其他")
+				{
+					sSDI012D = sSDI012D;
+				}
+				else{
+					if (sSDI019 == "是")
+						switch (sSDI011) { case "1": sSDI012D = sSDI012 + "~" + sSDI012_1 + sSDI015; break; case "2": sSDI012D = sSDI012 + "~" + sSDI012_1 + "×" + sSDI013 + "~" + sSDI013_1 + sSDI015; break; case "3": sSDI012D = sSDI012 + "~" + sSDI012_1 + "×" + sSDI013 + "~" + sSDI013_1 + "×" + sSDI014 + "~" + sSDI014_1 + sSDI015; break; }
+					else
+						switch (sSDI011) { case "1": sSDI012D = sSDI012 + sSDI015; break; case "2": sSDI012D = sSDI012 + "×" + sSDI013 + sSDI015; break; case "3": sSDI012D = sSDI012 + "×" + sSDI013 + "×" + sSDI014 + sSDI015; break; }
+				}
+
+                DataRow SDITBRow = tbSDIVS.NewRow();
+
+                SDITBRow["SDIFDNI"] = ni.ToString();
+                SDITBRow["SDIFD001"] = sSDI001;
+                SDITBRow["SDIFD002"] = sSDI002;
+                SDITBRow["SDIFD003"] = sSDI003;
+                SDITBRow["SDIFD004"] = sSDI004;
+                SDITBRow["SDIFD005"] = sSDI005;
+                SDITBRow["SDIFD006"] = sSDI006;
+                SDITBRow["SDIFD006D"] = sSDI006D;
+                SDITBRow["SDIFD007"] = sSDI007;
+                SDITBRow["SDIFD008"] = sSDI008;
+                SDITBRow["SDIFD009"] = sSDI009;
+                SDITBRow["SDIFD010"] = sSDI010;
+                SDITBRow["SDIFD011"] = sSDI011;
+                SDITBRow["SDIFD012"] = sSDI012;
+                SDITBRow["SDIFD012D"] = sSDI012D;
+                SDITBRow["SDIFD013"] = sSDI013;
+                SDITBRow["SDIFD014"] = sSDI014;
+                SDITBRow["SDIFD015"] = sSDI015;
+                SDITBRow["SDIFD016"] = sSDI016;
+                SDITBRow["SDIFD017"] = sSDI017;
+                SDITBRow["SDIFD018"] = sSDI018;
+                SDITBRow["SDIFD019"] = sSDI019;
+                SDITBRow["SDICHK001"] = "";
+                SDITBRow["SDICHK001D"] = sSDI006D;
+                SDITBRow["SDICHK002"] = "";// "-";
+                SDITBRow["SDICHK004"] = "";
+                SDITBRow["SDICHK004D"] = sSDI012D;
+                SDITBRow["SDICHK005"] = "";
+                SDITBRow["SDICHK006"] = "";
+                SDITBRow["SDICHK007"] = "";// "-";
+                SDITBRow["SDICHK008"] = "";// "-";
+                SDITBRow["SDICHK009"] = sSDI017;
+                SDITBRow["SDICHK010"] = sSDI018;
+
+                tbSDIVS.Rows.Add(SDITBRow);
+
+                //DB
+                if (v2 == "AddNew")
+                {
+                    using (SqlConnection ItemConnS = new SqlConnection(connectionString.ConnectionString))
+                    {
+                        ItemConnS.Open();
+
+                        string strSQLRVS = "select MAX(DTLC001) as MAXKEY from SWCDTL03";
+                        strSQLRVS += " Where SWC000 = '" + rSWCNO + "' ";
+                        strSQLRVS += "   AND DATALOCK='Y' ";
+
+                        SqlDataReader readerItemS;
+                        SqlCommand objCmdItemS = new SqlCommand(strSQLRVS, ItemConnS);
+                        readerItemS = objCmdItemS.ExecuteReader();
+
+                        while (readerItemS.Read()) { v2 = readerItemS["MAXKEY"] + ""; }
+                    }
+
+                }
+
+                using (SqlConnection ItemConnS = new SqlConnection(connectionString.ConnectionString))
+                {
+                    ItemConnS.Open();
+
+                    string tSIC01 = "";
+                    string tSIC01_1 = "";
+                    string tSIC01D = "";
+                    string tSIC02 = "";
+                    string tSIC02_1 = "";
+                    string tSIC03 = "";
+                    string tSIC04 = "";
+                    string tSIC04_1 = "";
+                    string tSIC04D = "";
+                    string tSIC05 = "";
+                    string tSIC05_1 = "";
+                    string tSIC06 = "";
+                    string tSIC06_1 = "";
+                    string tSIC07 = "";
+                    string tSIC07_1 = "";
+                    string tSIC08 = "";
+                    string tSIC09 = "未完成";
+                    string tSIC10 = "";
+
+                    string strSQLRVS = "select * from SwcItemChk";
+                    strSQLRVS += " Where SWC000 = '" + rSWCNO + "' ";
+                    strSQLRVS += "   and DTLRPNO = '" + v2 + "' ";
+                    strSQLRVS += "   and SDI001 = '" + sSDI001 + "' ";
+
+                    SqlDataReader readerItemS;
+                    SqlCommand objCmdItemS = new SqlCommand(strSQLRVS, ItemConnS);
+                    readerItemS = objCmdItemS.ExecuteReader();
+
+                    while (readerItemS.Read())
+                    {
+                        tSIC01 = readerItemS["SIC01"] + "";
+                        tSIC01_1 = readerItemS["SIC01_1"] + "";
+                        tSIC01D = readerItemS["SIC01D"] + "";
+                        tSIC02 = readerItemS["SIC02"] + "";
+                        tSIC02_1 = readerItemS["SIC02_1"] + "";
+                        tSIC03 = readerItemS["SIC03"] + "";
+                        tSIC04 = readerItemS["SIC04"] + "";
+                        tSIC04_1 = readerItemS["SIC04_1"] + "";
+                        tSIC04D = readerItemS["SIC04D"] + "";
+                        tSIC05 = readerItemS["SIC05"] + "";
+                        tSIC05_1 = readerItemS["SIC05_1"] + "";
+                        tSIC06 = readerItemS["SIC06"] + "";
+                        tSIC06_1 = readerItemS["SIC06_1"] + "";
+                        tSIC07 = readerItemS["SIC07"] + "";
+                        tSIC07_1 = readerItemS["SIC07_1"] + "";
+                        tSIC08 = readerItemS["SIC08"] + "";
+                        tSIC09 = readerItemS["SIC09"] + "";
+                        tSIC10 = readerItemS["SIC10"] + "";
+
+                        if (tSIC01D.Trim() == "")
+                            if (sSDI019 == "是")
+                                //tSIC01D = tSIC01 + "~" + tSIC01_1 + sSDI007;
+								tSIC01D = tSIC01 + sSDI007;
+							else
+                                tSIC01D = tSIC01 + sSDI007;
+                        if (tSIC04D.Trim() == "")
+                        {
+                            if (sSDI019 == "是")
+                                switch (tSIC03) { case "1": tSIC04D = tSIC04 + "~" + tSIC04_1 + sSDI015; break; case "2": tSIC04D = tSIC04 + "~" + tSIC04_1 + "×" + tSIC05 + "~" + tSIC05_1 + sSDI015; break; case "3": tSIC04D = tSIC04 + "~" + tSIC04_1 + "×" + tSIC05 + "~" + tSIC05_1 + "×" + tSIC06 + "~" + tSIC06_1 + sSDI015; break; }
+                            else
+                                switch (tSIC03) { case "1": tSIC04D = tSIC04 + sSDI015; break; case "2": tSIC04D = tSIC04 + "×" + tSIC05 + sSDI015; break; case "3": tSIC04D = tSIC04 + "×" + tSIC05 + "×" + tSIC06 + sSDI015; break; }
+                        }
+					}
+                    DataRow SDITBRow2 = tbSDIVS.NewRow();
+
+                    SDITBRow2["SDIFDNI"] = ni.ToString();
+                    SDITBRow2["SDIFD001"] = sSDI001;
+                    SDITBRow2["SDIFD002"] = sSDI002;
+                    SDITBRow2["SDIFD003"] = "";
+                    SDITBRow2["SDIFD004"] = "";
+                    SDITBRow2["SDIFD005"] = "";
+                    SDITBRow2["SDIFD006"] = sSDI006;
+                    SDITBRow2["SDIFD006D"] = sSDI006D;
+                    SDITBRow2["SDIFD007"] = sSDI007;
+                    SDITBRow2["SDIFD008"] = sSDI008;
+                    SDITBRow2["SDIFD009"] = sSDI009;
+                    SDITBRow2["SDIFD010"] = sSDI010;
+                    SDITBRow2["SDIFD011"] = sSDI011;
+                    SDITBRow2["SDIFD012"] = sSDI012;
+                    SDITBRow2["SDIFD012D"] = sSDI012D;
+                    SDITBRow2["SDIFD013"] = sSDI013;
+                    SDITBRow2["SDIFD014"] = sSDI014;
+                    SDITBRow2["SDIFD015"] = sSDI015;
+                    SDITBRow2["SDIFD016"] = sSDI016;
+                    SDITBRow2["SDIFD017"] = "";
+                    SDITBRow2["SDIFD018"] = tSIC10;
+                    SDITBRow2["SDIFD019"] = sSDI019;
+                    SDITBRow2["SDICHK001"] = tSIC01;
+                    SDITBRow2["SDICHK001D"] = tSIC01D; 
+                    if (sSDI019 == "是")
+                        SDITBRow2["SDICHK002"] = tSIC02 + "％"; //+ tSIC02_1 + "％";
+                    else
+                        SDITBRow2["SDICHK002"] = tSIC02 + "％";
+                    SDITBRow2["SDICHK004"] = tSIC04;
+                    SDITBRow2["SDICHK004D"] = tSIC04D;
+                    SDITBRow2["SDICHK005"] = tSIC05;
+                    SDITBRow2["SDICHK006"] = tSIC06;
+                    if (sSDI019 == "是")
+                        SDITBRow2["SDICHK007"] = tSIC07 + "％" + tSIC07_1 + "％";
+                    else
+                        SDITBRow2["SDICHK007"] = tSIC07 + "％";
+                    SDITBRow2["SDICHK008"] = SBApp.DateView(tSIC08, "04");
+                    SDITBRow2["SDICHK009"] = tSIC09.Trim();
+                    SDITBRow2["SDICHK010"] = tSIC10.Trim();
+
+                    tbSDIVS.Rows.Add(SDITBRow2);
+                }
+
+                ViewState["SwcDocItem"] = tbSDIVS;
+
+                SDIList.DataSource = tbSDIVS;
+                SDIList.DataBind();
+
+                //TXTSDINI.Text = ni.ToString();
+            }
+            readerItem.Close();
+        }
+        GVMSG.Visible = bb;
     }
     private void DeleteUpLoadFile(string DelType, TextBox ImgText, System.Web.UI.WebControls.Image ImgView, HyperLink FileLink, string DelFieldValue, string AspxFeildId, int NoneWidth, int NoneHeight)
     {

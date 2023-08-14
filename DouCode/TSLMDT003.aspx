@@ -1,21 +1,4 @@
-﻿<!--
-    Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
--->
-
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="TSLMDT003.aspx.cs" Inherits="SWCDOC_SWCDT003" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="TSLMDT003.aspx.cs" Inherits="SWCDOC_SWCDT003" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <!DOCTYPE html>
@@ -97,9 +80,7 @@
 				</div>--%>
             </div>
             <div style="margin:0 auto;background:#6c381b;height:10px;width:100%;min-width: 1200px;"></div>
-        </div>
-
-
+        </div>
         <div class="content-s">
             <div class="checkRecord form">
                 <h1>水土保持施工監督檢查紀錄<br/><br/></h1>
@@ -299,8 +280,7 @@
                 </div>
 				<P></P>
             </div>
-        </div>
-
+        </div>
 
     </div>
         

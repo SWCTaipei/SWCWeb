@@ -1,21 +1,4 @@
-﻿/*  Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
@@ -33,40 +16,92 @@ using System.Net;
 public partial class SWCDOC_SWC001 : System.Web.UI.Page
 {
     int ChkOverDay = 6;
+    protected void Page_Error(object sender, EventArgs e)
+    {
+        Exception objErr = Server.GetLastError().GetBaseException(); // 獲取錯誤
+        string errUrl = Request.Url.ToString();
+        string errMsg = objErr.Message.ToString();
+        Class1 C1 = new Class1();
+        string[] mailTo = new string[] { "tcge7@geovector.com.tw" };
+        string ssUserName = Session["NAME"] + "";
+
+        string mailText = "使用者：" + ssUserName + "<br/>";
+        mailText += "時間：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "<br/>";
+        mailText += "url：" + errUrl + "<br/>";
+        mailText += "錯誤訊息：" + errMsg + "<br/>";
+
+        C1.Mail_Send(mailTo, "臺北市水土保持書件管理平台-系統錯誤通知", mailText);
+        Response.Redirect("~/errPage/500.htm");
+        Server.ClearError();
+    }
     protected void Page_Load(object sender, EventArgs e)
     {
         string ssUserType = Session["UserType"] + "";
         string ssUserID = Session["ID"] + "";
         string ssUserName = Session["NAME"] + "";
         string ssJobTitle = Session["JobTitle"] + "";
+        string ssONLINEAPPLY = Session["ONLINEAPPLY"] + "";
         string rqSearch = Request["SR"] + "";
+        string ssUserGuild = Session["ETU_Guild01"] + "";
+        string ssGuild01 = Session["Guild01"] + "";
+        string ssGuild02 = Session["Guild02"] + "";
 
         GBClass001 SBApp = new GBClass001();
 
-        switch (ssUserType) {
+        if (!IsPostBack)
+        {
+            switch (ssUserType) {
             case "01":
                 NewSwc.Visible = true;
-                CHKSHTYPE.Visible = true;
+				ToCalendar.Visible = false;
+                //CHKSHTYPE.Visible = true;
+				BTNSHTYPE.Visible = true;
+                UserBoard00.Visible = true;
                 break;
             case "02":
-                NewSwc.Visible = true;
-                TitleLink00.Visible = true;
-                CHKSHTYPE.Visible = true;
+			case "08":
+                if(CheckExpireOrNot()==true){Response.Write("<script>alert('提醒您，您所填登之執業執照到期日已逾期，無法使用水保計畫案件申請相關權限，若需恢復權限，請至「帳號管理」中更新「執業執照及到期日」欄位資訊。'); location.href='HaloPage001.aspx';</script>");}
+                if(ssUserType == "02") NewSwc.Visible = true; else NewSwc.Visible = false;
+				ToCalendar.Visible = true;
+                if(ssUserType == "02") TitleLink00.Visible = true; else TitleLink00.Visible = false;
+                UserBoard00.Visible = true;
+                //CHKSHTYPE.Visible = true;
+				BTNSHTYPE.Visible = true;
+                ChgUserType.Visible = true;
+                DDLChange.Text = "技師";
                 break;
             case "03":
                 NewSwc.Visible = false;
+				ToCalendar.Visible = false;
                 GoTslm.Visible = true;
                 GOVMG.Visible = true;
                 break;
             case "04":
+			case "09":
                 NewSwc.Visible = false;
+				ToCalendar.Visible = false;
+                UserBoard00.Visible = true;
+                if (ssONLINEAPPLY != "Y") GOVMG.Visible = false;
+                if (ssUserID != ssUserGuild) { ChgUserType.Visible = true; DDLChange.Text = "公會"; ToCalendar.Visible = true;}
+                if (ssGuild01 == "1" || ssGuild02 == "1") TitleLink01.Visible = true;
+                break;
+			case "05":
+                NewSwc.Visible = false;
+				ToCalendar.Visible = false;
+                break;
+			case "06":
+                NewSwc.Visible = false;
+				ToCalendar.Visible = false;
+                break;
+			case "07":
+                NewSwc.Visible = false;
+				ToCalendar.Visible = false;
                 break;
             default:
                 Response.Redirect("SWC000.aspx");
                 break;
         }
 
-        if (!IsPostBack) {
             GenerateDropDownList();
             GetGVSWCList();
 
@@ -79,14 +114,11 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
             {
                 RemoveSel_Click(sender, e);
             }
+
+            SBApp.ViewRecord("書件目錄查詢", "view", "");
         }
 
-
-
-        //全區供用
-
-        SBApp.ViewRecord("書件目錄查詢", "view", "");
-
+        #region 您好...
         ToDay.Text = DateTime.Now.ToString("yyyy.M.d");
         Visitor.Text = SBApp.GetVisitorsCount();
 
@@ -94,7 +126,40 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
         if (ssUserName != "") {
             TextUserName.Text =ssUserName+ ssJobTitle+"，您好";
         }
+        #endregion
     }
+	
+	private bool CheckExpireOrNot()
+	{
+        string ssUserID = Session["ID"] + "";
+		bool YN = false;
+		string gDNSQLStr =  "select * from ETUsers where ((TCNo01ED < getdate() and TCNo01ED != '1900-01-01 00:00:00.000') ";
+		gDNSQLStr += " or (TCNo02ED < getdate()  and TCNo02ED != '1900-01-01 00:00:00.000') ";
+		gDNSQLStr += " or (TCNo03ED < getdate()  and TCNo03ED != '1900-01-01 00:00:00.000') ";
+		gDNSQLStr += " or (TCNo04ED < getdate()  and TCNo04ED != '1900-01-01 00:00:00.000')) and ETID = @ETID ";
+		ConnectionStringSettings connectionStringSwc = ConfigurationManager.ConnectionStrings["SWCConnStr"];
+        using (SqlConnection SwcConn = new SqlConnection(connectionStringSwc.ConnectionString))
+        {
+            SwcConn.Open();
+			
+			using (var cmd = SwcConn.CreateCommand())
+            {
+                cmd.CommandText = gDNSQLStr;
+                #region.設定值
+                cmd.Parameters.Add(new SqlParameter("@ETID", ssUserID));
+                #endregion
+                cmd.ExecuteNonQuery();
+				using (SqlDataReader readerSWC = cmd.ExecuteReader())
+                {
+                    if (readerSWC.HasRows)
+                        YN = true;
+                    readerSWC.Close();
+                }
+                cmd.Cancel();
+            }
+        }
+		return YN;
+	}
 
     private void RemoveSelSession()
     {
@@ -120,6 +185,7 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
         Session["PageSearch004l"] = "";
         Session["PageSearch004m"] = "";
         Session["PageSearch004n"] = "";
+        Session["PageSearch004o"] = "";
         Session["PageSearchQQ5a"] = "";
         Session["PageSearchQQ5b"] = "";
         Session["PageSearchQQ5c"] = "";
@@ -156,6 +222,7 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
         CHKS003l.Checked = (Session["PageSearch004l"] + "" == "True");
         CHKS003m.Checked = (Session["PageSearch004m"] + "" == "True");
         CHKS003n.Checked = (Session["PageSearch004n"] + "" == "True");
+        CheckBox1.Checked = (Session["PageSearch004o"] + "" == "True");
 
         DDLDistrict.Text = Session["PageSearchQQ5a"] + "";
         DDLSection.Text = Session["PageSearchQQ5b"] + "";
@@ -166,9 +233,6 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
         TXTS006.Text = Session["PageSearchSWC038b"] + "";
         TXTS007.Text = Session["PageSearchSWC058a"] + "";
         TXTS008.Text = Session["PageSearchSWC058b"] + "";
-
-
-
     }
 
     protected void GenerateDropDownList()
@@ -212,47 +276,26 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
     {
         Response.Redirect("SWC002.aspx?CaseId=ADDNEW");
     }
-
-
     protected void GetGVSWCList()
     {
+        Class20 C20 = new Class20();
+        Class1 C1 = new Class1();
+        GBClass001 GBApp = new GBClass001();
         string UserType = Session["UserType"] + "";
         string ssUserID = Session["ID"] + "";
         string ssUserPW = Session["PW"] + "";
+        string ssUserGuild1 = Session["ETU_Guild01"] + "";
+        string ssUserGuild2 = Session["ETU_Guild02"] + "";
+        string ssUserGuild3 = Session["ETU_Guild03"] + "";
+        string sqlCaseID = GBApp.GetGuildSWC000();
 
         string sqlSelectStr = " SELECT * FROM [SWCCASE] ";
         sqlSelectStr = sqlSelectStr + " WHERE 1=1 ";
-
-        if (ssUserID == "gv-admin")
-        {
-        }
-        else
-        {
-            switch (UserType)
-            {
-                case "01":
-                    sqlSelectStr = sqlSelectStr + " AND SWC013ID = '" + ssUserID + "' ";
-                    sqlSelectStr = sqlSelectStr + " AND SWC013TEL = '" + ssUserPW + "' ";
-                    break;
-                case "02":
-                    sqlSelectStr = sqlSelectStr + " AND (SWC021ID = '" + ssUserID + "' ";
-                    sqlSelectStr = sqlSelectStr + "  OR (SWC045ID = '" + ssUserID + "' AND SWC004 IN ('施工中','停工中','已完工','廢止','失效','已變更'))) ";
-                    break;
-                case "04":
-                    sqlSelectStr = sqlSelectStr + " AND ((SWC022ID = '" + ssUserID + "' AND SWC004 IN ('審查中','暫停審查','撤銷','不予核定','已核定','施工中','停工中','已完工','廢止','失效','已變更')) ";
-
-                    if (Session["Edit4"] + "" == "Y")
-                    {
-                        sqlSelectStr = sqlSelectStr + "   OR SWC004 IN ('撤銷','已完工','廢止','失效','已變更')  ";
-                    }
-                    sqlSelectStr = sqlSelectStr + "   OR (SWC024ID = '" + ssUserID + "' AND SWC004 IN ('施工中','停工中','已完工','廢止','失效','已變更'))) ";
-                    break;
-            }
-        }
+        sqlSelectStr += limitListRange();
 
         //sqlSelectStr = sqlSelectStr + "  AND SWC005 NOT LIKE '%測試%' ";
         sqlSelectStr = sqlSelectStr + " ORDER BY [SWC000] DESC";
-
+        C1.RvSysRecord("水保書件", "水保案件列表", "瀏覽", "SWC001", ssUserID, sqlSelectStr);
         SqlDataSource.SelectCommand = sqlSelectStr;
         SqlDataSourceReq.SelectCommand = sqlSelectStr;
 
@@ -269,6 +312,63 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
 
         Session["PrintExcelOdtStr"] = sqlSelectStr;
     }
+    protected string limitListRange()
+    {
+        GBClass001 GBApp = new GBClass001();
+        Class20 C20 = new Class20();
+        string rValue = "";
+        string ssUserID = Session["ID"] + "";
+        string ssUserPW = Session["PW"] + "";
+        string ssUserGuild1 = Session["ETU_Guild01"] + "";
+        string ssUserGuild2 = Session["ETU_Guild02"] + "";
+        string ssUserGuild3 = Session["ETU_Guild03"] + "";
+        string ssUserType = Session["UserType"] + "";
+        string tUserType = ssUserType;
+		string idno = Session["IDNO"] + "";
+		string ssUserName = Session["NAME"] + "";
+
+        if (ssUserID == "gv-admin") { } else {
+            if (ssUserType == "04" && ssUserID != ssUserGuild1) tUserType = "87";
+            switch (tUserType)
+            {
+                case "01":
+                    rValue = rValue + " AND ((SWC013ID like '%" + ssUserID + "%' ";
+                    rValue = rValue + " AND (SWC013TEL like '%" + ssUserPW + "%' and ISNULL(SWC013TEL,'')!='')) ";
+                    rValue = rValue + " OR (SWC016 = '" + ssUserPW + "' and ISNULL(SWC016,'')!='')) ";
+                    break;
+                case "02":
+                    rValue = rValue + " AND (SWC021ID = '" + ssUserID + "' ";
+                    rValue = rValue + "  OR (SWC045ID = '" + ssUserID + "' AND SWC004 IN ('施工中','停工中','已完工','廢止','失效','已變更'))) ";
+                    break;
+                case "04":
+                    rValue = rValue + " AND ((SWC022ID = '" + ssUserID + "' AND SWC004 IN ('審查中','暫停審查','撤銷','不予核定','已核定','施工中','停工中','已完工','廢止','失效','已變更')) ";
+                    if (Session["Edit4"] + "" == "Y") rValue = rValue + "   OR SWC004 IN ('撤銷','已完工','廢止','失效','已變更')  ";
+                    rValue = rValue + "   OR (SWC024ID = '" + ssUserID + "' AND SWC004 IN ('施工中','停工中','已完工','廢止','失效','已變更'))) ";
+                    break;
+				case "05":
+					if(C20.GetOrganData(idno,"UnitName")+""=="陽明山國家公園")
+					{
+						rValue = rValue + " AND SWC000 in (select SWC000 from tslm2.dbo.SWCSWCA where SWC121 like '%國家公園%') ";
+					}
+					else
+					{
+						rValue = rValue + " AND 1=2 ";
+					}
+					break;
+				case "06":
+					rValue = rValue + " AND (SWC134 = '" + C20.GetArchitectData(idno,"帳號") + "' or SWC135 = '" + C20.GetArchitectData(idno,"帳號") + "') ";
+					break;
+				case "07":
+					rValue = rValue + " AND (SWC116 = '" + ssUserID + "' or SWC049 = '" + ssUserName + "' or SWC050 = '" + ssUserPW + "') ";
+					break;
+                case "87":
+                    rValue += " AND ((SWC022ID = '" + ssUserGuild1 + "' AND SWC004 IN ('審查中','暫停審查','撤銷','不予核定','已核定','施工中','停工中','已完工','廢止','失效','已變更')) OR (SWC022ID = '" + ssUserGuild3 + "' AND SWC004 IN ('審查中','暫停審查','撤銷','不予核定','已核定','施工中','停工中','已完工','廢止','失效','已變更')) OR (SWC024ID = '" + ssUserGuild2 + "' AND SWC004 IN ('施工中','停工中','已完工','廢止','失效','已變更')) OR (SWC024ID = '" + ssUserGuild3 + "' AND SWC004 IN ('施工中','停工中','已完工','廢止','失效','已變更'))      )";
+                    rValue += " AND SWC000 IN ("+ GBApp.GetGuildSWC000() + ")";
+                    break;
+            }
+        }
+        return rValue;
+    }
 
     protected void GVSWCList_RowDataBound(object sender, GridViewRowEventArgs e)
     {
@@ -277,7 +377,7 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
         string ShowEditBtn = "N";
         string ssUserID = Session["ID"] + "";
         string ssUserPW = Session["PW"] + "";
-        string ssUserType = Session["UserType"] + "";        
+        string ssUserType = Session["UserType"] + "";
 
         switch (e.Row.RowType)
         {
@@ -317,27 +417,28 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
                         switch (ssUserType.ToString())
                         {
                             case "01":
-                                if (tempSWC007 == "簡易水保" && (tempSWC004 == "退補件" || tempSWC004 == "受理中"))
-                                {
+                                if (tempSWC007 == "簡易水保" && (tempSWC004 == "退補件" || tempSWC004 == "申請中"))
                                     ShowEditBtn = "Y";
-                                }
                                 break;
                             case "02":
+                                /* 2020版 - 編輯只剩基本資料可以修改、原本受理中可修改，改為不可修改
                                 //承辦技師
-                                if (tempSWC021ID == ssUserID && (tempSWC004 == "退補件" || tempSWC004 == "受理中"))
-                                {
+                                if (tempSWC021ID == ssUserID && (tempSWC004 == "退補件" || tempSWC004 == "受理中" || tempSWC004 == "申請中" || tempSWC004 == "審查中"))
                                     ShowEditBtn = "Y";
-                                }
                                 //監造技師
                                 if (tempSWC045ID == ssUserID && tempSWC004 == "施工中")
-                                {
                                     ShowEditBtn = "Y";
-                                }
+                                */
+                                //承辦技師
+                                if (tempSWC021ID == ssUserID && (tempSWC004 == "退補件" || tempSWC004 == "申請中" || tempSWC004 == "受理中" || tempSWC004 == "審查中"))
+                                    ShowEditBtn = "Y";
+                                break;
                                 break;
                             case "03":
                                 OdsPointDtl3Date.Visible = true;
                                 break;
                             case "04":
+                                /* 2020版 - 編輯只剩基本資料可以修改
                                 //審查公會
                                 if (tempSWC022ID == ssUserID && (tempSWC004 == "審查中" || tempSWC004 == "暫停審查"))
                                 {
@@ -353,8 +454,25 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
                                 {
                                     ShowEditBtn = "Y";
                                 }
-                                break;
+                                //召集人
+                                string chkEidtStr= " select * from GuildGroup where ETID='"+ ssUserID + "' and SWC000 ='"+ tempCaseSwc000 + "' and CHGType='1' ";
+                                using (SqlConnection GGConn = new SqlConnection(connectionString.ConnectionString))
+                                {
+                                    GGConn.Open();
 
+                                    SqlDataReader readerGG;
+                                    SqlCommand objCmdGG = new SqlCommand(chkEidtStr, GGConn);
+                                    readerGG = objCmdGG.ExecuteReader();
+
+                                    while (readerGG.Read())
+                                    {
+                                        string tmpRGtype = readerGG["RGtype"] +"";
+                                        ShowEditBtn = (tmpRGtype == "S3" && (tempSWC004 == "審查中" || tempSWC004 == "暫停審查")) ? "Y": ShowEditBtn;
+                                        ShowEditBtn = (tmpRGtype == "S4" && tempSWC004 == "施工中") ? "Y" : ShowEditBtn;
+                                    }
+                                }
+                                */
+                                break;
                         }
                     }
                 }
@@ -408,10 +526,9 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
                     case "退補件":
                     case "不予受理":
                     case "受理中":
+                    case "申請中":
                     case "審查中":
                     case "暫停審查":
-                    case "撤銷":
-                    case "不予核定":
                         if (tDATE5.Trim() != "")
                         {
                             tDATE5 = SBApp.DateView(tDATE5, "02");
@@ -423,8 +540,11 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
                         e.Row.Cells[5].Text = tDATE5;
                         break;
 
+                    case "撤銷":
+                    case "不予核定":
                     case "已核定":
                     case "施工中":
+                    case "停工中":
                     case "已完工":
                     case "廢止":
                     case "失效":
@@ -569,6 +689,7 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
         CHKSHTYPE.Checked = false;
         TXTS003.Text = "";
         TXTS004.Text = "";
+        CheckBox1.Checked = false;
         CHKS003a.Checked = false;
         CHKS003b.Checked = false;
         CHKS003c.Checked = false;
@@ -590,6 +711,8 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
         TXTS007.Text = "";
         TXTS008.Text = "";
 
+        RemoveSelSession();
+
         DDLDistrict.SelectedValue = "0";
         DDLCadastralChange("01", DDLDistrict, DDLSection, DDLSection2, null);
         TXTNumber.Text = "";
@@ -603,6 +726,8 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
     }
     private void SelectSearchCaseList(string cPageMode)
     {
+        GBClass001 GBApp = new GBClass001();
+
         RemoveSelSession();
 
         string qSearch001 = TXTS001.Text;
@@ -629,6 +754,7 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
         bool qSearch004l = CHKS003l.Checked;
         bool qSearch004m = CHKS003m.Checked;
         bool qSearch004n = CHKS003n.Checked;
+        bool qSearch004o = CheckBox1.Checked;
 
         string qSWC038a = TXTS005.Text + "";
         string qSWC038b = TXTS006.Text + "";
@@ -638,9 +764,10 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
         string UserType = Session["UserType"] + "";
         string ssUserID = Session["ID"] + "";
         string ssUserPW = Session["PW"] + "";
+        string ssUserGuild = Session["WMGuild"] + "";
 
-        bool[] arrySearch004 = new bool[] { qSearch004a, qSearch004b, qSearch004c, qSearch004d, qSearch004e, qSearch004f, qSearch004g, qSearch004h, qSearch004i, qSearch004j, qSearch004k, qSearch004l, qSearch004m, qSearch004n };
-        string[] arraySearch004Str = new string[] { "受理中","審查中","已核定","施工中","停工中","已完工","廢止","撤銷","失效","不予受理","不予核定","已變更", "退補件", "暫停審查" };
+        bool[] arrySearch004 = new bool[] { qSearch004a, qSearch004b, qSearch004c, qSearch004d, qSearch004e, qSearch004f, qSearch004g, qSearch004h, qSearch004i, qSearch004j, qSearch004k, qSearch004l, qSearch004m, qSearch004n, qSearch004o };
+        string[] arraySearch004Str = new string[] { "受理中","審查中","已核定","施工中","停工中","已完工","廢止","撤銷","失效","不予受理","不予核定","已變更", "退補件", "暫停審查","申請中" };
 
         string Search004STR = "";
         for (int i = 0; i < arrySearch004.Length; i++)
@@ -774,27 +901,7 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
         { }
         else
         {
-            switch (UserType)
-            {
-                case "01":
-                    sqlSelectStr = sqlSelectStr + " AND SWC013ID = '" + ssUserID + "' ";
-                    sqlSelectStr = sqlSelectStr + " AND SWC013TEL = '" + ssUserPW + "' ";
-                    break;
-                case "02":
-                    sqlSelectStr = sqlSelectStr + " AND (SWC021ID = '" + ssUserID + "' ";
-                    sqlSelectStr = sqlSelectStr + "  OR (SWC045ID = '" + ssUserID + "' AND SWC004 IN ('施工中','停工中','已完工','廢止','失效','已變更'))) ";
-                    break;
-                case "04":
-                    sqlSelectStr = sqlSelectStr + " AND ((SWC022ID = '" + ssUserID + "' AND SWC004 IN ('審查中','暫停審查','撤銷','不予核定','已核定','施工中','停工中','已完工','廢止','失效','已變更')) ";
-
-                    if (Session["Edit4"] + "" == "Y")
-                    {
-                        sqlSelectStr = sqlSelectStr + "   OR (SWC004 IN ('撤銷','已完工','廢止','失效','已變更') ) ";
-                    }
-                    sqlSelectStr = sqlSelectStr + "   OR (SWC024ID = '" + ssUserID + "' AND SWC004 IN ('施工中','停工中','已完工','廢止','失效','已變更'))) ";
-                    break;
-                    
-            }
+            sqlSelectStr += limitListRange();
         }
         //sqlSelectStr = sqlSelectStr + "  AND SWC005 NOT LIKE '%測試%' ";
         sqlSelectStr = sqlSelectStr + " ORDER BY [SWC000] DESC ";
@@ -822,6 +929,7 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
         Session["PageSearch004l"] = qSearch004l;
         Session["PageSearch004m"] = qSearch004m;
         Session["PageSearch004n"] = qSearch004n;
+        Session["PageSearch004o"] = qSearch004o;
         Session["PageSearchQQ5a"] = qqSearch05a;
         Session["PageSearchQQ5b"] = qqSearch05b;
         Session["PageSearchQQ5c"] = qqSearch05c;
@@ -1147,7 +1255,7 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
                 Excelcol = Excelcol + dSWC013ID + "\t";
                 Excelcol = Excelcol + dSWC013TEL + "\t";
                 Excelcol = Excelcol + dSWC013 + "\t";
-                Excelcol = Excelcol + dSWC014.Replace("\n", "").Replace("\r", "") + "\t";
+                Excelcol = Excelcol + dSWC014 + "\t";
                 Excelcol = Excelcol + dSWC015 + "\t";
                 Excelcol = Excelcol + dSWC016 + "\t";
                 Excelcol = Excelcol + dSWC017 + "\t";
@@ -2020,8 +2128,16 @@ public partial class SWCDOC_SWC001 : System.Web.UI.Page
                 string jKeyValue = GVReqList.Rows[aa].Cells[1].Text;
                 Response.Redirect("SWC004.aspx?SWCNO=" + jKeyValue);
                 break;
-
-
         }
+    }
+    protected void DDLChange_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        Session["UserType"] = DDLChange.SelectedItem.Text=="技師"?"02":"04";
+        Response.Redirect("SWC001.aspx");
+    }
+	
+	protected void BTNSHTYPE_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("LIST024.aspx");
     }
 }

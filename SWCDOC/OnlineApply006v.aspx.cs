@@ -1,23 +1,7 @@
-﻿/*  Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -34,6 +18,9 @@ public partial class SWCDOC_OnlineApply006 : System.Web.UI.Page
         string ssUserName = Session["NAME"] + "";
         string ssUserType = Session["UserType"] + "";
         string ssJobTitle = Session["JobTitle"] + "";
+		
+		if(ssUserName == "") 
+			Response.Redirect("../");
 
         GBClass001 SBApp = new GBClass001();
         LoadSwcClass01 LoadApp = new LoadSwcClass01();
@@ -47,6 +34,7 @@ public partial class SWCDOC_OnlineApply006 : System.Web.UI.Page
         
         if (!IsPostBack)
         {
+            SBApp.ViewRecord("水土保持計畫義務人及技師變更報備", "update", "");
             if (rRRPG == "55")
             {
                 Boolean LoginR = false;
@@ -62,29 +50,18 @@ public partial class SWCDOC_OnlineApply006 : System.Web.UI.Page
 
             }
             else
-            {
                 if (rOLANO == "") { Response.Redirect("SWC001.aspx"); }
                 else
-                {
                     GetOLA02Data(rSWCNO, rOLANO);
-                }
-            }
-
         }
-        
-
 
         //全區供用
-        SBApp.ViewRecord("水土保持計畫義務人及技師變更報備", "update", "");
-
         ToDay.Text = DateTime.Now.ToString("yyyy.M.d");
         Visitor.Text = SBApp.GetVisitorsCount();
 
         TextUserName.Text = "";
         if (ssUserName != "")
-        {
             TextUserName.Text = ssUserName + ssJobTitle + "，您好";
-        }
         if (ssUserType == "02") { TitleLink00.Visible = true; }
         //全區供用
 
@@ -92,6 +69,7 @@ public partial class SWCDOC_OnlineApply006 : System.Web.UI.Page
 
     private void GetOLA02Data(string v, string v2)
     {
+        string ssONLINEAPPLY = Session["ONLINEAPPLY"] + "";
         GBClass001 SBApp = new GBClass001();
 
         string tDATALOCK = "";
@@ -120,7 +98,6 @@ public partial class SWCDOC_OnlineApply006 : System.Web.UI.Page
                 LBSWC000.Text = tSWC000;
                 LBSWC002.Text = tSWC002;
                 LBSWC005.Text = tSWC005;
-
             }
             readeSwc.Close();
             objCmdSwc.Dispose();
@@ -155,9 +132,13 @@ public partial class SWCDOC_OnlineApply006 : System.Web.UI.Page
                     string tONA012 = readeONA["ONA06012"] + "";
                     string tONA013 = readeONA["ONA06013"] + "";
                     string tONA014 = readeONA["ONA06014"] + "";
+                    string tONA016 = readeONA["ONA06016"] + "";
+                    string tONA017 = readeONA["ONA06017"] + "";
 
                     string tReviewResults = readeONA["ReviewResults"] + "";
                     string tResultsExplain = readeONA["ResultsExplain"] + "";
+                    string tReviewDirections = readeONA["ReviewDirections"] + "";
+                    string tReSendDeadline = readeONA["ReSendDeadline"] + "";
                     string tReviewDoc = readeONA["ReviewDoc"] + "";
                     string tLOCKUSER2 = readeONA["LOCKUSER2"] + "";
 
@@ -182,18 +163,23 @@ public partial class SWCDOC_OnlineApply006 : System.Web.UI.Page
                     TXTONA009.Text = tONA009;
                     TXTONA010.Text = tONA010;
                     TXTONA013.Text = tONA013;
+                    TXTONA016.Text = tONA016;
+                    TXTONA017.Text = tONA017;
 
-                    if (tReviewResults == "1") { CHKRRa.Checked = true; LBRR.Text = "審查結果：准予通過"; }
-                    if (tReviewResults == "0") { CHKRRb.Checked = true; LBRR.Text = "審查結果：駁回"; }
+                    if (tReviewResults == "1") { CHKRRa.Checked = true; LBRR.Text = "審查結果：准予通過"; LBResultsExplain.Text = tResultsExplain; }
+                    if (tReviewResults == "0") { CHKRRb.Checked = true; LBRR.Text = "審查結果：駁回"; LBResultsExplain.Text = tResultsExplain; }
+                    if (tReviewResults == "2") { CHKRRc.Checked = true; LBRR.Text = "審查結果：退補正"; LBResultsExplain.Text = tReviewDirections + "<br>補正期限：" + SBApp.DateView(tReSendDeadline, "00"); }
+                    if (tReviewResults == "1" && DataLock2 == "Y") { OutPdf.Visible = true; }
 
                     ResultsExplain.Text = tResultsExplain;
-                    LBResultsExplain.Text = tResultsExplain;
                     TXTReviewDoc.Text = tReviewDoc;
+                    ReviewDirections.Text = tReviewDirections;
+                    TXTDeadline.Text = SBApp.DateView(tReSendDeadline, "00");
                     ReviewID.Text = SBApp.GetGeoUser(tLOCKUSER2, "Name");
-
+                    
                     //檔案類處理
-                    string[] arrayFileNameLink = new string[] { tONA006, tONA010, tONA014, tReviewDoc };
-                    System.Web.UI.WebControls.HyperLink[] arrayLinkAppobj = new System.Web.UI.WebControls.HyperLink[] { Link006, Link010, Link014, LinkReviewDoc };
+                    string[] arrayFileNameLink = new string[] { tONA006, tONA010, tONA014, tONA017, tReviewDoc };
+                    System.Web.UI.WebControls.HyperLink[] arrayLinkAppobj = new System.Web.UI.WebControls.HyperLink[] { Link006, Link010, Link014, Link017, LinkReviewDoc };
 
                     for (int i = 0; i < arrayFileNameLink.Length; i++)
                     {
@@ -206,7 +192,9 @@ public partial class SWCDOC_OnlineApply006 : System.Web.UI.Page
                         }
                         else
                         {
-                            string tempLinkPateh = SwcUpLoadFilePath + v + "/" + strFileName;
+                            Class1 C1 = new Class1();
+                            C1.FilesSortOut(strFileName,v,"");
+                            string tempLinkPateh = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/SwcCaseFile/" + v + "/" + strFileName;
                             FileLinkObj.Text = strFileName;
                             FileLinkObj.NavigateUrl = tempLinkPateh;
                             FileLinkObj.Visible = true;
@@ -214,6 +202,72 @@ public partial class SWCDOC_OnlineApply006 : System.Web.UI.Page
 
                     }
                 }
+				#region-義務人資訊
+				ConnectionStringSettings connectionStringSWC = ConfigurationManager.ConnectionStrings["SwcConnStr"];
+				using (SqlConnection ObliConn = new SqlConnection(connectionStringSWC.ConnectionString))
+				{
+					ObliConn.Open();
+		
+					string SqlStr = "";
+					
+					SqlStr = SqlStr + " select * from OnlineApply06_SWCObligor ";
+					SqlStr = SqlStr + "  Where SWC000 = '" + v + "' and OA06 = '" + v2 + "' ";
+					SqlStr = SqlStr + "  order by 序號 ";
+					
+					SqlDataReader readerObli;
+					SqlCommand objCmdObli = new SqlCommand(SqlStr, ObliConn);
+					readerObli = objCmdObli.ExecuteReader();
+		
+					while (readerObli.Read())
+					{
+						string dNO = readerObli["序號"] + "";
+						string dSWC013 = readerObli["SWC013"] + "";
+						string dSWC013ID = readerObli["SWC013ID"] + "";
+						string dSWC013TEL = readerObli["SWC013TEL"] + "";
+						string dSWC014Zip = readerObli["SWC014Zip"] + "";
+						string dSWC014City = readerObli["SWC014City"] + "";
+						string dSWC014District = readerObli["SWC014District"] + "";
+						string dSWC014Address = readerObli["SWC014Address"] + "";
+		
+						DataTable OBJ_GVSWCP = (DataTable)ViewState["SwcPeople"];
+						DataTable dtSWCP = new DataTable();
+		
+						if (OBJ_GVSWCP == null)
+						{
+							dtSWCP.Columns.Add(new DataColumn("序號", typeof(string)));
+							dtSWCP.Columns.Add(new DataColumn("姓名", typeof(string)));
+							dtSWCP.Columns.Add(new DataColumn("身分證字號", typeof(string)));
+							dtSWCP.Columns.Add(new DataColumn("手機", typeof(string)));
+							dtSWCP.Columns.Add(new DataColumn("地址ZipCode", typeof(string)));
+							dtSWCP.Columns.Add(new DataColumn("地址City", typeof(string)));
+							dtSWCP.Columns.Add(new DataColumn("地址District", typeof(string)));
+							dtSWCP.Columns.Add(new DataColumn("地址Address", typeof(string)));
+							dtSWCP.Columns.Add(new DataColumn("地址", typeof(string)));
+		
+							ViewState["SwcPeople"] = dtSWCP;
+							OBJ_GVSWCP = dtSWCP;
+						}
+						DataRow drSWCP = OBJ_GVSWCP.NewRow();
+		
+						drSWCP["序號"] = dNO;
+						drSWCP["姓名"] = dSWC013;
+						drSWCP["身分證字號"] = dSWC013ID;
+						drSWCP["手機"] = dSWC013TEL;
+						drSWCP["地址ZipCode"] = dSWC014Zip;
+						drSWCP["地址City"] = dSWC014City;
+						drSWCP["地址District"] = dSWC014District;
+						drSWCP["地址Address"] = dSWC014Address;
+						drSWCP["地址"] = dSWC014Zip + dSWC014City + dSWC014District + dSWC014Address;
+		
+						OBJ_GVSWCP.Rows.Add(drSWCP);
+		
+						ViewState["SwcPeople"] = OBJ_GVSWCP;
+		
+						GVPEOPLE.DataSource = OBJ_GVSWCP;
+						GVPEOPLE.DataBind();
+					}
+				}
+				#endregion
             }
         }
         string ssUserType = Session["UserType"] + "";
@@ -232,9 +286,20 @@ public partial class SWCDOC_OnlineApply006 : System.Web.UI.Page
             LBRR.Visible = true;
             CHKRRa.Visible = false;
             CHKRRb.Visible = false;
+            CHKRRc.Visible = false;
             DataLock.Visible = false;
             SaveCase.Visible = false;
+            Panel1.Visible = false;
         }
+        if (ssONLINEAPPLY != "Y" && DataLock2 != "Y")
+            ReviewResults.Visible = false;
+		
+		//為了不讓簽核內容及按鈕出現
+		ResultsExplain.Visible = false;
+		DataLock.Visible = false;
+		SaveCase.Visible = false;
+
+        SqlDataSourceSign.SelectCommand = " select left(convert(char, TH001, 120),10) as TH001n,left(convert(char, TH005, 120),10) as TH005n,[name] as THName,TH004 from [TrunHistory] h left join tslm2.dbo.geouser u on h.TH003=u.userid where TH002 = '退補正' and ID001='" + v + "' and ID003='" + v2 + "' order by h.id; ";
     }
 
     private string GetONAID()
@@ -275,7 +340,6 @@ public partial class SWCDOC_OnlineApply006 : System.Web.UI.Page
     private void GenDropDownList()
     {
         //技師名單
-
         string strSQLETUser = " select * from ETUsers where status='已開通' Order by ETName ";
 
         ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
@@ -527,20 +591,21 @@ public partial class SWCDOC_OnlineApply006 : System.Web.UI.Page
     protected void SaveCase_Click(object sender, EventArgs e)
     {
         string ssUserID = Session["ID"] + "";
-
         string sSWC000 = LBSWC000.Text + "";
         string sSWC002 = LBSWC002.Text + "";
-        string sONA02001 = TXTONA001.Text + "";
+        string sONA06001 = TXTONA001.Text + "";
         string sReviewDoc = TXTReviewDoc.Text + "";
         string sResultsExplain = ResultsExplain.Text + "";
+        string sReviewResults = CHKRRa.Checked ? "1" : CHKRRb.Checked ? "0" : CHKRRc.Checked ? "2" : "";
+        string sReviewDirections = (ReviewDirections.Text + "").Length > 200 ? (ReviewDirections.Text + "").Substring(0, 200) : ReviewDirections.Text + "";
+        string sReSendDeadline = TXTDeadline.Text;
 
-        string sReviewResults = "";
-        if (CHKRRa.Checked) { sReviewResults = "1"; }
-        if (CHKRRb.Checked) { sReviewResults = "0"; }
-
-
+        if (sReviewResults.Trim() == "")
+        {
+            Response.Write("<script>alert('請點選審查結果');</script>"); return;
+        }
+        
         string sEXESQLUPD = "";
-
         ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
         using (SqlConnection SwcConn = new SqlConnection(connectionString.ConnectionString))
         {
@@ -550,11 +615,13 @@ public partial class SWCDOC_OnlineApply006 : System.Web.UI.Page
             sEXESQLUPD = sEXESQLUPD + " ReviewResults = '" + sReviewResults + "', ";
             sEXESQLUPD = sEXESQLUPD + " ResultsExplain = '" + sResultsExplain + "', ";
             sEXESQLUPD = sEXESQLUPD + " ReviewDoc = '" + sReviewDoc + "', ";
+            sEXESQLUPD = sEXESQLUPD + " ReviewDirections = '" + sReviewDirections + "', ";
+            sEXESQLUPD = sEXESQLUPD + " ReSendDeadline = '" + sReSendDeadline + "', ";
 
             sEXESQLUPD = sEXESQLUPD + " saveuser = '" + ssUserID + "', ";
             sEXESQLUPD = sEXESQLUPD + " savedate = getdate() ";
 
-            sEXESQLUPD = sEXESQLUPD + " Where ONA06001 = '" + sONA02001 + "'";
+            sEXESQLUPD = sEXESQLUPD + " Where ONA06001 = '" + sONA06001 + "'";
 
             SqlCommand objCmdUpd = new SqlCommand(sEXESQLUPD, SwcConn);
             objCmdUpd.ExecuteNonQuery();
@@ -577,20 +644,27 @@ public partial class SWCDOC_OnlineApply006 : System.Web.UI.Page
     protected void DataLock_Click(object sender, EventArgs e)
     {
         SaveCase_Click(sender, e);
-
+        GBClass001 GBC = new GBClass001();
         string ssUserID = Session["ID"] + "";
-
         string sSWC000 = LBSWC000.Text;
+        string sSWC002 = LBSWC002.Text;
         string sONA06001 = TXTONA001.Text + "";
+        string sReviewDirections = (ReviewDirections.Text + "").Length > 200 ? (ReviewDirections.Text + "").Substring(0, 200) : ReviewDirections.Text + "";
+        string sReSendDeadline = TXTDeadline.Text + "";
+        string sReviewResults = CHKRRa.Checked ? "核准" : CHKRRb.Checked ? "駁回" : CHKRRc.Checked ? "退補正" : "";
+
+        if (sReviewResults == "") {
+            Response.Write("<script>alert('請點選審查結果');</script>");return;
+        }
 
         string sEXESQLSTR = "";
-
         ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
         using (SqlConnection SwcConn = new SqlConnection(connectionString.ConnectionString))
         {
             SwcConn.Open();
 
             sEXESQLSTR = sEXESQLSTR + " Update OnlineApply06 Set ";
+            if (CHKRRc.Checked) { sEXESQLSTR += " DATALOCK='',LOCKUSER='',LOCKDATE=null, "; }
             sEXESQLSTR = sEXESQLSTR + "  DATALOCK2 = 'Y', ";
             sEXESQLSTR = sEXESQLSTR + "  LOCKUSER2 = '" + ssUserID + "' ";
             sEXESQLSTR = sEXESQLSTR + " Where SWC000 = '" + sSWC000 + "'";
@@ -600,17 +674,12 @@ public partial class SWCDOC_OnlineApply006 : System.Web.UI.Page
             objCmdUpd.ExecuteNonQuery();
             objCmdUpd.Dispose();
 
-            string sReviewResults = "";
-            if (CHKRRa.Checked) { sReviewResults = "核准"; }
-            if (CHKRRb.Checked) { sReviewResults = "駁回"; }
-
+            GBC.RecordTrunHistory(sSWC000, sSWC002, sONA06001, sReviewResults, ssUserID, sReviewDirections, sReSendDeadline);
             SendMailNotice(sSWC000, sReviewResults);
 
             //准了直接更新水保案件
             if (CHKRRa.Checked)
-            {
                 UpdatePersonnel();
-            }
 
             Response.Write("<script>alert('資料已送出，目前僅供瀏覽。');location.href='SWC003.aspx?SWCNO=" + sSWC000 + "';</script>");
 
@@ -633,9 +702,10 @@ public partial class SWCDOC_OnlineApply006 : System.Web.UI.Page
             string chgSWC013    = TXTONA003.Text;
             string chgSWC013ID  = TXTONA004.Text;
             string chgSWC013TEL = TXTONA005.Text;
+            string chgSWC016 = TXTONA016.Text;
 
-            strSQLSWC = " Update SWCSWC set swc13=N'" + chgSWC013 + "',SWC013ID=N'" + chgSWC013ID + "',SWC013TEL=N'" + chgSWC013TEL + "' where SWC00='" + rSWCNO + "'; ";
-            strSQLDOC = " Update SWCCASE set SWC013=N'" + chgSWC013 + "',SWC013ID=N'" + chgSWC013ID + "',SWC013TEL=N'" + chgSWC013TEL + "' where SWC000='" + rSWCNO + "'; ";
+            strSQLSWC = " Update SWCSWC set swc13=N'" + chgSWC013 + "',SWC013ID=N'" + chgSWC013ID + "',SWC013TEL=N'" + chgSWC013TEL + "',SWC14=N'" + chgSWC016 + "' where SWC00='" + rSWCNO + "'; ";
+            strSQLDOC = " Update SWCCASE set SWC013=N'" + chgSWC013 + "',SWC013ID=N'" + chgSWC013ID + "',SWC013TEL=N'" + chgSWC013TEL + "',SWC014=N'" + chgSWC016 + "' where SWC000='" + rSWCNO + "'; ";
         }
         if (RATypeB)
         {
@@ -899,6 +969,17 @@ public partial class SWCDOC_OnlineApply006 : System.Web.UI.Page
         string rONANO = TXTONA001.Text + "";
         error_msg.Text = "";
         DeleteUpLoadFile("DOC", TXTReviewDoc, null, LinkReviewDoc, "ReviewDoc", "TXTReviewDoc", 320, 180);
+    }
+    protected void OutPdf_Click(object sender, ImageClickEventArgs e)
+    {
+        string rSWCNO = Request.QueryString["SWCNO"] + "";
+        string rOLANO = Request.QueryString["OLANO"] + "";
+
+        Response.Redirect("../SwcReport/PdfSwcOLA06.aspx?SWCNO=" + rSWCNO + "&OLANO=" + rOLANO);
+    }
+    protected void SqlDataSourceSign_Selected(object sender, SqlDataSourceStatusEventArgs e)
+    {
+        ReqCount.Text = e.AffectedRows.ToString();
     }
 
 }

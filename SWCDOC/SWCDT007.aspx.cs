@@ -1,21 +1,4 @@
-﻿/*  Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
@@ -28,53 +11,44 @@ using System.Web.UI.WebControls;
 
 public partial class SWCDOC_SWCDT007 : System.Web.UI.Page
 {
-    string SwcUpLoadFilePath = "..\\UpLoadFiles\\SwcCaseFile\\";
-    string GlobalUpLoadTempFilePath = "..\\UpLoadFiles\\temp\\";
-    protected void Page_Load(object sender, EventArgs e)
+	
+	string SwcUpLoadFilePath = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/SwcCaseFile/";
+    //string SwcUpLoadFilePath = "..\\UpLoadFiles\\SwcCaseFile\\";
+    string GlobalUpLoadTempFilePath = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC/UpLoadFiles/temp/";
+    //string GlobalUpLoadTempFilePath = "..\\UpLoadFiles\\temp\\";
+	protected void Page_Load(object sender, EventArgs e)
     {
-        string rCaseId = Request.QueryString["SWCNO"] + "";
-        string rDTLId = Request.QueryString["DTLNO"] + "";
+        GBClass001 SBApp = new GBClass001();
+        Class20 C20 = new Class20();
 
         string ssUserName = Session["NAME"] + "";
-
+        string ssUserType = Session["UserType"] + "";
         string ssJobTitle = Session["JobTitle"] + "";
-        GBClass001 SBApp = new GBClass001();
+        string rCaseId = Request.QueryString["SWCNO"] + "";
+        string rDTLId = Request.QueryString["DTLNO"] + "";
 
         //PostBack後停留在原畫面
         Page.MaintainScrollPositionOnPostBack = true;
 
-        if (rCaseId == "")
-        {
-            Response.Redirect("SWC000.aspx");
-        }
+        if (rCaseId.Trim() == "" && rDTLId.Trim() == "")
+            Response.Redirect("SWC001.aspx");
 
         if (!IsPostBack)
         {
+            C20.swcLogRC("SWCDT007", "設施維護檢查表", "詳情", "瀏覽", rCaseId + "," + rDTLId);
             GenerateDropDownList();
             Data2Page(rCaseId, rDTLId);
-
+			
+			if(ssUserType == "09") DataLock.Visible = false;
         }
-
-        TextUserName.Text = "";
-        if (ssUserName != "")
-        {
-            TextUserName.Text = ssUserName + "，您好";
-        }
-
-        //全區供用
-
-        SBApp.ViewRecord("臺北市山坡地水土保持設施維護檢查及輔導紀錄表", "update", "");
-
+        #region 全區供用
         ToDay.Text = DateTime.Now.ToString("yyyy.M.d");
         Visitor.Text = SBApp.GetVisitorsCount();
 
         TextUserName.Text = "";
         if (ssUserName != "")
-        {
             TextUserName.Text = ssUserName + ssJobTitle + "，您好";
-        }
-
-        //全區供用
+        #endregion
     }
     private void Data2Page(string v, string v2)
     {
@@ -333,6 +307,9 @@ public partial class SWCDOC_SWCDT007 : System.Web.UI.Page
                         }
                         else
                         {
+                            Class1 C1 = new Class1();
+                            C1.FilesSortOut(strFileName, v, "");
+							
                             string tempImgPateh = SwcUpLoadFilePath + v + "/" + strFileName;
                             ImgFileObj.ImageUrl = tempImgPateh + "?ts=" + DateTime.Now.Millisecond;
                             ImgFileObj.NavigateUrl = tempImgPateh + "?ts=" + DateTime.Now.Millisecond;
@@ -475,7 +452,7 @@ public partial class SWCDOC_SWCDT007 : System.Web.UI.Page
         DDLDTL058.DataBind();
         DDLDTL058.SelectedValue = "已改善";
 
-        string[] array_DTLP01 = new string[] { "請選擇單位", "水土保持義務人", "台北市土木技師公會", "社團法人臺北市水利技師公會", "臺北市政府工務局大地工程處", "臺北市政府工務局水利工程處", "臺北市政府工務局新建工程處", "臺北市停車管理處", "臺北市政府產業發展局", "臺北市政府都市發展局", "臺北市政府建築管理工程處", "臺北市都市更新處", "陽明山國家公園管理處", "中華民國大地工程技師公會", "其他" };
+        string[] array_DTLP01 = new string[] { "請選擇單位", "水土保持義務人", "台北市土木技師公會", "社團法人臺北市水利技師公會", "臺北市政府工務局大地工程處", "臺北市政府工務局水利工程處", "臺北市政府工務局新建工程處", "臺北市停車管理處", "臺北市政府產業發展局", "臺北市政府都市發展局", "臺北市政府建築管理工程處", "臺北市都市更新處", "陽明山國家公園管理處", "中華民國大地工程技師公會", "社團法人臺灣省水土保持技師公會", "其他" };
         DropDownList_01.DataSource = array_DTLP01;
         DropDownList_01.DataBind();
         DropDownList_01.SelectedValue = "水土保持義務人";
@@ -521,6 +498,8 @@ public partial class SWCDOC_SWCDT007 : System.Web.UI.Page
 
     protected void SaveCase_Click(object sender, EventArgs e)
     {
+        Class20 C20 = new Class20();
+
         string rCaseId = Request.QueryString["SWCNO"] + "";
         string ssUserID = Session["ID"] + "";
 
@@ -738,7 +717,7 @@ public partial class SWCDOC_SWCDT007 : System.Web.UI.Page
             sEXESQLUPD = sEXESQLUPD + " Upd02 = 'Y', ";
             sEXESQLUPD = sEXESQLUPD + " Savdate02 = getdate() ";
             sEXESQLUPD = sEXESQLUPD + " Where Key01 = '" + sSWC000 + "'";
-
+            C20.swcLogRC("SWCDT007", "設施維護檢查表", "詳情", "更新", sSWC000 + "," + sDTLG000);
             SqlCommand objCmdUpd = new SqlCommand(sEXESQLSTR + sEXESQLUPD, SwcConn);
             objCmdUpd.ExecuteNonQuery();
             objCmdUpd.Dispose();
@@ -759,8 +738,8 @@ public partial class SWCDOC_SWCDT007 : System.Web.UI.Page
         string csUpLoadField = "TXTDTL047";
         TextBox csUpLoadAppoj = TXTDTL047;
 
-        string TempFolderPath = ConfigurationManager.AppSettings["SwcFileTemp"];
-        string SwcCaseFolderPath = ConfigurationManager.AppSettings["SwcFilePath"];
+        string TempFolderPath = ConfigurationManager.AppSettings["SwcFileTemp20"];
+        string SwcCaseFolderPath = ConfigurationManager.AppSettings["SwcFilePath20"];
 
         folderExists = Directory.Exists(SwcCaseFolderPath);
         if (folderExists == false)
@@ -854,7 +833,7 @@ public partial class SWCDOC_SWCDT007 : System.Web.UI.Page
             }
 
             // 檢查 Server 上該資料夾是否存在，不存在就自動建立
-            string serverDir = ConfigurationManager.AppSettings["SwcFileTemp"] + CaseId;
+            string serverDir = ConfigurationManager.AppSettings["SwcFileTemp20"] + CaseId;
 
             if (Directory.Exists(serverDir) == false) Directory.CreateDirectory(serverDir);
 
@@ -887,24 +866,28 @@ public partial class SWCDOC_SWCDT007 : System.Web.UI.Page
             {
                 UpLoadBar.SaveAs(serverFilePath);
                 //error_msg.Text = "檔案上傳成功";
-
+    
                 switch (ChkType)
                 {
                     case "PIC":
-                            UpLoadView.Attributes.Add("src", "..\\UpLoadFiles\\temp\\" + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond);
+							UpLoadView.Attributes.Add("src", GlobalUpLoadTempFilePath + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond);
+                            //UpLoadView.Attributes.Add("src", "..\\UpLoadFiles\\temp\\" + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond);
                             //UpLoadView.ImageUrl = "..\\UpLoadFiles\\temp\\" + CaseId +"\\"+ geohfilename;
                 
                             imagestitch(UpLoadView, serverDir + "\\" + SwcFileName, 320, 180);
                         break;
 
                     case "PIC2":
-                        UpLoadLink.ImageUrl = "..\\UpLoadFiles\\temp\\" + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
-                        UpLoadLink.NavigateUrl = "..\\UpLoadFiles\\temp\\" + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
+						UpLoadLink.ImageUrl = GlobalUpLoadTempFilePath + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
+                        UpLoadLink.NavigateUrl = GlobalUpLoadTempFilePath + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
+                        //UpLoadLink.ImageUrl = "..\\UpLoadFiles\\temp\\" + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
+                        //UpLoadLink.NavigateUrl = "..\\UpLoadFiles\\temp\\" + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
                         break;
 
                     case "DOC":
                         UpLoadLink.Text = SwcFileName;
-                        UpLoadLink.NavigateUrl = "..\\UpLoadFiles\\temp\\" + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
+                        UpLoadLink.NavigateUrl = GlobalUpLoadTempFilePath + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
+                        //UpLoadLink.NavigateUrl = "..\\UpLoadFiles\\temp\\" + CaseId + "\\" + SwcFileName + "?ts=" + System.DateTime.Now.Millisecond;
                         UpLoadLink.Visible = true;
                         break;
 
@@ -984,8 +967,8 @@ public partial class SWCDOC_SWCDT007 : System.Web.UI.Page
         ConnERR.Close();
 
         //刪實體檔
-        string TempFolderPath = ConfigurationManager.AppSettings["SwcFileTemp"];
-        string SwcCaseFolderPath = ConfigurationManager.AppSettings["SwcFilePath"];
+        string TempFolderPath = ConfigurationManager.AppSettings["SwcFileTemp20"];
+        string SwcCaseFolderPath = ConfigurationManager.AppSettings["SwcFilePath20"];
 
         string DelFileName = ImgText.Text;
         string TempFileFullPath = TempFolderPath + csCaseID + "\\" + ImgText.Text;
@@ -1224,7 +1207,9 @@ public partial class SWCDOC_SWCDT007 : System.Web.UI.Page
         string[] arrayJobTitle = ChkJobTitle.Split(new string[] { ";;" }, StringSplitOptions.None);
         string[] arrayUserMail = ChkMail.Split(new string[] { ";;" }, StringSplitOptions.None);
         string[] arrayMBGROUP = ChkMBGROUP.Split(new string[] { ";;" }, StringSplitOptions.None);
-
+		
+        //送出提醒名單：股長、管理者、承辦人員、施柏宇(ge-10754)、章姿隆(ge-10706)
+		
         ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
         using (SqlConnection SwcConn = new SqlConnection(connectionString.ConnectionString))
         {
@@ -1248,8 +1233,7 @@ public partial class SWCDOC_SWCDT007 : System.Web.UI.Page
                 string tSWC025 = readeSwc["SWC025"] + "";
                 string tSWC024ID = readeSwc["SWC024ID"] + "";
                 string tSWC108 = readeSwc["SWC108"] + "";
-
-                //寄件名單, 注意：ge-10755	沈漢國，寫死，必需寄！
+				
                 string SentMailGroup = "";
                 for (int i = 1; i < arrayUserId.Length; i++)
                 {
@@ -1259,7 +1243,7 @@ public partial class SWCDOC_SWCDT007 : System.Web.UI.Page
                     string aUserMail = arrayUserMail[i];
                     string aMBGROUP = arrayMBGROUP[i];
 
-                    if (aJobTitle.Trim() == "科長" || aJobTitle.Trim() == "正工" || aJobTitle.Trim() == "股長" || aMBGROUP.Trim() == "系統管理員" || aUserName.Trim() == tSWC025.Trim() || aUserId == "ge-10755")
+                    if (aJobTitle.Trim() == "股長" || aMBGROUP.Trim() == "系統管理員" || aUserName.Trim() == tSWC025.Trim() || aUserId.Trim() == "ge-10706" || aUserId == "ge-10754")
                     {
                         SentMailGroup = SentMailGroup + ";;" + aUserMail;
                     }
@@ -1274,8 +1258,8 @@ public partial class SWCDOC_SWCDT007 : System.Web.UI.Page
                 bool MailTo01 = SBApp.Mail_Send(arraySentMail01, ssMailSub01, ssMailBody01);
 
                 string[] arraySentMail02 = new string[] {tSWC108 };
-                string ssMailSub02 = "您好，" + "水土保持計畫【" + tSWC002 + "】已新增設施維護檢查表";
-                string ssMailBody02 = "您好，" + "【" + tSWC005 + "】已新增設施維護檢查表，請至臺北市水土保持申請書件管理平台上瀏覽。" + "<br><br>";
+                string ssMailSub02 = "您好，水土保持計畫【" + tSWC002 + "】已新增設施維護檢查表";
+                string ssMailBody02 = "您好，【" + tSWC005 + "】已新增設施維護檢查表，請至臺北市水土保持申請書件管理平台上瀏覽。" + "<br><br>";
                 ssMailBody02 = ssMailBody02 + "「臺北市水土保持書件管理平台」系統管理員 敬上<br><br><br>";
                 ssMailBody02 = ssMailBody02 + "＜此封信為系統自動發送，請勿直接回信，若有任何問題請洽臺北市政府工務局大地工程處＞";
                 
@@ -1283,8 +1267,8 @@ public partial class SWCDOC_SWCDT007 : System.Web.UI.Page
 
                 string ssMailBody03 = "您好，【" + tSWC005 + "】已新增設施維護檢查表，請至臺北市水土保持申請書件管理平台上瀏覽。";
                 
-                SBApp.SendSMS(tSWC013TEL, ssMailBody03);
-
+                string[] arraySWC013TEL = tSWC013TEL.Split(new string[] { ";" }, StringSplitOptions.None);
+				SBApp.SendSMS_Arr(arraySWC013TEL, ssMailBody03);
             }
 
             readeSwc.Close();

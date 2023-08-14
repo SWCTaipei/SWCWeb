@@ -1,23 +1,7 @@
-﻿/*  Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
@@ -28,8 +12,10 @@ using System.Web.UI.WebControls;
 
 public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
 {
-    string SwcUpLoadFilePath = "..\\UpLoadFiles\\SwcCaseFile\\";
-    string GlobalUpLoadTempFilePath = "..\\UpLoadFiles\\temp\\";
+    string SwcUpLoadFilePath = ConfigurationManager.AppSettings["SwcFileUrl20"]+ "SWCDOC\\UpLoadFiles\\SwcCaseFile\\";
+    string GlobalUpLoadTempFilePath = ConfigurationManager.AppSettings["SwcFileUrl20"] + "SWCDOC\\UpLoadFiles\\temp\\";
+    //string SwcUpLoadFilePath = "..\\UpLoadFiles\\SwcCaseFile\\";
+    //string GlobalUpLoadTempFilePath = "..\\UpLoadFiles\\temp\\";
     protected void Page_Load(object sender, EventArgs e)
     {
         string rCaseId = Request.QueryString["SWCNO"] + "";
@@ -73,6 +59,7 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
     private void Data2Page(string v,string v2)
     {
         GBClass001 SBApp = new GBClass001();
+        Class20 C20 = new Class20();
 
         ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
         using (SqlConnection SwcConn = new SqlConnection(connectionString.ConnectionString))
@@ -110,6 +97,7 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
                 string strSQLRV2 = " select * from SWCDTL01 ";
                 strSQLRV2 = strSQLRV2 + " where SWC000 = '" + v + "' ";
                 strSQLRV2 = strSQLRV2 + "   AND DTLA000 = '" + v2 + "' ";
+                C20.swcLogRC("SWCDT001v", "審查紀錄", "詳情", "瀏覽", v + ";" + v2);
 
                 SqlDataReader readeDTL;
                 SqlCommand objCmdDTL = new SqlCommand(strSQLRV2, SwcConn);
@@ -149,6 +137,7 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
                     string tDTLA030 = readeDTL["DTLA030"] + "";
                     string tDTLA031 = readeDTL["DTLA031"] + "";
                     string tDTLA032 = readeDTL["DTLA032"] + "";
+                    string tDTLA034 = readeDTL["DTLA034"] + "";
 
                     string tLOCKDATE = readeDTL["savedate"] + "";
 
@@ -163,13 +152,9 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
                     TXTDTL010.Text = tDTLA010;
                     TXTDTL011.Text = tDTLA011;
                     TXTDTL012.Text = tDTLA012;
-                    TXTDTL013.Text = tDTLA013;
-                    TXTDTL014.Text = tDTLA014;
-                    TXTDTL015.Text = tDTLA015;
-                    TXTDTL016.Text = tDTLA016.Replace("\r\n", "<br/>").Replace("\n\r", "<br/>");
+                    TXTDTL013.Text = tDTLA013.Replace("\r\n", "<br/>").Replace("\n\r", "<br/>");
                     TXTDTL017.Text = tDTLA017.Replace("\r\n", "<br/>").Replace("\n\r", "<br/>");
                     TXTDTL018.Text = tDTLA018.Replace("\r\n", "<br/>").Replace("\n\r", "<br/>");
-                    TXTDTL019.Text = tDTLA019.Replace("\r\n", "<br/>").Replace("\n\r", "<br/>"); 
                     TXTDTL020.Text = tDTLA020;
                     TXTDTL021.Text = tDTLA021;
                     TXTDTL022.Text = tDTLA022;
@@ -183,6 +168,7 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
                     TXTDTL030.Text = tDTLA030;
                     TXTDTL031.Text = tDTLA031;
                     TXTDTL032.Text = tDTLA032;
+                    TXTDTL034.Text = tDTLA034;
 
                     //點擊放大圖片類處理
                     string[] arrayFileName2 = new string[] { tDTLA018, tDTLA021, tDTLA023, tDTLA025, tDTLA027, tDTLA029, tDTLA031 };
@@ -198,7 +184,7 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
                         }
                         else
                         {
-                            string tempImgPateh = SwcUpLoadFilePath + v + "/" + strFileName;
+                            string tempImgPateh = "../tcgefile/SWCDOC/UpLoadFiles/SwcCaseFile/" + v + "/" + strFileName;
                             ImgFileObj.ImageUrl = tempImgPateh + "?ts=" + DateTime.Now.Millisecond;
                             ImgFileObj.NavigateUrl = tempImgPateh + "?ts=" + DateTime.Now.Millisecond;
                         }
@@ -219,13 +205,41 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
                         }
                         else
                         {
-                            string tempLinkPateh = SwcUpLoadFilePath + v + "/" + strFileName;
+                            string tempLinkPateh = "../tcgefile/SWCDOC/UpLoadFiles/SwcCaseFile/" + v + "/" + strFileName;
                             FileLinkObj.Text = strFileName;
                             FileLinkObj.NavigateUrl = tempLinkPateh;
                             FileLinkObj.Visible = true;
                         }
 
                     }
+                    //審查意見-多筆
+                    int nj = 0;
+                    DataTable tbRVList = null;
+                    string GetListSQLstr = " Select * From SWCDTL01R ";
+                    GetListSQLstr += " Where SWC000 = '" + v + "' and DTLA001 = '" + v2 + "' ";
+                    GetListSQLstr += " Order by convert(int,DTLR01) ";
+
+                    string ReViewStr = "";
+                    ConnectionStringSettings connectionString2 = ConfigurationManager.ConnectionStrings["SWCConnStr"];
+                    using (SqlConnection SwcConn2 = new SqlConnection(connectionString.ConnectionString))
+                    {
+                        SwcConn2.Open();
+
+                        SqlDataReader readeDTLR;
+                        SqlCommand objCmdDTLR = new SqlCommand(GetListSQLstr, SwcConn2);
+                        readeDTLR = objCmdDTLR.ExecuteReader();
+
+                        while (readeDTLR.Read())
+                        {
+                            nj++;
+                            string tDTLR01 = readeDTLR["DTLR01"] + "";
+                            string tDTLR02 = readeDTLR["DTLR02"] + "";
+                            string tDTLR03 = readeDTLR["DTLR03"] + "";
+
+                            ReViewStr += tDTLR02.Replace("\r\n", "<br/>").Replace("\n\r", "<br/>") + "<br/><br/>";
+                        }
+                    }
+                    LBReView.Text = ReViewStr;
                 }
             }
 
@@ -466,5 +480,14 @@ public partial class SWCDOC_SWCDT001 : System.Web.UI.Page
             Session[UpLoadStr] = "";
         }
 
+    }
+
+    protected void OutPdf_Click(object sender, ImageClickEventArgs e)
+    {
+        string rCaseId = Request.QueryString["SWCNO"] + "";
+        string rDTLId = Request.QueryString["DTLNO"] + "";
+
+        //OutPdf.Attributes.Add("onclick", "this.form.target='_blank'");
+        Response.Redirect("../SwcReport/PdfSwcDtl01.aspx?SWCNO=" + rCaseId + "&DTLNO=" + rDTLId);
     }
 }

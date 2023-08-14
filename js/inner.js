@@ -1,20 +1,3 @@
-/*  Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
 $(document).ready(function() {
     $('.openh2, #Area04>h2, #Area05>h2, #Area01>h2, #Area02>h2, #Area03>h2').click(function (event) {
         $(this).next('div').slideToggle();
@@ -34,6 +17,72 @@ $(document).ready(function() {
         $('.cgPassn').toggleClass('cgPassnb');
     });
 });
+
+function openClass(aName, className) {
+    var i, x, tablinks;
+    x = document.getElementsByClassName("class");
+    for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablink");
+    for (i = 0; i < x.length; i++) {
+        tablinks[i].classList.remove("activecolor");
+    }
+    document.getElementById(className).style.display = "block";
+    //evt.currentTarget.classList.add("activecolor");
+    mytest = document.getElementById(aName);
+    mytest.classList.add("activecolor");
+}
+
+/*
+var mybtn = document.getElementsByClassName("testbtn")[0];
+mybtn.click();*/
+
+/*申請單*/
+$(document).ready(function () {
+    $('.navmenu > li > a').click(function (event) {
+        //event.preventDefault();
+        $(this).parent().siblings().find('ul').slideUp();/*打開一個關閉一個*/
+        $(this).parent().find('ul').slideToggle();
+        $(this).next("ul").children("ol").show();
+
+        //新增
+        $(".navmenu ol").show();//將所有.cart底下的ol隱藏
+    });
+});
+/*申請單*/
+
+
+jQuery(function () {
+    $(".flip").click(function () {
+        $(".openlist").slideToggle(300);
+    });
+});
+jQuery(function () {
+    $(".flip2").click(function () {
+        $(".openlist2").slideToggle(300);
+    });
+});
+
+
+/*回到頂端列*/
+$(document).ready(function () {
+    $('.go-top1').hide(0)
+
+    $(window).scroll(function () {
+        if ($(this).scrollTop() > 100) {
+            $('.go-top1').fadeIn(200);
+        } else {
+            $('.go-top1').fadeOut(300);
+        }
+    });
+    $('.go-top1').click(function () {
+        event.preventDefault();
+
+        $('html , body').animate({ scrollTop: 0 }, 500);
+    });
+});
+/*回到頂端列*/
 
 var newBR2 = document.createElement('br');
 $('<br>').appendTo(document.querySelectorAll('.detailsGrid_orange_ctBR span'));

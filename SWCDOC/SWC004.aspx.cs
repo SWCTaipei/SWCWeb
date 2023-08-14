@@ -1,21 +1,4 @@
-﻿/*  Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-using System;
+﻿using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -26,6 +9,25 @@ public partial class SWCDOC_SWC003 : System.Web.UI.Page
 {
     string SwcUpLoadFilePath = "..\\UpLoadFiles\\SwcCaseFile\\";
     string GlobalUpLoadTempFilePath = "..\\UpLoadFiles\\temp\\";
+	
+	protected void Page_Error(object sender, EventArgs e)
+    {
+        Exception objErr = Server.GetLastError().GetBaseException(); // 獲取錯誤
+        string errUrl = Request.Url.ToString();
+        string errMsg = objErr.Message.ToString();
+        Class1 C1 = new Class1();
+        string[] mailTo = new string[] { "tcge7@geovector.com.tw" };
+        string ssUserName = Session["NAME"] + "";
+		
+        string mailText = "使用者：" + ssUserName + "<br/>";
+        mailText += "時間：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "<br/>";
+        mailText += "url：" + errUrl + "<br/>";
+        mailText += "錯誤訊息：" + errMsg + "<br/>";
+		
+        C1.Mail_Send(mailTo, "臺北市水土保持書件管理平台-系統錯誤通知", mailText);
+        Response.Redirect("~/errPage/500.htm");
+        Server.ClearError();
+    }
     protected void Page_Load(object sender, EventArgs e)
     {
         string ssUserName = Session["NAME"] + "";
@@ -77,9 +79,13 @@ public partial class SWCDOC_SWC003 : System.Web.UI.Page
         DTL_02_02_Link.Visible = false;
         SWCOLA202.Columns[5].Visible = false;
         DTL_02_03_Link.Visible = false;
+        DTL_02_03_1_Link.Visible = false;
         SWCOLA203.Columns[5].Visible = false;
+        SWCOLA203_1.Columns[5].Visible = false;
         DTL_02_04_Link.Visible = false;
+        DTL_02_04_1_Link.Visible = false;
         SWCOLA204.Columns[4].Visible = false;
+        SWCOLA204_1.Columns[4].Visible = false;
         DTL_02_05_Link.Visible = false;
         SWCOLA205.Columns[4].Visible = false;
         DTL_02_06_Link.Visible = false;
@@ -136,14 +142,23 @@ public partial class SWCDOC_SWC003 : System.Web.UI.Page
                             DTL_02_02_Link.Visible = true;
                             break;
                         case "已核定":
+                            DTL_02_03_Link.Visible = true;
                             DTL_02_04_Link.Visible = true;
-                            DTL_02_07_Link.Visible = true;
+                            DTL_02_05_Link.Visible = true;
+							CopyCase.Visible = true;
                             break;
                         case "施工中":
-                            DTL_02_03_Link.Visible = true;
                             DTL_02_05_Link.Visible = true;
+                            DTL_02_07_Link.Visible = true;
                             DTL_02_08_Link.Visible = true;
                             DTL_02_09_Link.Visible = true;
+							CopyCase.Visible = true;
+                            break;
+                        case "停工中":
+                            DTL_02_03_1_Link.Visible = true;
+                            DTL_02_04_1_Link.Visible = true;
+                            DTL_02_05_Link.Visible = true;
+							CopyCase.Visible = true;
                             break;
                         case "已完工":
                             DTL_02_01_Link.Visible = true;
@@ -153,7 +168,9 @@ public partial class SWCDOC_SWC003 : System.Web.UI.Page
                     SWCOLA201.Columns[5].Visible = true;
                     SWCOLA202.Columns[5].Visible = true;
                     SWCOLA203.Columns[5].Visible = true;
+                    SWCOLA203_1.Columns[5].Visible = true;
                     SWCOLA204.Columns[4].Visible = true;
+                    SWCOLA204_1.Columns[4].Visible = true;
                     SWCOLA205.Columns[4].Visible = true;
                     SWCOLA206.Columns[3].Visible = true;
                     SWCOLA207.Columns[5].Visible = true;
@@ -388,13 +405,23 @@ public partial class SWCDOC_SWC003 : System.Web.UI.Page
 
             string Sql203Str = "";
             Sql203Str = Sql203Str + " select ONA03001 as DATA01 ,left(convert(char, ONA03002, 120),10) as DATA02,left(convert(char, ONA03003, 120),10) as DATA03,'第'+ONA03004+'次展延' as DATA04,DATALOCK as DATA05,replace(replace(isnull(ReviewResults,''),1,'核准'),'0','駁回') AS DATA06 from OnlineApply03 ";
-            Sql203Str = Sql203Str + "  Where SWC000 = '" + v + "' ";
+            Sql203Str = Sql203Str + "  Where SWC000 = '" + v + "' and ISNULL(ONA03011,'') != '復工' ";
             Sql203Str = Sql203Str + "  order by ONA03001 ";
+			
+			string Sql203Str_1 = "";
+            Sql203Str_1 = Sql203Str_1 + " select ONA03001 as DATA01 ,left(convert(char, ONA03002, 120),10) as DATA02,left(convert(char, ONA03003, 120),10) as DATA03,'第'+ONA03004+'次展延' as DATA04,DATALOCK as DATA05,replace(replace(isnull(ReviewResults,''),1,'核准'),'0','駁回') AS DATA06 from OnlineApply03 ";
+            Sql203Str_1 = Sql203Str_1 + "  Where SWC000 = '" + v + "' and ONA03011 = '復工' ";
+            Sql203Str_1 = Sql203Str_1 + "  order by ONA03001 ";
 
             string Sql204Str = "";
             Sql204Str = Sql204Str + " select ONA04001 as DATA01 ,left(convert(char, ONA04003, 120),10) as DATA02,left(convert(char, ONA04004, 120),10) as DATA03,'' as DATA04,DATALOCK as DATA05,replace(replace(isnull(ReviewResults,''),1,'核准'),'0','駁回') AS DATA06 from OnlineApply04 ";
-            Sql204Str = Sql204Str + "  Where SWC000 = '" + v + "' ";
+            Sql204Str = Sql204Str + "  Where SWC000 = '" + v + "' and ISNULL(ONA04023,'') != '復工' ";
             Sql204Str = Sql204Str + "  order by ONA04001 ";
+			
+			string Sql204Str_1 = "";
+            Sql204Str_1 = Sql204Str_1 + " select ONA04001 as DATA01 ,left(convert(char, ONA04003, 120),10) as DATA02,left(convert(char, ONA04004, 120),10) as DATA03,'' as DATA04,DATALOCK as DATA05,replace(replace(isnull(ReviewResults,''),1,'核准'),'0','駁回') AS DATA06 from OnlineApply04 ";
+            Sql204Str_1 = Sql204Str_1 + "  Where SWC000 = '" + v + "' and ONA04023 = '復工' ";
+            Sql204Str_1 = Sql204Str_1 + "  order by ONA04001 ";
 
             string Sql205Str = "";
             Sql205Str = Sql205Str + " select ONA05001 as DATA01 ,ONA05002 as DATA02,ONA05003 as DATA03,ONA05004 as DATA04,DATALOCK as DATA05,replace(replace(isnull(ReviewResults,''),1,'核准'),'0','駁回') AS DATA06 from OnlineApply05 ";
@@ -423,8 +450,8 @@ public partial class SWCDOC_SWC003 : System.Web.UI.Page
             Sql209Str = Sql209Str + "  Where SWC000 = '" + v + "' ";
             Sql209Str = Sql209Str + "  order by ONA09001 ";
 
-            string[] arraySqlExeStr = new string[] { Sql201Str,Sql202Str, Sql203Str, Sql204Str, Sql205Str, Sql206Str, Sql207Str, Sql208Str, Sql209Str };
-            GridView[] arrayONLAGV = new GridView[] { SWCOLA201,SWCOLA202, SWCOLA203, SWCOLA204, SWCOLA205, SWCOLA206, SWCOLA207, SWCOLA208, SWCOLA209 };
+            string[] arraySqlExeStr = new string[] { Sql201Str, Sql202Str, Sql203Str, Sql203Str_1, Sql204Str, Sql204Str_1, Sql205Str, Sql206Str, Sql207Str, Sql208Str, Sql209Str };
+            GridView[] arrayONLAGV = new GridView[] { SWCOLA201, SWCOLA202, SWCOLA203, SWCOLA203_1, SWCOLA204, SWCOLA204_1, SWCOLA205, SWCOLA206, SWCOLA207, SWCOLA208, SWCOLA209 };
 
             for (int i = 0; i < arraySqlExeStr.Length; i++)
             {
@@ -556,7 +583,7 @@ public partial class SWCDOC_SWC003 : System.Web.UI.Page
         string rCaseId = Request.QueryString["SWCNO"] + "";
 
         Button LButton = (Button)sender;
-        string LINK = "SWCDT004v.aspx?SWCNO=" + rCaseId + "&DTLNO=" + LButton.CommandArgument;
+        string LINK = "SWCDT004v.aspx?PV=4&SWCNO=" + rCaseId + "&DTLNO=" + LButton.CommandArgument;
 
         Response.Redirect(LINK);
 
@@ -632,7 +659,7 @@ public partial class SWCDOC_SWC003 : System.Web.UI.Page
         string rDataLock2 = Lock01.Value;
         if (rDataLock2 == "Y") { rPageView = "v"; }
 
-        Response.Redirect("OnlineApply002"+ rPageView + ".aspx?SWCNO=" + rSWCNO + "&OLANO="+ rONLANO);
+        Response.Redirect("OnlineApply002"+ rPageView + ".aspx?PV=4&SWCNO=" + rSWCNO + "&OLANO="+ rONLANO);
 
     }
 
@@ -714,6 +741,38 @@ public partial class SWCDOC_SWC003 : System.Web.UI.Page
         }
 
     }
+	
+	protected void DTL_02_03_1_Link_Click(object sender, ImageClickEventArgs e)
+    {
+        string rSWCNO = Request.QueryString["SWCNO"] + "";
+
+        Response.Redirect("OnlineApply003.aspx?SWCNO=" + rSWCNO + "&OLANO=AddNew");
+    }
+
+    protected void SWCOLA203_1_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        switch (e.Row.RowType)
+        {
+            case DataControlRowType.Header:     //是表頭你想幹嘛？
+
+                break;
+
+            case DataControlRowType.DataRow:
+
+                HiddenField Lock01 = (HiddenField)e.Row.Cells[2].FindControl("Lock203_1");
+                string tempLock = Lock01.Value;
+
+                if (tempLock == "Y")
+                {
+                    Button btn = (Button)e.Row.Cells[1].FindControl("ButtonDEL203_1");
+
+                    btn.Text = "搞啥";
+                    btn.Visible = false;
+                }
+                break;
+        }
+
+    }
     
     protected void ButtonOLA203_Click(object sender, EventArgs e)
     {
@@ -734,7 +793,29 @@ public partial class SWCDOC_SWC003 : System.Web.UI.Page
         string rDataLock2 = Lock01.Value;
         if (rDataLock2 == "Y") { rPageView = "v"; }
 
-        Response.Redirect("OnlineApply003" + rPageView + ".aspx?SWCNO=" + rSWCNO + "&OLANO=" + rONLANO);
+        Response.Redirect("OnlineApply003" + rPageView + ".aspx?PV=4&SWCNO=" + rSWCNO + "&OLANO=" + rONLANO);
+
+    }
+	protected void ButtonOLA203_1_Click(object sender, EventArgs e)
+    {
+        string rSWCNO = Request.QueryString["SWCNO"] + "";
+        string rONLANO = ((Button)(sender)).CommandArgument;
+        string rPageView = "";
+
+        //Get the button that raised the event
+        Button btn = (Button)sender;
+
+        //Get the row that contains this button
+        GridViewRow gvr = (GridViewRow)btn.NamingContainer;
+
+        int rowindex = gvr.RowIndex;
+
+        HiddenField Lock01 = (HiddenField)SWCOLA203.Rows[rowindex].Cells[5].FindControl("Lock203_1");
+
+        string rDataLock2 = Lock01.Value;
+        if (rDataLock2 == "Y") { rPageView = "v"; }
+
+        Response.Redirect("OnlineApply003" + rPageView + ".aspx?PV=4&SWCNO=" + rSWCNO + "&OLANO=" + rONLANO);
 
     }
 
@@ -742,7 +823,7 @@ public partial class SWCDOC_SWC003 : System.Web.UI.Page
     {
         string rSWCNO = Request.QueryString["SWCNO"] + "";
 
-        Response.Redirect("OnlineApply004.aspx?SWCNO=" + rSWCNO + "&OLANO=AddNew");
+        Response.Redirect("OnlineApply004.aspx?PV=4&SWCNO=" + rSWCNO + "&OLANO=AddNew");
     }
 
     protected void SWCOLA204_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -761,6 +842,36 @@ public partial class SWCDOC_SWC003 : System.Web.UI.Page
                 if (tempLock == "Y")
                 {
                     Button btn = (Button)e.Row.Cells[1].FindControl("ButtonDEL204");
+
+                    btn.Text = "搞啥";
+                    btn.Visible = false;
+                }
+                break;
+        }
+    }
+	protected void DTL_02_04_1_Link_Click(object sender, ImageClickEventArgs e)
+    {
+        string rSWCNO = Request.QueryString["SWCNO"] + "";
+
+        Response.Redirect("OnlineApply004.aspx?PV=4&SWCNO=" + rSWCNO + "&OLANO=AddNew");
+    }
+	
+	protected void SWCOLA204_1_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        switch (e.Row.RowType)
+        {
+            case DataControlRowType.Header:     //是表頭你想幹嘛？
+
+                break;
+
+            case DataControlRowType.DataRow:
+
+                HiddenField Lock01 = (HiddenField)e.Row.Cells[3].FindControl("Lock204_1");
+                string tempLock = Lock01.Value;
+
+                if (tempLock == "Y")
+                {
+                    Button btn = (Button)e.Row.Cells[1].FindControl("ButtonDEL204_1");
 
                     btn.Text = "搞啥";
                     btn.Visible = false;
@@ -964,6 +1075,29 @@ public partial class SWCDOC_SWC003 : System.Web.UI.Page
         Response.Redirect("OnlineApply004" + rPageView + ".aspx?SWCNO=" + rSWCNO + "&OLANO=" + rONLANO);
 
     }
+	
+	protected void ButtonOLA204_1_Click(object sender, EventArgs e)
+    {
+        string rSWCNO = Request.QueryString["SWCNO"] + "";
+        string rONLANO = ((Button)(sender)).CommandArgument;
+        string rPageView = "";
+
+        //Get the button that raised the event
+        Button btn = (Button)sender;
+
+        //Get the row that contains this button
+        GridViewRow gvr = (GridViewRow)btn.NamingContainer;
+
+        int rowindex = gvr.RowIndex;
+
+        HiddenField Lock01 = (HiddenField)SWCOLA204_1.Rows[rowindex].Cells[2].FindControl("Lock204_1");
+
+        string rDataLock2 = Lock01.Value;
+        if (rDataLock2 == "Y") { rPageView = "v"; }
+
+        Response.Redirect("OnlineApply004" + rPageView + ".aspx?SWCNO=" + rSWCNO + "&OLANO=" + rONLANO);
+
+    }
     protected void ButtonOLA205_Click(object sender, EventArgs e)
     {
         string rSWCNO = Request.QueryString["SWCNO"] + "";
@@ -1159,8 +1293,213 @@ public partial class SWCDOC_SWC003 : System.Web.UI.Page
         Response.Write("<script>alert('資料已刪除'); location.href='SWC003.aspx?SWCNO=" + tSwc000 + "'; </script>");
 
     }
+	protected void CopyCase_Click(object sender, EventArgs e)
+    {
+        string rCaseId = LBSWC000.Text + "";
+        string rSwcNo = LBSWC002.Text + "";
+        if (rSwcNo.Length > 12){
+            if (rSwcNo.Substring(13, 1) == "9")
+            {
+                Response.Write("<script>alert('變更次數已達系統設計極限，請洽大地工程處，謝謝!!');</script>"); return;
+            }
+		}
+		ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
+		using (SqlConnection ItemConn = new SqlConnection(connectionString.ConnectionString))
+        {
+            ItemConn.Open();
 
+            int nj = 0;
 
+            string strSQLRV = "select * from SWCLAND";
+            strSQLRV = strSQLRV + " Where SWC000 = '" + rCaseId + "' ";
+            strSQLRV = strSQLRV + " order by convert(int,LAND000)  ";
+
+            SqlDataReader readerItem;
+            SqlCommand objCmdItem = new SqlCommand(strSQLRV, ItemConn);
+            readerItem = objCmdItem.ExecuteReader();
+
+            while (readerItem.Read())
+            {
+                string dLAND000 = readerItem["LAND000"] + "";
+                string dLAND001 = readerItem["LAND001"] + "";
+                string dLAND002 = readerItem["LAND002"] + "";
+                string dLAND003 = readerItem["LAND003"] + "";
+                string dLAND004 = readerItem["LAND004"] + "";
+                string dLAND005 = readerItem["LAND005"] + "";
+                string dLAND006 = readerItem["LAND006"] + "";
+                string dLAND007 = readerItem["LAND007"] + "";
+                string dLAND008 = readerItem["LAND008"] + "";
+                string dLAND009 = readerItem["LAND009"] + "";
+                string dLAND010 = readerItem["LAND010"] + "";
+                string dLAND011 = readerItem["LAND011"] + "";
+                string dLAND012 = readerItem["LAND012"] + "";
+
+                DataTable tbCadastral = (DataTable)ViewState["SwcCadastral"];
+
+                if (tbCadastral == null)
+                {
+                    DataTable GVTBCD = new DataTable();
+
+                    GVTBCD.Columns.Add(new DataColumn("序號", typeof(string)));
+                    GVTBCD.Columns.Add(new DataColumn("區", typeof(string)));
+                    GVTBCD.Columns.Add(new DataColumn("段", typeof(string)));
+                    GVTBCD.Columns.Add(new DataColumn("小段", typeof(string)));
+                    GVTBCD.Columns.Add(new DataColumn("地號", typeof(string)));
+                    GVTBCD.Columns.Add(new DataColumn("山坡地範圍", typeof(string)));
+                    GVTBCD.Columns.Add(new DataColumn("土地使用分區", typeof(string)));
+                    GVTBCD.Columns.Add(new DataColumn("土地可利用限度", typeof(string)));
+                    GVTBCD.Columns.Add(new DataColumn("陽明山國家公園範圍", typeof(string)));
+                    GVTBCD.Columns.Add(new DataColumn("林地類別", typeof(string)));
+                    GVTBCD.Columns.Add(new DataColumn("地質敏感區", typeof(string)));
+                    GVTBCD.Columns.Add(new DataColumn("水保計畫申請紀錄", typeof(string)));
+                    GVTBCD.Columns.Add(new DataColumn("水土保持法違規紀錄", typeof(string)));
+
+                    ViewState["SwcCadastral"] = GVTBCD;
+                    tbCadastral = (DataTable)ViewState["SwcCadastral"];
+                }
+
+                DataRow GVTBCDRow = tbCadastral.NewRow();
+
+                GVTBCDRow["序號"] = ++nj;
+                GVTBCDRow["區"] = dLAND001;
+                GVTBCDRow["段"] = dLAND002;
+                GVTBCDRow["小段"] = dLAND003;
+                GVTBCDRow["地號"] = dLAND004;
+                GVTBCDRow["山坡地範圍"] = dLAND009;
+                GVTBCDRow["土地使用分區"] = dLAND005;
+                GVTBCDRow["土地可利用限度"] = dLAND006;
+                GVTBCDRow["陽明山國家公園範圍"] = dLAND010;
+                GVTBCDRow["林地類別"] = dLAND007;
+                GVTBCDRow["地質敏感區"] = dLAND008;
+                GVTBCDRow["水保計畫申請紀錄"] = dLAND011;
+                GVTBCDRow["水土保持法違規紀錄"] = dLAND012;
+
+                tbCadastral.Rows.Add(GVTBCDRow);
+
+                //Store the DataTable in ViewState
+                ViewState["SwcCadastral"] = tbCadastral;
+            }
+            readerItem.Close();
+        }
+		using (SqlConnection ItemConn = new SqlConnection(connectionString.ConnectionString))
+        {
+            ItemConn.Open();
+
+            int ni = 0;
+
+            string strSQLRV = "select * from SwcDocItem";
+            strSQLRV = strSQLRV + " Where SWC000 = '" + rCaseId + "' ";
+            strSQLRV = strSQLRV + " order by SDI001 ";
+
+            SqlDataReader readerItem;
+            SqlCommand objCmdItem = new SqlCommand(strSQLRV, ItemConn);
+            readerItem = objCmdItem.ExecuteReader();
+
+            while (readerItem.Read())
+            {
+                #region
+                string sSDI001 = readerItem["SDI001"] + "";
+                string sSDI002 = readerItem["SDI002"] + "";
+                string sSDI003 = readerItem["SDI003"] + "";
+                string sSDI004 = readerItem["SDI004"] + "";
+                string sSDI005 = readerItem["SDI005"] + "";
+                string sSDI006 = readerItem["SDI006"] + "";
+                string sSDI006_1 = readerItem["SDI006_1"] + "";
+                string sSDI006D = readerItem["SDI006D"] + "";
+                string sSDI007 = readerItem["SDI007"] + "";
+                string sSDI008 = readerItem["SDI008"] + "";
+                string sSDI009 = readerItem["SDI009"] + "";
+                string sSDI010 = readerItem["SDI010"] + "";
+                string sSDI011 = readerItem["SDI011"] + "";
+                string sSDI012 = readerItem["SDI012"] + "";
+                string sSDI012_1 = readerItem["SDI012_1"] + "";
+                string sSDI012D = readerItem["SDI012D"] + "";
+                string sSDI013 = readerItem["SDI013"] + "";
+                string sSDI013_1 = readerItem["SDI013_1"] + "";
+                string sSDI014 = readerItem["SDI014"] + "";
+                string sSDI014_1 = readerItem["SDI014_1"] + "";
+                string sSDI015 = readerItem["SDI015"] + "";
+                string sSDI016 = readerItem["SDI016"] + "";
+                string sSDI019 = readerItem["SDI019"] + "";
+
+                DataTable tbSDIVS = (DataTable)ViewState["SwcDocItem"];
+
+                if (tbSDIVS == null)
+                {
+                    DataTable SDITB = new DataTable();
+
+                    SDITB.Columns.Add(new DataColumn("SDIFDNI", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD001", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD002", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD003", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD004", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD005", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD006", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD006_1", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD006D", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD007", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD008", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD009", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD010", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD011", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD012", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD012_1", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD012D", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD013", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD013_1", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD014", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD014_1", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD015", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD016", typeof(string)));
+                    SDITB.Columns.Add(new DataColumn("SDIFD019", typeof(string)));
+
+                    ViewState["SwcDocItem"] = SDITB;
+                    tbSDIVS = (DataTable)ViewState["SwcDocItem"];
+                }
+
+                DataRow SDITBRow = tbSDIVS.NewRow();
+
+                SDITBRow["SDIFDNI"] = ni.ToString();
+                SDITBRow["SDIFD001"] = sSDI001;
+                SDITBRow["SDIFD002"] = sSDI002;
+                SDITBRow["SDIFD003"] = sSDI003;
+                SDITBRow["SDIFD004"] = sSDI004;
+                SDITBRow["SDIFD005"] = sSDI005;
+                SDITBRow["SDIFD006"] = sSDI006;
+                SDITBRow["SDIFD006_1"] = sSDI006_1;
+                SDITBRow["SDIFD006D"] = sSDI006D;
+                SDITBRow["SDIFD007"] = sSDI007;
+                SDITBRow["SDIFD008"] = sSDI008;
+                SDITBRow["SDIFD009"] = sSDI009;
+                SDITBRow["SDIFD010"] = sSDI010;
+                SDITBRow["SDIFD011"] = sSDI011;
+                SDITBRow["SDIFD012"] = sSDI012;
+                SDITBRow["SDIFD012_1"] = sSDI012_1;
+                SDITBRow["SDIFD012D"] = sSDI012D;
+                SDITBRow["SDIFD013"] = sSDI013;
+                SDITBRow["SDIFD013_1"] = sSDI013_1;
+                SDITBRow["SDIFD014"] = sSDI014;
+                SDITBRow["SDIFD014_1"] = sSDI014_1;
+                SDITBRow["SDIFD015"] = sSDI015;
+                SDITBRow["SDIFD016"] = sSDI016;
+                SDITBRow["SDIFD019"] = sSDI019;
+
+                tbSDIVS.Rows.Add(SDITBRow);
+                #endregion
+                ViewState["SwcDocItem"] = tbSDIVS;
+
+            }
+            readerItem.Close();
+        }
+		
+        Session["CopyCaseIdD1"] = rCaseId;
+        Session["CopyCaseIdD2"] = rSwcNo;
+        Session["TempSwcCadastral"] = ViewState["SwcCadastral"];
+        Session["TempSwcDocItem"] = ViewState["SwcDocItem"];
+
+        string LINK = "SWC002.aspx?CaseId=COPY";
+        Response.Redirect(LINK);
+    }
 
 
 

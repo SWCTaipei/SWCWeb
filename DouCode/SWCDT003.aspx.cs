@@ -1,21 +1,4 @@
-﻿/*  Soil and Water Conservation Platform Project is a web applicant tracking system which allows citizen can search, view and manage their SWC applicant case.
-    Copyright (C) <2020>  <Geotechnical Engineering Office, Public Works Department, Taipei City Government>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
@@ -109,7 +92,6 @@ public partial class SWCDOC_SWCDT003 : System.Web.UI.Page
 
             while (readeSwc.Read())
             {
-                string tSWC002 = readeSwc["SWC002"] + "";
                 string tSWC005 = readeSwc["SWC005"] + "";
                 string tSWC007 = readeSwc["SWC007"] + "";
                 string tSWC013ID = readeSwc["SWC013ID"] + "";
@@ -117,7 +99,6 @@ public partial class SWCDOC_SWCDT003 : System.Web.UI.Page
                 string tSWC014 = readeSwc["SWC014"] + "";
                 string tSWC021ID = readeSwc["SWC021ID"] + "";
                 string tSWC021 = readeSwc["SWC021"] + "";
-                string tSWC023 = readeSwc["SWC023"] + "";
                 string tSWC038 = readeSwc["SWC038"] + "";
                 string tSWC039 = readeSwc["SWC039"] + "";
                 string tSWC043 = readeSwc["SWC043"] + "";
@@ -126,7 +107,6 @@ public partial class SWCDOC_SWCDT003 : System.Web.UI.Page
                 string tSWC052 = readeSwc["SWC052"] + "";
 
                 LBSWC000.Text = v;
-                LBSWC002.Text = tSWC002;
                 LBSWC005.Text = tSWC005;
                 //LBSWC005a.Text = tSWC005;
                 LBSWC007.Text = tSWC007;
@@ -138,8 +118,6 @@ public partial class SWCDOC_SWCDT003 : System.Web.UI.Page
                 LBSWC021OrgIssNo.Text = SBApp.GetETUser(tSWC021ID, "OrgIssNo");
                 LBSWC021OrgGUINo.Text = SBApp.GetETUser(tSWC021ID, "OrgGUINo");
                 LBSWC021OrgTel.Text = SBApp.GetETUser(tSWC021ID, "OrgTel");
-                
-                TXTDTL004.Text = tSWC023;
                 LBSWC038.Text = SBApp.DateView(tSWC038, "00");
                 LBSWC039.Text = tSWC039;
                 LBSWC043.Text = SBApp.DateView(tSWC043, "00");
@@ -245,7 +223,7 @@ public partial class SWCDOC_SWCDT003 : System.Web.UI.Page
                     
                     LBDTL001.Text = tDTLC001;
                     TXTDTL002.Text = SBApp.DateView(tDTLC002, "00");
-                    TXTDTL003.Text = tDTLC003.Trim()=="" ? TXTDTL003.Text:tDTLC003;
+                    TXTDTL003.Text = tDTLC003;
                     TXTDTL004.Text = tDTLC004;
                     TXTDTL005.Text = tDTLC005;
                     DDLDTL006.SelectedValue = tDTLC006;
@@ -723,10 +701,10 @@ public partial class SWCDOC_SWCDT003 : System.Web.UI.Page
     }
     private string GetDTLAID(string v)
     {
-        int Year = System.DateTime.Now.Year;
+        int Year = System.DateTime.Now.Year - 1911;
         string Month = System.DateTime.Now.Month.ToString();
-        string tempVal = "SWCCH" + Year.ToString() + Month.PadLeft(2, '0');
-        string _ReturnVal = "SWCCH" + Year.ToString() + Month.PadLeft(2, '0') + "001";
+        string tempVal = "RC" + Year.ToString() + Month.PadLeft(2, '0');
+        string _ReturnVal = "RC" + Year.ToString() + Month.PadLeft(2, '0') + "001";
 
         ConnectionStringSettings connectionString = ConfigurationManager.ConnectionStrings["SWCConnStr"];
         using (SqlConnection SwcConn = new SqlConnection(connectionString.ConnectionString))
@@ -734,7 +712,8 @@ public partial class SWCDOC_SWCDT003 : System.Web.UI.Page
             SwcConn.Open();
 
             string strSQLRV = " select MAX(DTLC000) AS MAXID from SWCDTL03 ";
-            strSQLRV = strSQLRV + " where LEFT(SWC000,11) = '" + tempVal + "' ";
+            strSQLRV = strSQLRV + " where SWC000 = '" + v + "' ";
+            strSQLRV = strSQLRV + "   and LEFT(DTLC000,7) = '" + tempVal + "' ";
 
             SqlDataReader readerSWC;
             SqlCommand objCmdSWC = new SqlCommand(strSQLRV, SwcConn);
@@ -752,7 +731,7 @@ public partial class SWCDOC_SWCDT003 : System.Web.UI.Page
                 }
             }
         }
-        return _ReturnVal;        
+        return _ReturnVal;
     }
 
     private void FileUpLoadApp(string ChkType, FileUpload UpLoadBar, TextBox UpLoadText, string UpLoadStr, string UpLoadType, System.Web.UI.WebControls.Image UpLoadView, HyperLink UpLoadLink)

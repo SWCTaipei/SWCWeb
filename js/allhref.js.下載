@@ -1,9 +1,0 @@
-var locaHref = location.href;
-var locaBody = document.querySelector('body');
-var newDom = document.createElement("div");
-
-newDom.setAttribute('class', 'newDom');
-newDom.innerHTML = '測試機';
-if (locaHref.indexOf('211') !== -1) {
-    locaBody.appendChild(newDom);
-}
